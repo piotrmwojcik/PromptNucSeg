@@ -54,6 +54,8 @@ for i in range(1, 4):
     images = np.load(f'Fold {i}/images/fold{i}/images.npy')
     masks = np.load(f'Fold {i}/masks/fold{i}/masks.npy')
 
+    print('loaded data')
+
     for j in range(len(masks)):
         io.imsave(f'Images/{i}_{j}.png', images[j].astype(np.uint8), check_contrast=False)
 

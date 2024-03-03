@@ -80,6 +80,8 @@ for i in range(1, 4):
         }
         np.save(f'Masks/{i}_{j}', outdict)
 
+        print(f'Masks/{i}_{j}')
+
 mkdir('../../../prompter/datasets/pannuke123')
 mkdir('../../../prompter/datasets/pannuke213')
 mkdir('../../../prompter/datasets/pannuke321')

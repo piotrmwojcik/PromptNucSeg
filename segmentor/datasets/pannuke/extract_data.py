@@ -119,6 +119,8 @@ for i in range(1, 4):
 
         data[f'datasets/pannuke/Images/{file[:-4]}.png'] = points
 
+        print(f'{file} processed')
+
         if i == 1:
 
             json.dump(data, open(f'../../../prompter/datasets/pannuke123/train.json', 'w'))

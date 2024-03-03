@@ -129,6 +129,8 @@ for i in range(1, 4):
             np.save('../pannuke213_val_files.npy', list(data.keys())[1:])
             np.save('../pannuke321_test_files.npy', list(data.keys())[1:])
 
+            print('done saving npy')
+
         elif i == 2:
             json.dump(data, open(f'../../../prompter/datasets/pannuke123/val.json', 'w'))
             json.dump(data, open(f'../../../prompter/datasets/pannuke213/train.json', 'w'))
@@ -147,3 +149,5 @@ for i in range(1, 4):
             np.save('../pannuke123_test_files.npy', list(data.keys())[1:])
             np.save('../pannuke213_test_files.npy', list(data.keys())[1:])
             np.save('../pannuke321_train_files.npy', list(data.keys())[1:])
+
+            print('done saving npy')

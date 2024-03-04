@@ -257,50 +257,6 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
 
         return outcome
 
-    def extract_box_feature(self, x, boxes_info, scale_factor, mask):
-        h, w = self.patch_embed.grid_size
-        num_box = boxes_info.shape[1]
-        batch_size = x.shape[0]
-        x = x.view(batch_size, h, w, self.embed_dim).permute(0, 3, 1, 2)
-
-        batch_index = torch.arange(0.0, batch_size).repeat(num_box).view(num_box, -1) \
-            .transpose(0, 1).flatten(0, 1).to(x.device)
-        roi_box_info = boxes_info.view(-1, 4).to(x.device)
-
-        roi_info = torch.stack((batch_index, roi_box_info[:, 0],
-                                roi_box_info[:, 1], roi_box_info[:, 2],
-                                roi_box_info[:, 3]), dim=1).to(x.device)
-
-        aligned_out = roi_align(input=x, boxes=roi_info, spatial_scale=scale_factor,
-                                output_size=7)
-
-        aligned_out = aligned_out.view(batch_size, num_box, self.embed_dim, 7, 7)[mask]
-        aligned_out.view(-1, self.embed_dim, 7, 7)
-
-        return aligned_out
-
-    def forward_boxes(self, x, boxes):
-        B = x.shape[0]
-        x = self.patch_embed(x)
-
-        cls_tokens = self.cls_token.expand(B, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
-        x = torch.cat((cls_tokens, x), dim=1)
-        x = x + self.pos_embed
-        x = self.pos_drop(x)
-
-        for blk in self.blocks:
-            x = blk(x)
-
-        x = x[:, 1:, :]
-
-        with torch.no_grad():
-            mask = torch.all(boxes != -1, dim=-1)
-            boxes_features = self.extract_box_feature(x=x, boxes_info=boxes, scale_factor=1. / self.patch_size,
-                                                      mask=mask)
-            boxes_features = self.box_embed(boxes_features).squeeze()
-
-        return boxes_features
-
     def forward_head(self, x, pre_logits: bool = False):
         if self.global_pool:
             x = x[:, 1:, :].mean(dim=1)
@@ -308,11 +264,6 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
             x[:, 0]
         x = self.fc_norm(x)
         return x if pre_logits else self.head(x)
-
-    def forward(self, x, boxes):
-        bboxes = self.forward_boxes(x, boxes)
-        bboxes = self.fc_norm(bboxes)
-        return self.head(bboxes)
 
 
 def vit_base_patch16(**kwargs):

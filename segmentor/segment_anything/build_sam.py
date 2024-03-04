@@ -67,10 +67,8 @@ def _build_sam(
     image_embedding_size = image_size // vit_patch_size
     sam = Sam(
         image_encoder=vit_base_patch16(
-            num_classes=self.num_tissue_classes,
-            drop_rate=self.drop_rate,
-            attn_drop_rate=self.attn_drop_rate,
-            drop_path_rate=self.drop_path_rate,
+            drop_rate=0.0,
+            drop_path_rate=0.0,
             init_values=None),
         prompt_encoder=PromptEncoder(
             embed_dim=prompt_embed_dim,

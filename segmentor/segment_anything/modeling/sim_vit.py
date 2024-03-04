@@ -208,10 +208,6 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
 
         self.patch_size = kwargs['patch_size']
         # Boxes embedding
-        self.box_embed = PatchEmbed(img_size=box_patch_size,
-                                    patch_size=box_patch_size,
-                                    in_chans=kwargs['embed_dim'],
-                                    embed_dim=kwargs['embed_dim'])
 
         drop_path_rate = kwargs['drop_path_rate']
         depth = kwargs['depth']

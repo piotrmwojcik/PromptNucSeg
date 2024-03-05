@@ -21,6 +21,8 @@ from timm.models.layers import Mlp, DropPath
 from timm.models.layers.helpers import to_2tuple
 from torchvision.ops import roi_align
 
+from segmentor.segment_anything.modeling.common import LayerNorm2d
+
 
 class LayerNorm(nn.LayerNorm):
 
@@ -234,6 +236,23 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
 
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim), requires_grad=False)
 
+        self.neck = nn.Sequential(
+            nn.Conv2d(
+                768,
+                256,
+                kernel_size=1,
+                bias=False,
+            ),
+            LayerNorm2d(256),
+            nn.Conv2d(
+                256,
+                256,
+                kernel_size=3,
+                padding=1,
+                bias=False,
+            ),
+            LayerNorm2d(256),
+        )
 
     def forward_features(self, x):
         B = x.shape[0]
@@ -247,9 +266,10 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
         for blk in self.blocks:
             x = blk(x)
 
-        outcome = x
+        outcome = x[:, 1:, :]
+        outcome = self.neck(outcome)
 
-        return outcome[:, 1:, :]
+        return outcome
 
     def forward_head(self, x, pre_logits: bool = False):
         if self.global_pool:

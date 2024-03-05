@@ -19,9 +19,6 @@ import torch.nn.functional as F
 import timm.models.vision_transformer
 from timm.models.layers import Mlp, DropPath
 from timm.models.layers.helpers import to_2tuple
-from torchvision.ops import roi_align
-
-from segmentor.segment_anything.modeling.common import LayerNorm2d
 
 
 class LayerNorm(nn.LayerNorm):
@@ -134,6 +131,21 @@ class LayerScale(nn.Module):
     @torch.cuda.amp.autocast(enabled=False)
     def forward(self, x):
         return x.float().mul_(self.gamma.float()) if self.inplace else x.float() * self.gamma.float()
+
+
+class LayerNorm2d(nn.Module):
+    def __init__(self, num_channels: int, eps: float = 1e-6) -> None:
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(num_channels))
+        self.bias = nn.Parameter(torch.zeros(num_channels))
+        self.eps = eps
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        u = x.mean(1, keepdim=True)
+        s = (x - u).pow(2).mean(1, keepdim=True)
+        x = (x - u) / torch.sqrt(s + self.eps)
+        x = self.weight[:, None, None] * x + self.bias[:, None, None]
+        return x
 
 
 class Block(nn.Module):
@@ -267,7 +279,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
             x = blk(x)
 
         outcome = x[:, 1:, :]
-        outcome = self.neck(outcome)
+        outcome = self.neck(outcome.permute(0, 3, 1, 2))
 
         return outcome
 

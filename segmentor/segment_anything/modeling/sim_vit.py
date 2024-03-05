@@ -249,7 +249,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
 
         outcome = x
 
-        return outcome
+        return outcome[:, 1:, :]
 
     def forward_head(self, x, pre_logits: bool = False):
         if self.global_pool:

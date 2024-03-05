@@ -116,7 +116,7 @@ def _build_sam(
         checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
         checkpoint_model = checkpoint['model']
 
-        msg = sam.image_encoder.encoder.load_state_dict(checkpoint_model, strict=False)
+        msg = sam.image_encoder.load_state_dict(checkpoint_model, strict=False)
         print(msg)
 
     return sam

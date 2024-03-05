@@ -94,6 +94,10 @@ class MaskDecoder(nn.Module):
           torch.Tensor: batched predicted masks
           torch.Tensor: batched predictions of mask quality
         """
+        print('!!')
+        print(image_embeddings.shape)
+        print(image_pe.shape)
+
         masks, iou_pred = self.predict_masks(
             image_embeddings=image_embeddings,
             image_pe=image_pe,

@@ -107,7 +107,8 @@ def _build_sam(
         pretrained_state_dict = torch.load(f, map_location='cpu')
 
         model_state_dict = sam.state_dict()
-        updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if k in model_state_dict}
+        updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if
+                              k in model_state_dict and not k.startswith("image_encoder.")}
         model_state_dict.update(updated_state_dict)
 
         sam.load_state_dict(model_state_dict)

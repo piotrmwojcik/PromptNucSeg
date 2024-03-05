@@ -134,10 +134,8 @@ def _build_sam(
         updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if
                               k in model_state_dict and not k.startswith("image_encoder.")}
 
-        print('!!!!')
         neck_dict = {k.split("image_encoder.", 1)[-1]: v for k, v in pretrained_state_dict.items() if
                      k in model_state_dict and k.startswith("image_encoder.neck")}
-        print(neck_dict.keys())
 
         model_state_dict.update(updated_state_dict)
 
@@ -145,11 +143,12 @@ def _build_sam(
 
         checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
         checkpoint_model = checkpoint['model']
+        checkpoint_model.update(neck_dict)
         interpolate_pos_embed(sam.image_encoder, checkpoint_model)
 
         msg = sam.image_encoder.load_state_dict(checkpoint_model, strict=False)
         print('!!!!')
-        print()
         print(msg)
+        print()
 
     return sam

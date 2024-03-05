@@ -138,8 +138,8 @@ def _build_sam(
         sam.load_state_dict(model_state_dict)
 
         checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
-        interpolate_pos_embed(self.encoder, checkpoint_model)
         checkpoint_model = checkpoint['model']
+        interpolate_pos_embed(sam.image_encoder, checkpoint_model)
 
         msg = sam.image_encoder.load_state_dict(checkpoint_model, strict=False)
         print(msg)

@@ -138,10 +138,8 @@ def main():
             map_location="cpu"
         )
 
-        print('!!!')
-        print(checkpoint.keys())
-
-        model_without_ddp.load_state_dict(checkpoint["model"])
+        msg = model_without_ddp.load_state_dict(checkpoint["model"])
+        print(msg)
 
         if "optimizer" in checkpoint:
             optimizer.load_state_dict(checkpoint["optimizer"])

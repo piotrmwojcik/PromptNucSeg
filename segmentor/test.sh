@@ -1,4 +1,4 @@
-torchrun --nproc_per_node=4 main.py --resume checkpoint/cpm17_b/latest.pth --eval --config cpm17_b.py
+#torchrun --nproc_per_node=4 main.py --resume checkpoint/cpm17_b/latest.pth --eval --config cpm17_b.py
 #torchrun --nproc_per_node=4 main.py --resume checkpoint/cpm17_l/latest.pth --eval --config cpm17_l.py
 #torchrun --nproc_per_node=4 main.py --resume checkpoint/cpm17_h/latest.pth --eval --config cpm17_h.py
 

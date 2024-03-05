@@ -133,6 +133,11 @@ def _build_sam(
         model_state_dict = sam.state_dict()
         updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if
                               k in model_state_dict and not k.startswith("image_encoder.")}
+
+        print('!!!!')
+        print({k: v for k, v in pretrained_state_dict.items() if
+                              k in model_state_dict and k.startswith("image_encoder.neck")})
+
         model_state_dict.update(updated_state_dict)
 
         sam.load_state_dict(model_state_dict)
@@ -142,6 +147,8 @@ def _build_sam(
         interpolate_pos_embed(sam.image_encoder, checkpoint_model)
 
         msg = sam.image_encoder.load_state_dict(checkpoint_model, strict=False)
+        print('!!!!')
+        print()
         print(msg)
 
     return sam

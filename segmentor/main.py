@@ -139,6 +139,7 @@ def main():
         )
 
         msg = model_without_ddp.load_state_dict(checkpoint["model"])
+        print('!!!!')
         print(msg)
 
         if "optimizer" in checkpoint:

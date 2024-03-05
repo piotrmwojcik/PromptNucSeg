@@ -135,8 +135,9 @@ def _build_sam(
                               k in model_state_dict and not k.startswith("image_encoder.")}
 
         print('!!!!')
-        print({k: v for k, v in pretrained_state_dict.items() if
-                              k in model_state_dict and k.startswith("image_encoder.neck")})
+        neck_dict = {k.split("image_encoder.", 1)[-1]: v for k, v in pretrained_state_dict.items() if
+                     k in model_state_dict and k.startswith("image_encoder.neck")}
+        print(neck_dict.keys())
 
         model_state_dict.update(updated_state_dict)
 

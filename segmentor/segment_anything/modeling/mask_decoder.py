@@ -94,6 +94,10 @@ class MaskDecoder(nn.Module):
           torch.Tensor: batched predicted masks
           torch.Tensor: batched predictions of mask quality
         """
+        print('!!')
+        print(image_embeddings.shape)
+        print(image_pe.shape)
+
         masks, iou_pred = self.predict_masks(
             image_embeddings=image_embeddings,
             image_pe=image_pe,
@@ -137,9 +141,11 @@ class MaskDecoder(nn.Module):
 
         # Expand per-image data in batch direction to be per-mask
         if image_embeddings.size(0) != tokens.size(0):
+            print('!!!a!!!')
             src = torch.repeat_interleave(image_embeddings, cell_nums, dim=0)
             pos_src = torch.repeat_interleave(image_pe, cell_nums.sum(), dim=0)
         else:
+            print('!!!b!!!')
             src = image_embeddings
             pos_src = image_pe
 

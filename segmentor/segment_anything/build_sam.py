@@ -9,6 +9,7 @@ import torch.nn.functional as F
 
 from functools import partial
 from .modeling import ImageEncoderViT, MaskDecoder, PromptEncoder, Sam, TwoWayTransformer
+from .modeling.sim_vit import vit_base_patch16
 
 
 def build_sam_vit_h(cfg):
@@ -65,20 +66,10 @@ def _build_sam(
 
     image_embedding_size = image_size // vit_patch_size
     sam = Sam(
-        image_encoder=ImageEncoderViT(
-            depth=encoder_depth,
-            embed_dim=encoder_embed_dim,
-            img_size=image_size,
-            mlp_ratio=4,
-            norm_layer=partial(torch.nn.LayerNorm, eps=1e-6),
-            num_heads=encoder_num_heads,
-            patch_size=vit_patch_size,
-            qkv_bias=True,
-            use_rel_pos=True,
-            global_attn_indexes=encoder_global_attn_indexes,
-            window_size=14,
-            out_chans=prompt_embed_dim,
-        ),
+        image_encoder=vit_base_patch16(
+            drop_rate=0.0,
+            drop_path_rate=0.0,
+            init_values=None),
         prompt_encoder=PromptEncoder(
             embed_dim=prompt_embed_dim,
             image_embedding_size=(image_embedding_size, image_embedding_size),
@@ -116,7 +107,8 @@ def _build_sam(
         pretrained_state_dict = torch.load(f, map_location='cpu')
 
         model_state_dict = sam.state_dict()
-        updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if k in model_state_dict}
+        updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if
+                              k in model_state_dict and not k.startswith("image_encoder.")}
         model_state_dict.update(updated_state_dict)
 
         sam.load_state_dict(model_state_dict)

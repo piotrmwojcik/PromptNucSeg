@@ -54,6 +54,8 @@ for i in range(1, 4):
     images = np.load(f'Fold {i}/images/fold{i}/images.npy')
     masks = np.load(f'Fold {i}/masks/fold{i}/masks.npy')
 
+    print('loaded data')
+
     for j in range(len(masks)):
         io.imsave(f'Images/{i}_{j}.png', images[j].astype(np.uint8), check_contrast=False)
 
@@ -77,6 +79,8 @@ for i in range(1, 4):
             "type_map": type_map
         }
         np.save(f'Masks/{i}_{j}', outdict)
+
+        print(f'Masks/{i}_{j}')
 
 mkdir('../../../prompter/datasets/pannuke123')
 mkdir('../../../prompter/datasets/pannuke213')
@@ -119,6 +123,8 @@ for i in range(1, 4):
 
         data[f'datasets/pannuke/Images/{file[:-4]}.png'] = points
 
+        print(f'{file} processed')
+
         if i == 1:
 
             json.dump(data, open(f'../../../prompter/datasets/pannuke123/train.json', 'w'))
@@ -128,6 +134,8 @@ for i in range(1, 4):
             np.save('../pannuke123_train_files.npy', list(data.keys())[1:])
             np.save('../pannuke213_val_files.npy', list(data.keys())[1:])
             np.save('../pannuke321_test_files.npy', list(data.keys())[1:])
+
+            print('done saving npy')
 
         elif i == 2:
             json.dump(data, open(f'../../../prompter/datasets/pannuke123/val.json', 'w'))
@@ -147,3 +155,5 @@ for i in range(1, 4):
             np.save('../pannuke123_test_files.npy', list(data.keys())[1:])
             np.save('../pannuke213_test_files.npy', list(data.keys())[1:])
             np.save('../pannuke321_train_files.npy', list(data.keys())[1:])
+
+            print('done saving npy')

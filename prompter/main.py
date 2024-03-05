@@ -134,7 +134,7 @@ def main():
         model_ema = ExponentialMovingAverage(model_without_ddp, device=device, decay=args.model_ema_decay)
 
     if args.distributed:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=True)
         model_without_ddp = model.module
 
     criterion = build_criterion(cfg, device)

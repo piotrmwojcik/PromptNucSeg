@@ -202,7 +202,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
     """ Vision Transformer with support for global average pooling
     """
 
-    def __init__(self, global_pool=False, box_patch_size=8, **kwargs):
+    def __init__(self, global_pool=False, **kwargs):
         init_values = kwargs.pop('init_values')
         super(VisionTransformer, self).__init__(**kwargs)
 
@@ -231,11 +231,9 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
             # delattr(self, 'cls_token')
 
         num_patches = self.patch_embed.num_patches
-        if self.global_pool:
-            self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim), requires_grad=False)
-        else:
-            self.pos_embed = nn.Parameter(torch.zeros(1, num_patches, embed_dim), requires_grad=False)
-            self.cls_pos_embed = nn.Parameter(torch.zeros(1, 1, embed_dim), requires_grad=False)
+
+        self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim), requires_grad=False)
+
 
     def forward_features(self, x):
         B = x.shape[0]

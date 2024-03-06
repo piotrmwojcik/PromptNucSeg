@@ -170,7 +170,14 @@ def main():
             device,
         )
 
+    for layer_name, p in model_without_ddp.image_encoder.named_parameters():
+        p.requires_grad = False
+
     for epoch in range(args.start_epoch, args.epochs):
+
+        if epoch >= 25:
+            for layer_name, p in model_without_ddp.image_encoder.named_parameters():
+                p.requires_grad = True
 
         wandb_log_info = train_on_epoch(
             args,

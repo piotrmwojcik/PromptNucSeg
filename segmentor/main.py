@@ -175,7 +175,7 @@ def main():
 
     for epoch in range(args.start_epoch, args.epochs):
 
-        if epoch >= 25:
+        if epoch >= 50:
             for layer_name, p in model_without_ddp.image_encoder.named_parameters():
                 p.requires_grad = True
 

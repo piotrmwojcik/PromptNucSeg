@@ -329,7 +329,7 @@ class Conv2d(torch.nn.Conv2d):
         return x
 
 
-class LayerNorm(nn.Module):
+class SFPLayerNorm(nn.Module):
     """
     A LayerNorm variant, popularized by Transformers, that performs point-wise mean and
     variance normalization over the channel dimension for inputs that have shape
@@ -401,7 +401,7 @@ class SimpleFeaturePyramid(nn.Module):
             if scale == 4.0:
                 layers = [
                     nn.ConvTranspose2d(dim, dim // 2, kernel_size=2, stride=2),
-                    LayerNorm(dim // 2),
+                    SFPLayerNorm(dim // 2),
                     nn.GELU(),
                     nn.ConvTranspose2d(dim // 2, dim // 4, kernel_size=2, stride=2),
                 ]
@@ -423,7 +423,7 @@ class SimpleFeaturePyramid(nn.Module):
                         out_channels,
                         kernel_size=1,
                         bias=use_bias,
-                        norm=LayerNorm(out_channels),
+                        norm=SFPLayerNorm(out_channels),
                     ),
                     Conv2d(
                         out_channels,
@@ -431,7 +431,7 @@ class SimpleFeaturePyramid(nn.Module):
                         kernel_size=3,
                         padding=1,
                         bias=use_bias,
-                        norm=LayerNorm(out_channels),
+                        norm=SFPLayerNorm(out_channels),
                     ),
                 ]
             )
@@ -462,7 +462,6 @@ class SimpleFeaturePyramid(nn.Module):
             "size_divisiblity": self._size_divisibility,
             "square_size": self._square_pad,
         }
-
 
     def forward(self, x):
         """

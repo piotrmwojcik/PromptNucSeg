@@ -352,7 +352,7 @@ class LayerNorm(nn.Module):
         return x
 
 
-class SimpleFeaturePyramid:
+class SimpleFeaturePyramid(nn.Module):
     """
     This module implements SimpleFeaturePyramid in :paper:`vitdet`.
     It creates pyramid features built on top of the input feature map.

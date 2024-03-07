@@ -52,7 +52,10 @@ class Backbone(nn.Module):
                                           scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
     def forward(self, images):
-        print(self.neck(images).keys())
+        x = self.neck(images).keys()
+        x1 = self.neck1(images)
+
+        print([t.shape() for t in x.values()])
 
         return list(self.neck(images)), self.neck1(images)[0]
 

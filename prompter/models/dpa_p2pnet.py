@@ -58,7 +58,7 @@ class Backbone(nn.Module):
         r1 = [x[t] for t in x.keys()]
         r2 = [x1[t] for t in x1.keys()]
 
-        return r1, r2
+        return r1, r2[0]
 
 
 class AnchorPoints(nn.Module):

@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from torch import nn
 from models.fpn import FPN
 
-from prompter.models.sim_vit import vit_base_patch16, SimpleFeaturePyramid
+from models.sim_vit import vit_base_patch16, SimpleFeaturePyramid
 from segmentor.segment_anything.build_sam import interpolate_pos_embed
 
 

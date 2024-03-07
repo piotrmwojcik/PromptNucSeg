@@ -75,6 +75,9 @@ def main():
     init_distributed_mode(args)
     set_seed(args)
 
+    import torch.multiprocessing
+    torch.multiprocessing.set_sharing_strategy('file_system')
+
     cfg = Config.fromfile(f'config/{args.config}')
     if args.output_dir:
         mkdir(f'checkpoint/{args.output_dir}')

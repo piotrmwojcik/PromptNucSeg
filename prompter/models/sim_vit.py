@@ -275,7 +275,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
         for blk in self.blocks:
             x = blk(x)
 
-        outcome = x[:, 1:, :].view(B, 16, 16, 768)
+        outcome = x[:, 1:, :].view(B, self.patch_size, self.patch_size, 768)
         outcome = outcome.permute(0, 3, 1, 2)
 
         return {'outcome': outcome}

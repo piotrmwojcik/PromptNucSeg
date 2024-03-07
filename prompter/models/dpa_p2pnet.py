@@ -55,9 +55,10 @@ class Backbone(nn.Module):
         x = self.neck(images)
         x1 = self.neck1(images)
 
-        print([x[t].shape for t in x.keys()])
+        r1 = [x[t] for t in x.keys()]
+        r2 = [x1[t] for t in x1.keys()]
 
-        return list(self.neck(images)), self.neck1(images)[0]
+        return x, x1[0]
 
 
 class AnchorPoints(nn.Module):

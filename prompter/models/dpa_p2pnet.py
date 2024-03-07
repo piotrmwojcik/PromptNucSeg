@@ -53,7 +53,7 @@ class Backbone(nn.Module):
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
-        print([e.shape for e in x])
+        print(x)
         return list(self.neck(x)), self.neck1(x)[0]
 
 

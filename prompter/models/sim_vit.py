@@ -263,7 +263,6 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
 
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim), requires_grad=False)
 
-
     def forward_features(self, x):
         B = x.shape[0]
         x = self.patch_embed(x)
@@ -276,7 +275,8 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
         for blk in self.blocks:
             x = blk(x)
 
-        outcome = x[:, 1:, :]
+        outcome = x[:, 1:, :].view(B, 16, 16, 768)
+        outcome = self.neck(outcome.permute(0, 3, 1, 2))
 
         return {'outcome': outcome}
 

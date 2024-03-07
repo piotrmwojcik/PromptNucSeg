@@ -9,7 +9,7 @@ from torch import nn
 from models.fpn import FPN
 
 from models.sim_vit import vit_base_patch16, SimpleFeaturePyramid
-from segmentor.segment_anything.build_sam import interpolate_pos_embed
+from segment_anything.build_sam import interpolate_pos_embed
 
 
 class Backbone(nn.Module):

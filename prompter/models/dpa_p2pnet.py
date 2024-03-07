@@ -55,7 +55,7 @@ class Backbone(nn.Module):
         x = self.neck(images).keys()
         x1 = self.neck1(images)
 
-        print([t.shape() for t in x.values()])
+        print([x[t].shape() for t in x.keys()])
 
         return list(self.neck(images)), self.neck1(images)[0]
 

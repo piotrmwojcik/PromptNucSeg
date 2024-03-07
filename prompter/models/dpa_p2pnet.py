@@ -10,6 +10,7 @@ from models.fpn import FPN
 
 from models.sim_vit import vit_base_patch16, SimpleFeaturePyramid
 
+
 def interpolate_pos_embed(model, checkpoint_model):
     if 'pos_embed' in checkpoint_model:
         pos_embed_checkpoint = checkpoint_model['pos_embed']

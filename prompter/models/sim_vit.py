@@ -390,10 +390,9 @@ class SimpleFeaturePyramid:
 
         self.scale_factors = scale_factors
 
-        input_shapes = net.output_shape()
-        strides = [int(input_shapes[in_feature].stride / scale) for scale in scale_factors]
+        strides = [int(16 / scale) for scale in scale_factors]
 
-        dim = input_shapes[in_feature].channels
+        dim = 768
         self.stages = []
         use_bias = norm == ""
         for idx, scale in enumerate(scale_factors):
@@ -461,19 +460,6 @@ class SimpleFeaturePyramid:
         return {
             "size_divisiblity": self._size_divisibility,
             "square_size": self._square_pad,
-        }
-
-    def output_shape(self):
-        """
-        Returns:
-            dict[str->ShapeSpec]
-        """
-        # this is a backward-compatible default
-        return {
-            name: ShapeSpec(
-                channels=self._out_feature_channels[name], stride=self._out_feature_strides[name]
-            )
-            for name in self._out_features
         }
 
 

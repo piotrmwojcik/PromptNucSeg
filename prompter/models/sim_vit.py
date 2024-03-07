@@ -387,6 +387,7 @@ class SimpleFeaturePyramid(nn.Module):
             norm (str): the normalization to use.
             square_pad (int): If > 0, require input images to be padded to specific square size.
         """
+        super(SimpleFeaturePyramid, self).__init__()
 
         self.scale_factors = scale_factors
 

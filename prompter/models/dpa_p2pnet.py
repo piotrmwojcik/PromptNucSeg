@@ -34,6 +34,8 @@ class Backbone(nn.Module):
 
     def forward(self, images):
         x = self.backbone(images)
+        print('!!!!')
+        print(x.shape)
         return list(self.neck(x)), self.neck1(x)[0]
 
 

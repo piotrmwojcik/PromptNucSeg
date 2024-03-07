@@ -276,7 +276,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
             x = blk(x)
 
         outcome = x[:, 1:, :].view(B, 16, 16, 768)
-        outcome = self.neck(outcome.permute(0, 3, 1, 2))
+        outcome = outcome.permute(0, 3, 1, 2)
 
         return {'outcome': outcome}
 

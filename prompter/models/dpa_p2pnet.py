@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from torch import nn
 from models.fpn import FPN
 
-from prompter.models.sim_vit import vit_base_patch16
+from prompter.models.sim_vit import vit_base_patch16, SimpleFeaturePyramid
 from segmentor.segment_anything.build_sam import interpolate_pos_embed
 
 
@@ -20,17 +20,11 @@ class Backbone(nn.Module):
     ):
         super(Backbone, self).__init__()
 
-        self.backbone = backbone
+        self.neck = SimpleFeaturePyramid(in_feature='outcome', net=backbone, out_channels=256,
+                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
-        self.neck = FPN(
-            **cfg.prompter.neck
-        )
-
-        new_dict = copy.copy(cfg.prompter.neck)
-        new_dict['num_outs'] = 1
-        self.neck1 = FPN(
-            **new_dict
-        )
+        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', net=backbone, out_channels=256,
+                                          scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
@@ -117,8 +111,7 @@ class DPAP2PNet(nn.Module):
             nn.Conv2d(hidden_dim, 1, kernel_size=1, padding=1)
         )
 
-    def forward(self,
-                images):
+    def forward(self, images):
         # extract features
         (feats, feats1), proposals = self.backbone(images), self.get_aps(images)
 

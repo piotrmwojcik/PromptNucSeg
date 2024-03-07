@@ -248,23 +248,6 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
 
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim), requires_grad=False)
 
-        self.neck = nn.Sequential(
-            nn.Conv2d(
-                768,
-                256,
-                kernel_size=1,
-                bias=False,
-            ),
-            LayerNorm2d(256),
-            nn.Conv2d(
-                256,
-                256,
-                kernel_size=3,
-                padding=1,
-                bias=False,
-            ),
-            LayerNorm2d(256),
-        )
 
     def forward_features(self, x):
         B = x.shape[0]
@@ -278,10 +261,9 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
         for blk in self.blocks:
             x = blk(x)
 
-        outcome = x[:, 1:, :].view(B, 16, 16, 768)
-        outcome = self.neck(outcome.permute(0, 3, 1, 2))
+        outcome = x[:, 1:, :]
 
-        return outcome
+        return {'outcome': outcome}
 
     def forward_head(self, x, pre_logits: bool = False):
         if self.global_pool:
@@ -478,7 +460,7 @@ class SimpleFeaturePyramid:
                 convention: "p<stage>", where stage has stride = 2 ** stage e.g.,
                 ["p2", "p3", ..., "p6"].
         """
-        bottom_up_features = self.net(x)
+        bottom_up_features = self.net.forward_features(x)
         features = bottom_up_features[self.in_feature]
         results = []
 

@@ -20,7 +20,6 @@ import timm.models.vision_transformer
 from timm.models.layers import Mlp, DropPath
 from timm.models.layers.helpers import to_2tuple
 
-
 class LayerNorm(nn.LayerNorm):
     @torch.cuda.amp.autocast(enabled=False)
     def forward(self, input):

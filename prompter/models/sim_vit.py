@@ -10,7 +10,9 @@
 # DeiT: https://github.com/facebookresearch/deit
 # ------------------------------------------------------------------------
 import math
+from dataclasses import dataclass
 from functools import partial
+from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -19,6 +21,19 @@ import torch.nn.functional as F
 import timm.models.vision_transformer
 from timm.models.layers import Mlp, DropPath
 from timm.models.layers.helpers import to_2tuple
+
+@dataclass
+class ShapeSpec:
+    """
+    A simple structure that contains basic shape specification about a tensor.
+    It is often used as the auxiliary inputs/outputs of models,
+    to complement the lack of shape inference ability among pytorch modules.
+    """
+
+    channels: Optional[int] = None
+    height: Optional[int] = None
+    width: Optional[int] = None
+    stride: Optional[int] = None
 
 
 class LayerNorm(nn.LayerNorm):
@@ -447,6 +462,20 @@ class SimpleFeaturePyramid:
             "size_divisiblity": self._size_divisibility,
             "square_size": self._square_pad,
         }
+
+    def output_shape(self):
+        """
+        Returns:
+            dict[str->ShapeSpec]
+        """
+        # this is a backward-compatible default
+        return {
+            name: ShapeSpec(
+                channels=self._out_feature_channels[name], stride=self._out_feature_strides[name]
+            )
+            for name in self._out_features
+        }
+
 
     def forward(self, x):
         """

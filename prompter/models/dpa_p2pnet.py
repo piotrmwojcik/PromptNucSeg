@@ -52,10 +52,7 @@ class Backbone(nn.Module):
                                           scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
     def forward(self, images):
-        x = self.backbone.forward_features(images)
-        print(x.keys())
-        print(x)
-        return list(self.neck(x)), self.neck1(x)[0]
+        return list(self.neck(images)), self.neck1(images)[0]
 
 
 class AnchorPoints(nn.Module):

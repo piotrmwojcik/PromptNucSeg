@@ -22,11 +22,9 @@ from timm.models.layers.helpers import to_2tuple
 
 
 class LayerNorm(nn.LayerNorm):
-
     @torch.cuda.amp.autocast(enabled=False)
     def forward(self, input):
         return super(LayerNorm, self).forward(input.float())
-
 
 class PatchEmbed(nn.Module):
     """ 2D Image to Patch Embedding

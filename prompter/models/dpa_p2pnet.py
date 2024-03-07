@@ -8,17 +8,17 @@ import torch.nn.functional as F
 from torch import nn
 from models.fpn import FPN
 
+from prompter.models.sim_vit import vit_base_patch16
+from segmentor.segment_anything.build_sam import interpolate_pos_embed
+
 
 class Backbone(nn.Module):
     def __init__(
             self,
+            backbone,
             cfg
     ):
         super(Backbone, self).__init__()
-
-        backbone = timm.create_model(
-            **cfg.prompter.backbone
-        )
 
         self.backbone = backbone
 
@@ -33,9 +33,7 @@ class Backbone(nn.Module):
         )
 
     def forward(self, images):
-        print('!!!!')
-        print(images.shape)
-        x = self.backbone(images)
+        x = self.backbone.forward_features(images)
         print([e.shape for e in x])
         return list(self.neck(x)), self.neck1(x)[0]
 
@@ -156,7 +154,21 @@ class DPAP2PNet(nn.Module):
 
 
 def build_model(cfg):
-    backbone = Backbone(cfg)
+    encoder = vit_base_patch16(
+            drop_rate=0.0,
+            drop_path_rate=0.0,
+            init_values=None)
+
+
+    checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
+    checkpoint_model = checkpoint['model']
+    interpolate_pos_embed(encoder, checkpoint_model)
+
+    msg = encoder.load_state_dict(checkpoint_model, strict=False)
+    print('Loading backpone for prompter')
+    print(msg)
+
+    backbone = Backbone(cfg=cfg, backbone=encoder)
 
     model = DPAP2PNet(
         backbone,

@@ -185,7 +185,7 @@ def build_model(cfg):
     interpolate_pos_embed(encoder, checkpoint_model)
 
     msg = encoder.load_state_dict(checkpoint_model, strict=False)
-    print('Loading backpone for prompter')
+    print('Loading backbone for prompter')
     print(msg)
 
     backbone = Backbone(cfg=cfg, backbone=encoder)

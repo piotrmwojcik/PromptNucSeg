@@ -50,13 +50,13 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=0.00003125,
+    lr=0.000062,
     weight_decay=1e-4
 )
 
 scheduler = dict(
     type='MultiStepLR',
-    milestones=[100],
+    milestones=[50],
     gamma=0.1
 )
 

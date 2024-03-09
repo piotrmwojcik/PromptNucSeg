@@ -40,9 +40,19 @@ def train_one_epoch(
             'gt_points': [points.view(-1, 2).to(device).float() for points in points_list],
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
+        import matplotlib.pyplot as plt
 
-        print('!!!')
-        print(targets['gt_points'][0].shape)
+        for idx in range(10):
+            image = images[idx]
+            gt_points = targets['gt_points'][idx]
+
+            image = image.permute(1, 2, 0).cpu().numpy()
+            plt.imshow(image)
+            points = gt_points.cpu().numpy()
+            plt.scatter(points[:, 0], points[:, 1], c='r', marker='o')
+            plt.savefig('/data/pwojcik/prompter_dump/')
+            plt.close()
+
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)

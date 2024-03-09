@@ -45,11 +45,11 @@ class Backbone(nn.Module):
 
         self.backbone = backbone
 
-        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
-                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
+        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
+                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
-        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
-                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
+        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
+                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
     def forward(self, images):
         x = self.backbone.forward_features(images)

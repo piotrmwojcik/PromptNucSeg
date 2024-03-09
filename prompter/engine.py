@@ -41,6 +41,9 @@ def train_one_epoch(
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
 
+        print('!!!')
+        print(targets['gt_points'])
+
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)
             loss_dict = criterion(outputs, targets, epoch)

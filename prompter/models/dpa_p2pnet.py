@@ -132,7 +132,7 @@ class DPAP2PNet(nn.Module):
         self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
         self.cls_head = MLP(hidden_dim, hidden_dim, 2, num_classes + 1, drop=dropout)
 
-        self.conv = nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1)
+        self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
 
         self.mask_head = nn.Sequential(
             nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
@@ -154,11 +154,11 @@ class DPAP2PNet(nn.Module):
         deformed_proposals = proposals + deltas2deform
 
         # MSD
-        #roi_features = []
-        #for i in range(self.num_levels - 2):
-        #    grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
-        #    roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
-        #roi_features = torch.cat(roi_features, 1)
+        roi_features = []
+        for i in range(self.num_levels - 2):
+            grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
+            roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
+        roi_features = torch.cat(roi_features, 1)
 
         roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
         deltas2refine = self.reg_head(roi_features)
@@ -198,7 +198,7 @@ def build_model(cfg):
     interpolate_pos_embed(model.backbone.backbone, checkpoint_model)
 
     #msg = model.backbone.backbone.load_state_dict(checkpoint_model, strict=False)
-    print('Loading backbone for prompter')
-    print(msg)
+    #print('Loading backbone for prompter')
+    #print(msg)
 
     return model

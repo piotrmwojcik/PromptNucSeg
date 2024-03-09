@@ -42,7 +42,7 @@ def train_one_epoch(
         }
 
         print('!!!')
-        print(targets['gt_points'])
+        print(targets['gt_points'].shape)
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)

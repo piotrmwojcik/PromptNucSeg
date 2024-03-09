@@ -28,7 +28,7 @@ data = dict(
         dict(type='RandomSizedCrop', min_max_height=(int(256 / 2), 256),
              height=256,
              width=256,
-             p=0.1),
+             p=0.4),
         #dict(type='Downscale', scale_max=0.5, scale_min=0.5, p=0.15),
         dict(type='Blur', blur_limit=10, p=0.2),
         dict(type='GaussNoise', var_limit=50, p=0.25),

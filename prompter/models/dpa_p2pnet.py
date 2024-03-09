@@ -49,16 +49,19 @@ class Backbone(nn.Module):
                                          scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
         #self.neck1 = SimpleFeaturePyramid(in_feature='outcome', net=self.backbone, out_channels=256,
-        #                                  scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
+        #                                 scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
     def forward(self, images):
+
         x = self.neck(images)
+        x1 = self.backbone.forward_features(images)
+
         #x1 = self.neck1(images)
 
         r1 = [x[t] for t in x.keys()]
         #r2 = [x1[t] for t in x1.keys()]
 
-        return r1, self.backbone(images)
+        return r1, x1
 
 
 class AnchorPoints(nn.Module):
@@ -181,8 +184,6 @@ def build_model(cfg):
             drop_rate=0.0,
             drop_path_rate=0.0,
             init_values=None)
-
-
 
     backbone = Backbone(cfg=cfg, backbone=encoder)
 

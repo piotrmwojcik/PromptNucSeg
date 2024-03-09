@@ -53,7 +53,6 @@ def train_one_epoch(
         #     plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
         #     plt.close()
 
-
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)
             loss_dict = criterion(outputs, targets, epoch)

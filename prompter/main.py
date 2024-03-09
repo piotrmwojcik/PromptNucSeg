@@ -34,6 +34,7 @@ def parse_args():
     parser.add_argument("--start-epoch", default=0, type=int, metavar="N", help="start epoch")
     parser.add_argument("--device", default="cuda", help="device to use for training / testing")
     parser.add_argument("--print-freq", default=5, type=int, help="print frequency")
+    parser.add_argument("--start-eval", default=0, type=int, help="eval epoch")
     parser.add_argument("--use-wandb", action='store_true', help='use wandb for logging')
     parser.add_argument('--epochs', default=200, type=int, help='number of epochs.')
     parser.add_argument('--warmup_epochs', default=5, type=int, help='number of warmup epochs.')

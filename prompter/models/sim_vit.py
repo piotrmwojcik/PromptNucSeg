@@ -461,7 +461,7 @@ class SimpleFeaturePyramid(nn.Module):
             "square_size": self._square_pad,
         }
 
-    def forward(self, x):
+    def forward(self, bottom_up_features):
         """
         Args:
             x: Tensor of shape (N,C,H,W). H, W must be a multiple of ``self.size_divisibility``.
@@ -473,7 +473,6 @@ class SimpleFeaturePyramid(nn.Module):
                 convention: "p<stage>", where stage has stride = 2 ** stage e.g.,
                 ["p2", "p3", ..., "p6"].
         """
-        bottom_up_features = x
         features = bottom_up_features[self.in_feature]
         results = []
 

@@ -360,7 +360,6 @@ class SimpleFeaturePyramid(nn.Module):
 
     def __init__(
         self,
-        net,
         in_feature,
         out_channels,
         scale_factors,
@@ -441,7 +440,6 @@ class SimpleFeaturePyramid(nn.Module):
             self.add_module(f"simfp_{stage}", layers)
             self.stages.append(layers)
 
-        self.net = net
         self.in_feature = in_feature
         self.top_block = top_block
         # Return feature names are "p<stage>", like ["p2", "p3", ..., "p6"]
@@ -475,7 +473,7 @@ class SimpleFeaturePyramid(nn.Module):
                 convention: "p<stage>", where stage has stride = 2 ** stage e.g.,
                 ["p2", "p3", ..., "p6"].
         """
-        bottom_up_features = self.net.forward_features(x)
+        bottom_up_features = x
         features = bottom_up_features[self.in_feature]
         results = []
 

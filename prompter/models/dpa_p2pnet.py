@@ -45,23 +45,21 @@ class Backbone(nn.Module):
 
         self.backbone = backbone
 
-        self.neck = SimpleFeaturePyramid(in_feature='outcome', net=self.backbone, out_channels=256,
+        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
                                          scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
-        #self.neck1 = SimpleFeaturePyramid(in_feature='outcome', net=self.backbone, out_channels=256,
-        #                                 scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
+        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
+                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=256)
 
     def forward(self, images):
+        x = self.backbone.forward_features(images)
+        x0 = self.neck(x)
+        x1 = self.neck1(x)
 
-        x = self.neck(images)
-        x1 = self.backbone.forward_features(images)
+        r1 = [x0[t] for t in x0.keys()]
+        r2 = [x1[t] for t in x1.keys()]
 
-        #x1 = self.neck1(images)
-
-        r1 = [x[t] for t in x.keys()]
-        #r2 = [x1[t] for t in x1.keys()]
-
-        return r1, x1
+        return r1, r2
 
 
 class AnchorPoints(nn.Module):
@@ -200,7 +198,7 @@ def build_model(cfg):
     checkpoint_model = checkpoint['model']
     interpolate_pos_embed(model.backbone.backbone, checkpoint_model)
 
-    msg = model.backbone.backbone.load_state_dict(checkpoint_model, strict=False)
+    msg = model.backbone.load_state_dict(checkpoint_model, strict=False)
     print('Loading backbone for prompter')
     print(msg)
 

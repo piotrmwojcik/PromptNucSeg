@@ -71,6 +71,9 @@ def parse_args():
 
 
 def main():
+    import torch.multiprocessing
+    torch.multiprocessing.set_sharing_strategy('file_system')
+
     args = parse_args()
     init_distributed_mode(args)
     set_seed(args)

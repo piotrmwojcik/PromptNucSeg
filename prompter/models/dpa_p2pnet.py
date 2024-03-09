@@ -199,7 +199,7 @@ def build_model(cfg):
     checkpoint_model = checkpoint['model']
     interpolate_pos_embed(model.backbone.backbone, checkpoint_model)
 
-    msg = encoder.load_state_dict(model.backbone.backbone, strict=False)
+    msg = model.backbone.backbone.load_state_dict(checkpoint_model, strict=False)
     print('Loading backbone for prompter')
     print(msg)
 

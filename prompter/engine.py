@@ -50,7 +50,7 @@ def train_one_epoch(
             plt.imshow(image)
             points = gt_points.cpu().numpy()
             plt.scatter(points[:, 0], points[:, 1], c='r', marker='o')
-            plt.savefig('/data/pwojcik/prompter_dump/')
+            plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
             plt.close()
 
 

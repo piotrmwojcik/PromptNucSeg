@@ -182,13 +182,6 @@ def build_model(cfg):
             init_values=None)
 
 
-    checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
-    checkpoint_model = checkpoint['model']
-    interpolate_pos_embed(encoder, checkpoint_model)
-
-    #msg = encoder.load_state_dict(checkpoint_model, strict=False)
-    #print('Loading backbone for prompter')
-    #print(msg)
 
     backbone = Backbone(cfg=cfg, backbone=encoder)
 
@@ -200,5 +193,13 @@ def build_model(cfg):
         space=cfg.prompter.space,
         hidden_dim=cfg.prompter.hidden_dim
     )
+
+    checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
+    checkpoint_model = checkpoint['model']
+    interpolate_pos_embed(model.backbone.backbone, checkpoint_model)
+
+    msg = encoder.load_state_dict(model.backbone.backbone, strict=False)
+    print('Loading backbone for prompter')
+    print(msg)
 
     return model

@@ -13,7 +13,7 @@ prompter = dict(
     ),
     dropout=0.1,
     space=8,
-    hidden_dim=512
+    hidden_dim=256
 )
 
 data = dict(

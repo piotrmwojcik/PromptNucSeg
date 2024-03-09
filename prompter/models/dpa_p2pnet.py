@@ -171,7 +171,7 @@ class DPAP2PNet(nn.Module):
             'pred_coords': pred_coords.flatten(1, 2),
             'pred_logits': pred_logits.flatten(1, 2),
             'pred_masks': F.interpolate(
-                self.mask_head(feats1, size=images.shape[2:], mode='bilinear', align_corners=True)
+                self.mask_head(feats1, size=images.shape[2:], mode='bilinear', align_corners=True))
         }
 
         return output

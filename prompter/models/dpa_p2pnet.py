@@ -45,7 +45,7 @@ class Backbone(nn.Module):
 
         self.backbone = backbone
 
-        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=768,
+        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
                                          scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
         self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
@@ -132,10 +132,10 @@ class DPAP2PNet(nn.Module):
         self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
         self.cls_head = MLP(hidden_dim, hidden_dim, 2, num_classes + 1, drop=dropout)
 
-        self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
+        self.conv = nn.Conv2d(hidden_dim * (num_levels - 2), hidden_dim, kernel_size=3, padding=1)
 
         self.mask_head = nn.Sequential(
-            nn.Conv2d(512, hidden_dim, kernel_size=3, padding=1),
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
             nn.SyncBatchNorm(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(hidden_dim, 1, kernel_size=1, padding=1)
@@ -155,7 +155,7 @@ class DPAP2PNet(nn.Module):
 
         # MSD
         roi_features = []
-        for i in range(self.num_levels):
+        for i in range(self.num_levels - 2):
             grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
             roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
         roi_features = torch.cat(roi_features, 1)

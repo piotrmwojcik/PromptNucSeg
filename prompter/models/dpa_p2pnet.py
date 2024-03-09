@@ -57,7 +57,7 @@ class Backbone(nn.Module):
         x1 = self.neck1(x)
 
         r1 = [x0[t] for t in x0.keys()]
-        r2 = [x1[t] for t in x1.keys()]
+        r2 = [x1[t] for t in x1.keys()][0]
 
         return r1, r2
 

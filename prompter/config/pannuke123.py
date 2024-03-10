@@ -54,7 +54,7 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=1.7e-4,
+    lr=0.5e-4,
     weight_decay=1e-4
 )
 
@@ -69,7 +69,7 @@ criterion = dict(
     eos_coef=0.4,
     reg_loss_coef=5e-3,
     cls_loss_coef=1.0,
-    mask_loss_coef=0.0
+    mask_loss_coef=1.0
 )
 
 test = dict(nms_thr=12, match_dis=12, filtering=False)

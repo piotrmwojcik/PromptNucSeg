@@ -149,6 +149,12 @@ def main():
         weight_decay=cfg.optimizer.weight_decay
     )
 
+    scheduler = getattr(torch.optim.lr_scheduler, cfg.scheduler.type)(
+        optimizer,
+        milestones=cfg.scheduler.milestones,
+        gamma=cfg.scheduler.gamma,
+    )
+
     scaler = torch.cuda.amp.Gradcaler() if args.amp else None
 
     if args.use_wandb and is_main_process():
@@ -197,6 +203,7 @@ def main():
             model_ema,
             scaler
         )
+        scheduler.step()
 
         if args.output_dir:
             checkpoint = {

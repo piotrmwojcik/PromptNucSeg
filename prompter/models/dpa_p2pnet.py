@@ -53,7 +53,7 @@ class Backbone(nn.Module):
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
-        _x = {'outcome': x[x.keys()[0]].clone()}
+        _x = {'outcome': x[list(x.keys())[0]].clone()}
         x0 = self.neck(x)
         x1 = self.neck1(_x)
 

@@ -59,7 +59,7 @@ optimizer = dict(
 )
 
 scheduler = dict(
-    type='CosineLRScheduler',
+    type='MultiStepLR',
     milestones=[100, 150],
     gamma=0.1
 )

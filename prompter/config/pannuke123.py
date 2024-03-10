@@ -54,14 +54,14 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=0.25e-4,
+    lr=0.7e-4,
     weight_decay=1e-4
 )
 
 scheduler = dict(
     type='MultiStepLR',
-    milestones=[40, 100],
-    gamma=0.3
+    milestones=[100, 150],
+    gamma=0.1
 )
 
 criterion = dict(

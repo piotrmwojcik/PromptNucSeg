@@ -48,19 +48,19 @@ class Backbone(nn.Module):
         self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
                                          scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
-        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
-                                         scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
+        #self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
+        #                                 scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
-        _x = {'outcome': x[list(x.keys())[0]].clone()}
+        _x = x['outcome'].clone()
         x0 = self.neck(x)
-        x1 = self.neck1(_x)
+        #x1 = self.neck1(_x)
 
         r1 = [x0[t] for t in x0.keys()]
-        r2 = [x1[t] for t in x1.keys()][0]
+        #r2 = [x1[t] for t in x1.keys()][0]
 
-        return r1, r2
+        return r1, _x
 
 
 class AnchorPoints(nn.Module):
@@ -136,7 +136,7 @@ class DPAP2PNet(nn.Module):
         self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
 
         self.mask_head = nn.Sequential(
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.Conv2d(768, hidden_dim, kernel_size=3, padding=1),
             nn.SyncBatchNorm(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(hidden_dim, 1, kernel_size=1, padding=1)

@@ -69,7 +69,7 @@ criterion = dict(
     eos_coef=0.4,
     reg_loss_coef=5e-3,
     cls_loss_coef=1.0,
-    mask_loss_coef=1.3
+    mask_loss_coef=0.7
 )
 
 test = dict(nms_thr=12, match_dis=12, filtering=False)

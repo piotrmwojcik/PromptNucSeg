@@ -28,7 +28,7 @@ data = dict(
         dict(type='RandomSizedCrop', min_max_height=(int(256 / 2), 256),
              height=256,
              width=256,
-             p=0.4),
+             p=0.2),
         #dict(type='Downscale', scale_max=0.5, scale_min=0.5, p=0.15),
         dict(type='Blur', blur_limit=10, p=0.2),
         dict(type='GaussNoise', var_limit=50, p=0.25),
@@ -69,7 +69,7 @@ criterion = dict(
     eos_coef=0.4,
     reg_loss_coef=5e-3,
     cls_loss_coef=1.0,
-    mask_loss_coef=1.0
+    mask_loss_coef=0.0
 )
 
 test = dict(nms_thr=12, match_dis=12, filtering=False)

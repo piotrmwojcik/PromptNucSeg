@@ -54,12 +54,12 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=0.7e-4,
+    lr=0.175e-4,
     weight_decay=1e-4
 )
 
 scheduler = dict(
-    type='MultiStepLR',
+    type='CosineLRScheduler',
     milestones=[100, 150],
     gamma=0.1
 )
@@ -72,4 +72,4 @@ criterion = dict(
     mask_loss_coef=1.0
 )
 
-test = dict(nms_thr=12, match_dis=12, filtering=False)
+test = dict(nms_thr=12, match_dis=6, filtering=False)

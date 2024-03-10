@@ -181,16 +181,16 @@ def main():
 
     print("Start training")
 
-    for layer_name, p in model_without_ddp.backbone.backbone.named_parameters():
-        p.requires_grad = False
+    #for layer_name, p in model_without_ddp.backbone.backbone.named_parameters():
+    #   p.requires_grad = False
 
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             train_dataloader.sampler.set_epoch(epoch)
 
-        if epoch >= 10:
-            for layer_name, p in model_without_ddp.backbone.backbone.named_parameters():
-                p.requires_grad = True
+        #if epoch >= 10:
+        #    for layer_name, p in model_without_ddp.backbone.backbone.named_parameters():
+        #        p.requires_grad = True
 
         log_info = train_one_epoch(
             args,

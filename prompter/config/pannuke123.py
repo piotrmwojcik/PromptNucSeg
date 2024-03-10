@@ -60,7 +60,7 @@ optimizer = dict(
 
 scheduler = dict(
     type='MultiStepLR',
-    milestones=[25, 50],
+    milestones=[20, 50],
     gamma=0.3
 )
 
@@ -69,7 +69,7 @@ criterion = dict(
     eos_coef=0.4,
     reg_loss_coef=5e-3,
     cls_loss_coef=1.0,
-    mask_loss_coef=1.0
+    mask_loss_coef=0.5
 )
 
 test = dict(nms_thr=12, match_dis=12, filtering=False)

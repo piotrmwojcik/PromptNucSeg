@@ -54,7 +54,7 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=1e-4,
+    lr=1.7e-4,
     weight_decay=1e-4
 )
 
@@ -67,7 +67,7 @@ scheduler = dict(
 criterion = dict(
     matcher=dict(type='HungarianMatcher', dis_type='l2', set_cost_point=0.1, set_cost_class=1),
     eos_coef=0.4,
-    reg_loss_coef=10e-3,
+    reg_loss_coef=5e-3,
     cls_loss_coef=1.0,
     mask_loss_coef=0.0
 )

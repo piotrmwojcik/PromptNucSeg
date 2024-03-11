@@ -153,6 +153,8 @@ class DPAP2PNet(nn.Module):
             w = 256
             h = 256
 
+            bs = images.shape[0]
+
             anchors = np.stack(
                 np.meshgrid(
                     np.arange(np.ceil(w / space)),
@@ -162,18 +164,18 @@ class DPAP2PNet(nn.Module):
             origin_coord = np.array([w % space or space, h % space or space]) / 2
             anchors += origin_coord
 
-            random_floats_x = 1.4 * torch.rand(32, 32) - 0.5
-            random_floats_y = 1.4 * torch.rand(32, 32) - 0.5
+            random_floats_x = 1.4 * torch.rand(bs, 32, 32) - 0.5
+            random_floats_y = 1.4 * torch.rand(bs, 32, 32) - 0.5
 
             random_floats_x = random_floats_x.unsqueeze(-1)
             random_floats_y = random_floats_y.unsqueeze(-1)
 
             # Reshape the tensor to have a third dimension of size 2
-            tensor = torch.stack([random_floats_x, random_floats_y], 2).squeeze()
+            tensor = torch.stack([random_floats_x, random_floats_y], 3).squeeze()
             anchors = torch.from_numpy(anchors).float()
             anchors += tensor
             anchors = anchors.to(images.device)
-            proposals = anchors.repeat(images.shape[0], 1, 1, 1)
+            proposals = anchors.repeat(bs, 1, 1, 1)
             # print(anchors)
 
         # DPP

@@ -162,6 +162,9 @@ class DPAP2PNet(nn.Module):
         # MSD
         roi_features = []
         for i in range(self.num_levels):
+            if i == 2:
+                continue
+
             grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
             roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
 

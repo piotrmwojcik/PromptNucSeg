@@ -200,7 +200,7 @@ def build_model(cfg):
         hidden_dim=cfg.prompter.hidden_dim
     )
 
-    checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
+    checkpoint = torch.load('/data/pwojcik/SimMIM/output_dir_pn/sim_base_1600ep_pretrain.pth', map_location='cpu')
     checkpoint_model = checkpoint['model']
     interpolate_pos_embed(model.backbone.backbone, checkpoint_model)
 

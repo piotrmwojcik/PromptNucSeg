@@ -13,7 +13,7 @@ prompter = dict(
     ),
     dropout=0.1,
     space=8,
-    hidden_dim=512
+    hidden_dim=256
 )
 
 data = dict(
@@ -60,8 +60,8 @@ optimizer = dict(
 
 scheduler = dict(
     type='MultiStepLR',
-    milestones=[25, 70],
-    gamma=1.25
+    milestones=[25],
+    gamma=0.3
 )
 
 criterion = dict(

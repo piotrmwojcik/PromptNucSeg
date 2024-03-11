@@ -149,8 +149,14 @@ class DPAP2PNet(nn.Module):
         if not train:
             proposals = self.get_aps(images)
         else:
-            random_floats = torch.rand(32, 32) * 255.0
-            proposals = random_floats.unsqueeze(2).expand(32, 32, 2)
+            random_floats_x = torch.rand(32, 32) * 255.0
+            random_floats_y = torch.rand(32, 32) * 255.0
+
+            random_floats_x = random_floats_x.unsqueeze(-1)
+            random_floats_y = random_floats_y.unsqueeze(-1)
+
+            # Reshape the tensor to have a third dimension of size 2
+            proposals = torch.stack([random_floats_x, random_floats_y], -1)
             proposals = proposals.to(images.device)
             proposals = proposals.repeat(x.shape[0], 1, 1, 1)
 

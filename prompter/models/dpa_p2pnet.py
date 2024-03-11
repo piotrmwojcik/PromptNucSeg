@@ -164,8 +164,8 @@ class DPAP2PNet(nn.Module):
             origin_coord = np.array([w % space or space, h % space or space]) / 2
             anchors += origin_coord
 
-            random_floats_x = 1.4 * torch.rand(bs, 32, 32) - 0.5
-            random_floats_y = 1.4 * torch.rand(bs, 32, 32) - 0.5
+            random_floats_x = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
+            random_floats_y = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
 
             random_floats_x = random_floats_x.unsqueeze(-1)
             random_floats_y = random_floats_y.unsqueeze(-1)

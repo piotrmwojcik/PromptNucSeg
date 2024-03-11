@@ -115,7 +115,7 @@ class DPAP2PNet(nn.Module):
             num_classes,
             dropout=0.1,
             space: int = 16,
-            hidden_dim: int = 512,
+            hidden_dim: int = 256,
             with_mask=False
     ):
         """

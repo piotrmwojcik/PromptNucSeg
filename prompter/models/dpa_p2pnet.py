@@ -149,6 +149,9 @@ class DPAP2PNet(nn.Module):
         (feats, feats1, x), proposals = self.backbone(images), self.get_aps(images)
         feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
 
+        print('!!!!')
+        print(feat_sizes)
+
         # DPP
         grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
         roi_features = F.grid_sample(feats[0], grid, mode='bilinear', align_corners=True)

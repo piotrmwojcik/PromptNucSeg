@@ -54,7 +54,7 @@ def train_one_epoch(
         #     plt.close()
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
-            outputs = model(images)
+            outputs = model(images, train=True)
             loss_dict = criterion(outputs, targets, epoch)
             losses = sum(loss for loss in loss_dict.values())
 

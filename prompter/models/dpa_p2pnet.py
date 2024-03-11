@@ -172,7 +172,7 @@ class DPAP2PNet(nn.Module):
             tensor = torch.stack([random_floats_x, random_floats_y], 2).squeeze()
             anchors = torch.from_numpy(anchors).float()
             anchors += tensor
-            anchors = torch.from_numpy(anchors).float().to(images.device)
+            anchors = anchors.to(images.device)
             proposals = anchors.repeat(images.shapes[0], 1, 1, 1)
             # print(anchors)
 

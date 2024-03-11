@@ -151,6 +151,8 @@ class DPAP2PNet(nn.Module):
 
         # DPP
         grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
+        print('!!!')
+        print(grid.shape)
 
         roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
         #roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)

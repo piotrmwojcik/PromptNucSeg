@@ -45,22 +45,23 @@ class Backbone(nn.Module):
 
         self.backbone = backbone
 
-        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
+        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
                                          scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
-        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
+        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
                                          scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
         _x = {'outcome': x[list(x.keys())[0]].clone()}
+        __x = x[list(x.keys())[0]].clone()
         x0 = self.neck(x)
         x1 = self.neck1(_x)
 
         r1 = [x0[t] for t in x0.keys()]
         r2 = [x1[t] for t in x1.keys()][0]
 
-        return r1, r2
+        return r1, r2, __x
 
 
 class AnchorPoints(nn.Module):
@@ -114,7 +115,7 @@ class DPAP2PNet(nn.Module):
             num_classes,
             dropout=0.1,
             space: int = 16,
-            hidden_dim: int = 256,
+            hidden_dim: int = 512,
             with_mask=False
     ):
         """
@@ -145,7 +146,7 @@ class DPAP2PNet(nn.Module):
     def forward(self, images):
         # extract features
 
-        (feats, feats1), proposals = self.backbone(images), self.get_aps(images)
+        (feats, feats1, x), proposals = self.backbone(images), self.get_aps(images)
         feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
 
         # DPP

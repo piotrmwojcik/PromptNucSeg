@@ -173,9 +173,9 @@ class DPAP2PNet(nn.Module):
             # Reshape the tensor to have a third dimension of size 2
             tensor = torch.stack([random_floats_x, random_floats_y], 3).squeeze()
             anchors = torch.from_numpy(anchors).float()
+            anchors = anchors.repeat(bs, 1, 1, 1)
             anchors += tensor
-            anchors = anchors.to(images.device)
-            proposals = anchors.repeat(bs, 1, 1, 1)
+            proposals = anchors.to(images.device)
             # print(anchors)
 
         # DPP

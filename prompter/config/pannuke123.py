@@ -62,8 +62,8 @@ optimizer = dict(
 
 scheduler = dict(
     type='MultiStepLR',
-    milestones=[50],
-    gamma=0.3
+    milestones=[25],
+    gamma=0.7
 )
 
 criterion = dict(

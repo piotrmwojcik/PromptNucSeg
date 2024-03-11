@@ -155,8 +155,7 @@ class DPAP2PNet(nn.Module):
             random_floats_x = random_floats_x.unsqueeze(-1)
             random_floats_y = random_floats_y.unsqueeze(-1)
 
-            # Reshape the tensor to have a third dimension of size 2
-            proposals = torch.stack([random_floats_x, random_floats_y], -1)
+            proposals = torch.stack([random_floats_x, random_floats_y], 2).squeeze()
             proposals = proposals.to(images.device)
             proposals = proposals.repeat(x.shape[0], 1, 1, 1)
 

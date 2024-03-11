@@ -8,6 +8,7 @@ from tqdm import tqdm
 from eval_map import eval_map
 from collections import OrderedDict
 
+import matplotlib.pyplot as plt
 
 def train_one_epoch(
         args,
@@ -34,6 +35,31 @@ def train_one_epoch(
         images = images.to(device)
         masks = masks.to(device)
 
+        # def visualize_proposals_(images, pref):
+        #     # Convert proposals to numpy for visualization
+        #     print(f'!{images.shape=}')
+        #
+        #     # Visualize proposals on the first image
+        #     image_np = images[0].permute(1, 2, 0).cpu().numpy()
+        #     r = random.randint(1, 100)
+        #     plt.imshow(image_np)
+        #     plt.savefig(f'tmp/{pref}_prop_org{r}.png')
+        #     plt.clf()
+        #
+        # def visualize_proposals_masks(images, pref):
+        #     # Convert proposals to numpy for visualization
+        #     print(f'!{images.shape=}')
+        #
+        #     # Visualize proposals on the first image
+        #     image_np = images[0].cpu().numpy()
+        #     r = random.randint(1, 100)
+        #     plt.imshow(image_np)
+        #     plt.savefig(f'tmp/{pref}_prop_org{r}.png')
+        #     plt.clf()
+        #
+        # visualize_proposals_(images, "a")
+        # visualize_proposals_masks(masks, "an")
+
         targets = {
             'gt_masks': masks,
             'gt_nums': [len(points) for points in points_list],
@@ -52,6 +78,7 @@ def train_one_epoch(
         #     plt.scatter(points[:, 0], points[:, 1], c='r', marker='o')
         #     plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
         #     plt.close()
+
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images, train=True)
@@ -89,6 +116,8 @@ def train_one_epoch(
 
         metric_logger.update(loss=losses_reduced, **loss_dict_reduced)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
+
+        log_info["lr"] = optimizer.param_groups[0]["lr"]
 
     return log_info
 

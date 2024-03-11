@@ -169,7 +169,7 @@ class DPAP2PNet(nn.Module):
         for i in range(self.num_levels):
             grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
             print('!!!')
-            if i == 1:
+            if i == 2:
                 print(grid[0])
                 print()
             #grid = (2.0 * deformed_proposals / 256) - 1.0 - 1.0

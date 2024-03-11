@@ -13,7 +13,7 @@ prompter = dict(
     ),
     dropout=0.1,
     space=8,
-    hidden_dim=256
+    hidden_dim=768
 )
 
 data = dict(
@@ -35,6 +35,8 @@ data = dict(
         dict(type='ZoomBlur', p=0.1, max_factor=1.05),
         dict(type='HorizontalFlip', p=0.5),
         dict(type='VerticalFlip', p=0.5),
+        dict(type='Superpixels', p=0.1, p_replace=0.1, n_segments=200, max_size=int(256 / 2)),
+        dict(type='ElasticTransform', p=0.2, sigma=25, alpha=0.5, alpha_affine=15),
         #dict(type='ShiftScaleRotate', shift_limit=0.3, scale_limit=0.1, rotate_limit=0, border_mode=0, value=0, p=0.5),
         #dict(type='PadIfNeeded', min_height=None, min_width=None, pad_height_divisor=prompter["space"],
         #     pad_width_divisor=prompter["space"], position="top_left", p=1),

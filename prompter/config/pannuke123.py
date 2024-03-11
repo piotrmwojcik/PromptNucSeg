@@ -56,7 +56,7 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=0.175e-4,
+    lr=0.0875e-4,
     weight_decay=1e-4
 )
 

@@ -149,15 +149,32 @@ class DPAP2PNet(nn.Module):
         if not train:
             proposals = self.get_aps(images)
         else:
-            random_floats_x = torch.rand(32, 32) * 255.0
-            random_floats_y = torch.rand(32, 32) * 255.0
+            space = 8
+            w = 256
+            h = 256
+
+            anchors = np.stack(
+                np.meshgrid(
+                    np.arange(np.ceil(w / space)),
+                    np.arange(np.ceil(h / space))),
+                -1) * space
+
+            origin_coord = np.array([w % space or space, h % space or space]) / 2
+            anchors += origin_coord
+
+            random_floats_x = 1.4 * torch.rand(32, 32) - 0.5
+            random_floats_y = 1.4 * torch.rand(32, 32) - 0.5
 
             random_floats_x = random_floats_x.unsqueeze(-1)
             random_floats_y = random_floats_y.unsqueeze(-1)
 
-            proposals = torch.stack([random_floats_x, random_floats_y], 2).squeeze()
-            proposals = proposals.to(images.device)
-            proposals = proposals.repeat(x.shape[0], 1, 1, 1)
+            # Reshape the tensor to have a third dimension of size 2
+            tensor = torch.stack([random_floats_x, random_floats_y], 2).squeeze()
+            anchors = torch.from_numpy(anchors).float()
+            anchors += tensor
+            anchors = torch.from_numpy(anchors).float().to(images.device)
+            proposals = anchors.repeat(images.shapes[0], 1, 1, 1)
+            # print(anchors)
 
         # DPP
         feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]

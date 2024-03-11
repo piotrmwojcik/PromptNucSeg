@@ -145,12 +145,14 @@ class DPAP2PNet(nn.Module):
 
     def forward(self, images, train=False):
         # extract features
-
-        (feats, feats1, x), proposals = self.backbone(images), self.get_aps(images)
-        print('!!!')
-        print(proposals.shape)
-
-        feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
+        (feats, feats1, x) = self.backbone(images)
+        if not train:
+            proposals = self.get_aps(images)
+        else:
+            random_floats = torch.rand(32, 32) * 255.0
+            proposals = random_floats.unsqueeze(2).expand(32, 32, 2)
+            proposals = proposals.to(images.device)
+            proposals = proposals.repeat(x.shape[0], 1, 1, 1)
 
         # DPP
         grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)

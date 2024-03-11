@@ -45,10 +45,10 @@ class Backbone(nn.Module):
 
         self.backbone = backbone
 
-        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
+        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
                                          scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
-        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=512,
+        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
                                          scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
 
     def forward(self, images):
@@ -151,9 +151,6 @@ class DPAP2PNet(nn.Module):
 
         # DPP
         grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
-        print('!!!')
-        print(grid.shape)
-        print(feats[2].shape)
 
         roi_features = F.grid_sample(feats[2], grid, mode='bilinear', align_corners=True)
         #roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)

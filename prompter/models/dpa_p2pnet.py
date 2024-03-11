@@ -163,7 +163,7 @@ class DPAP2PNet(nn.Module):
         for i in range(self.num_levels + 1):
             if i == 2:
                 continue
-            grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
+            grid = (2.0 * deformed_proposals / self.strides[0] / feat_sizes[0] - 1.0)
             roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
 
         roi_features = torch.cat(roi_features, 1)

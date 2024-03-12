@@ -138,7 +138,7 @@ class DPAP2PNet(nn.Module):
         self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
 
         self.mask_head = nn.Sequential(
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.Conv2d(256, hidden_dim, kernel_size=3, padding=1),
             nn.SyncBatchNorm(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(hidden_dim, 1, kernel_size=1, padding=1)

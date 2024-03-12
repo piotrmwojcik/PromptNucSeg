@@ -130,7 +130,7 @@ class DPAP2PNet(nn.Module):
         self.with_mask = with_mask
         self.strides = [2 ** (i + 2) for i in range(self.num_levels)]
 
-        self.deform_layer = MLP(768, 256, 2, 8, drop=dropout)
+        self.deform_layer = MLP(768, hidden_dim, 2, 8, drop=dropout)
 
         #self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
         self.cls_head = MLP(hidden_dim, hidden_dim, 2, num_classes + 1, drop=dropout)
@@ -138,7 +138,7 @@ class DPAP2PNet(nn.Module):
         self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
 
         self.mask_head = nn.Sequential(
-            nn.Conv2d(256, hidden_dim, kernel_size=3, padding=1),
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
             nn.SyncBatchNorm(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(hidden_dim, 1, kernel_size=1, padding=1)

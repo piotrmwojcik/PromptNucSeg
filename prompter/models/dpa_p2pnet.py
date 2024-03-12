@@ -124,6 +124,7 @@ class DPAP2PNet(nn.Module):
         """
         super().__init__()
         self.backbone = backbone
+        self.num_classes = num_classes
         self.get_aps = AnchorPoints(space)
         self.num_levels = num_levels
         self.hidden_dim = hidden_dim
@@ -160,7 +161,7 @@ class DPAP2PNet(nn.Module):
         #roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
         # roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)
         deltas2deform = self.deform_layer(o)
-        deltas2deform = deltas2deform.reshape(bs, 16, 16, 2, 2, 2).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, 2)
+        deltas2deform = deltas2deform.reshape(bs, 16, 16, 2, 2, (self.num_classes + 1)).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, (num_classes + 1))
         deformed_proposals = proposals + deltas2deform
 
         # print(deformed_proposals[0])

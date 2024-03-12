@@ -146,7 +146,7 @@ class DPAP2PNet(nn.Module):
 
     def forward(self, images, train=False):
         # extract features
-        (feats, feats1, x) = self.backbone(images)
+        #(feats, feats1, x) = self.backbone(images)
 
         bs = images.shape[0]
 
@@ -155,7 +155,7 @@ class DPAP2PNet(nn.Module):
         o = self.backbone.backbone.forward_defrom_features(images)
 
         # DPP
-        feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
+        #feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
         #grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
         #roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
         # roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)

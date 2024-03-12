@@ -402,15 +402,9 @@ def predict(
     np.clip(points[:, 1], a_min=0, a_max=ori_h - 1, out=points[:, 1])
     valid_flag = classes < (scores.shape[-1] - 1)
 
-    print('!!!')
-    print(points.max(1).shape)
-
     points = points[valid_flag]
     scores = scores[valid_flag].max(1)
     classes = classes[valid_flag]
-
-    print(points.shape)
-    print()
 
     mask = outputs['pred_masks'][0, 0].cpu().numpy() > 0
 

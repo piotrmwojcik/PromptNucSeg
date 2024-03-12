@@ -100,7 +100,7 @@ def main():
     )
 
     try:
-        val_dataset = DataFolder(cfg, 'val')
+        val_dataset = DataFolder(cfg, 'test')
         val_dataloader = DataLoader(
             val_dataset,
             batch_size=1,

@@ -178,6 +178,9 @@ class DPAP2PNet(nn.Module):
 
         pred_logits = self.cls_head(o)
 
+        print('!!!')
+        print(pred_logits.shape)
+
         output = {
             'pred_coords': deformed_proposals.flatten(1, 2),
             'pred_logits': pred_logits.flatten(1, 2),

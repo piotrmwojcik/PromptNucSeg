@@ -403,7 +403,7 @@ def predict(
     valid_flag = classes < (scores.shape[-1] - 1)
 
     print('!!!')
-    print(points.shape)
+    print(points.max(1).shape)
 
     points = points[valid_flag]
     scores = scores[valid_flag].max(1)

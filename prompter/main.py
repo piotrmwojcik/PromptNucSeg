@@ -188,7 +188,7 @@ def main():
         if args.distributed:
             train_dataloader.sampler.set_epoch(epoch)
 
-        if epoch >= 40:
+        if epoch >= 100:
             for layer_name, p in model_without_ddp.backbone.backbone.named_parameters():
                 p.requires_grad = True
 

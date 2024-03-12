@@ -135,7 +135,7 @@ class DPAP2PNet(nn.Module):
         #self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
         self.cls_head = MLP(hidden_dim, hidden_dim, 2, num_classes + 1, drop=dropout)
 
-        self.conv = nn.Conv2d(128 * num_levels, hidden_dim, kernel_size=3, padding=1)
+        self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
 
         self.mask_head = nn.Sequential(
             nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),

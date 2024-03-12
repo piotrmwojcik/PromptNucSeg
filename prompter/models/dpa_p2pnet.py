@@ -132,7 +132,7 @@ class DPAP2PNet(nn.Module):
 
         self.deform_layer = MLP(768, hidden_dim, 2, 8, drop=dropout)
 
-        self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
+        #self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
         self.cls_head = MLP(hidden_dim, hidden_dim, 2, num_classes + 1, drop=dropout)
 
         self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
@@ -173,8 +173,8 @@ class DPAP2PNet(nn.Module):
 
         roi_features = torch.cat(roi_features, 1)
         roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
-        deltas2refine = self.reg_head(roi_features)
-        pred_coords = deformed_proposals + deltas2refine
+        #deltas2refine = self.reg_head(roi_features)
+        #pred_coords = deformed_proposals + deltas2refine
 
         pred_logits = self.cls_head(roi_features)
 

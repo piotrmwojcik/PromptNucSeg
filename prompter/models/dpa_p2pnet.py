@@ -46,11 +46,11 @@ class Backbone(nn.Module):
 
         self.backbone = backbone
 
-        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=96,
-                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
+        #self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=96,
+        #                                 scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
-        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
-                                         scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
+        #self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
+        #                                 scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
@@ -166,17 +166,17 @@ class DPAP2PNet(nn.Module):
         # print(deformed_proposals[0])
 
         # MSD
-        roi_features = []
-        for i in range(self.num_levels):
-            grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
-            roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
+        #roi_features = []
+        #for i in range(self.num_levels):
+        #    grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
+        #    roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
 
-        roi_features = torch.cat(roi_features, 1)
-        roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
+        #roi_features = torch.cat(roi_features, 1)
+        #roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
         #deltas2refine = self.reg_head(roi_features)
         #pred_coords = deformed_proposals + deltas2refine
 
-        pred_logits = self.cls_head(roi_features)
+        pred_logits = self.cls_head(o)
 
         output = {
             'pred_coords': deformed_proposals.flatten(1, 2),

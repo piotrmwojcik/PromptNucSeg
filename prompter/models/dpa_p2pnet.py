@@ -175,7 +175,6 @@ class DPAP2PNet(nn.Module):
         roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
         deltas2refine = self.reg_head(roi_features)
         pred_coords = deformed_proposals + deltas2refine
-        pred_coords = deformed_proposals + deltas2refine
 
         pred_logits = self.cls_head(roi_features)
 

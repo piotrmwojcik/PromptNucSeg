@@ -130,7 +130,7 @@ class DPAP2PNet(nn.Module):
         self.with_mask = with_mask
         self.strides = [2 ** (i + 2) for i in range(self.num_levels)]
 
-        self.deform_layer = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
+        self.deform_layer = MLP(768, hidden_dim, 2, 8, drop=dropout)
 
         self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
         self.cls_head = MLP(hidden_dim, hidden_dim, 2, num_classes + 1, drop=dropout)
@@ -147,45 +147,20 @@ class DPAP2PNet(nn.Module):
     def forward(self, images, train=False):
         # extract features
         (feats, feats1, x) = self.backbone(images)
-        if not train:
-            proposals = self.get_aps(images)
-        else:
-            if random.random() <= 0.75:
-                space = 8
-                w = 256
-                h = 256
-                bs = images.shape[0]
 
-                anchors = np.stack(
-                    np.meshgrid(
-                        np.arange(np.ceil(w / space)),
-                        np.arange(np.ceil(h / space))),
-                    -1) * space
+        bs = images.shape[0]
 
-                origin_coord = np.array([w % space or space, h % space or space]) / 2
-                anchors += origin_coord
-                random_floats_x = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
-                random_floats_y = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
+        proposals = self.get_aps(images)
 
-                random_floats_x = random_floats_x.unsqueeze(-1)
-                random_floats_y = random_floats_y.unsqueeze(-1)
-
-            # Reshape the tensor to have a third dimension of size 2
-                tensor = torch.stack([random_floats_x, random_floats_y], 3).squeeze()
-                anchors = torch.from_numpy(anchors).float()
-                anchors = anchors.repeat(bs, 1, 1, 1)
-                anchors += tensor
-                proposals = anchors.to(images.device)
-            else:
-                proposals = self.get_aps(images)
+        o = self.backbone.backbone.forward_defrom_features(images)
 
         # DPP
         feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
-        grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
-
-        roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
+        #grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
+        #roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
         # roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)
-        deltas2deform = self.deform_layer(roi_features.permute(0, 2, 3, 1))
+        deltas2deform = self.deform_layer(o)
+        deltas2deform = deltas2deform.reshape(bs, 16, 16, 2, 2, 2).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, 2)
         deformed_proposals = proposals + deltas2deform
 
         # print(deformed_proposals[0])
@@ -199,6 +174,7 @@ class DPAP2PNet(nn.Module):
         roi_features = torch.cat(roi_features, 1)
         roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
         deltas2refine = self.reg_head(roi_features)
+        pred_coords = deformed_proposals + deltas2refine
         pred_coords = deformed_proposals + deltas2refine
 
         pred_logits = self.cls_head(roi_features)

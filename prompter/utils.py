@@ -403,13 +403,13 @@ def predict(
     valid_flag = classes < (scores.shape[-1] - 1)
 
     print('!!!')
-    points(points.shape)
+    print(points.shape)
 
     points = points[valid_flag]
     scores = scores[valid_flag].max(1)
     classes = classes[valid_flag]
 
-    points(points.shape)
+    print(points.shape)
     print()
 
     mask = outputs['pred_masks'][0, 0].cpu().numpy() > 0

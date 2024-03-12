@@ -147,37 +147,7 @@ class DPAP2PNet(nn.Module):
     def forward(self, images, train=False):
         # extract features
         (feats, feats1, x) = self.backbone(images)
-        if not train:
-            proposals = self.get_aps(images)
-        else:
-            if random.random() <= 0.75:
-                space = 8
-                w = 256
-                h = 256
-                bs = images.shape[0]
-
-                anchors = np.stack(
-                    np.meshgrid(
-                        np.arange(np.ceil(w / space)),
-                        np.arange(np.ceil(h / space))),
-                    -1) * space
-
-                origin_coord = np.array([w % space or space, h % space or space]) / 2
-                anchors += origin_coord
-                random_floats_x = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
-                random_floats_y = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
-
-                random_floats_x = random_floats_x.unsqueeze(-1)
-                random_floats_y = random_floats_y.unsqueeze(-1)
-
-            # Reshape the tensor to have a third dimension of size 2
-                tensor = torch.stack([random_floats_x, random_floats_y], 3).squeeze()
-                anchors = torch.from_numpy(anchors).float()
-                anchors = anchors.repeat(bs, 1, 1, 1)
-                anchors += tensor
-                proposals = anchors.to(images.device)
-            else:
-                proposals = self.get_aps(images)
+        proposals = self.get_aps(images)
 
         # DPP
         feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]

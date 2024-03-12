@@ -49,20 +49,20 @@ class Backbone(nn.Module):
         #self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=96,
         #                                 scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
-        #self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
-        #                                 scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
+        self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
+                                          scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
         _x = {'outcome': x[list(x.keys())[0]].clone()}
         __x = x[list(x.keys())[0]].clone()
-        x0 = self.neck(x)
+        #x0 = self.neck(x)
         x1 = self.neck1(_x)
 
-        r1 = [x0[t] for t in x0.keys()]
+        #r1 = [x0[t] for t in x0.keys()]
         r2 = [x1[t] for t in x1.keys()][0]
 
-        return r1, r2, __x
+        return r2, __x
 
 
 class AnchorPoints(nn.Module):
@@ -146,7 +146,7 @@ class DPAP2PNet(nn.Module):
 
     def forward(self, images, train=False):
         # extract features
-        #(feats, feats1, x) = self.backbone(images)
+        (feats1, x) = self.backbone(images)
 
         bs = images.shape[0]
 

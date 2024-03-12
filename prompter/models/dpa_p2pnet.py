@@ -133,7 +133,7 @@ class DPAP2PNet(nn.Module):
         self.deform_layer = MLP(768, hidden_dim, 2, 8, drop=dropout)
 
         #self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
-        self.cls_head = MLP(768, hidden_dim, 2, num_classes + 1, drop=dropout)
+        self.cls_head = MLP(768, hidden_dim, 2, 4 * (num_classes + 1), drop=dropout)
 
         self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
 
@@ -176,10 +176,7 @@ class DPAP2PNet(nn.Module):
         #deltas2refine = self.reg_head(roi_features)
         #pred_coords = deformed_proposals + deltas2refine
 
-        pred_logits = self.cls_head(o)
-
-        print('!!!')
-        print(pred_logits.shape)
+        pred_logits = self.cls_head(o).reshape(bs, 16, 16, 2, 2, 2).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, 2)
 
         output = {
             'pred_coords': deformed_proposals.flatten(1, 2),

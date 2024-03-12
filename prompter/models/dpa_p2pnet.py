@@ -161,7 +161,7 @@ class DPAP2PNet(nn.Module):
         #roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
         # roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)
         deltas2deform = self.deform_layer(o)
-        deltas2deform = deltas2deform.reshape(bs, 16, 16, 2, 2, (self.num_classes + 1)).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, (num_classes + 1))
+        deltas2deform = deltas2deform.reshape(bs, 16, 16, 2, 2, 2).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, 2)
         deformed_proposals = proposals + deltas2deform
 
         # print(deformed_proposals[0])
@@ -177,7 +177,8 @@ class DPAP2PNet(nn.Module):
         #deltas2refine = self.reg_head(roi_features)
         #pred_coords = deformed_proposals + deltas2refine
 
-        pred_logits = self.cls_head(o).reshape(bs, 16, 16, 2, 2, 2).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, 2)
+        pred_logits = self.cls_head(o).reshape(bs, 16, 16, 2, 2,
+                                               (self.num_classes + 1)).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, (self.num_classes + 1))
 
         output = {
             'pred_coords': deformed_proposals.flatten(1, 2),

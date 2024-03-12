@@ -46,23 +46,23 @@ class Backbone(nn.Module):
 
         self.backbone = backbone
 
-        #self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=96,
-        #                                 scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
+        self.neck = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
+                                         scale_factors=(4.0, 2.0, 1.0, 0.5), top_block=None, norm="LN", square_pad=None)
 
         self.neck1 = SimpleFeaturePyramid(in_feature='outcome', out_channels=256,
-                                          scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
+                                         scale_factors=[4.0], top_block=None, norm="LN", square_pad=None)
 
     def forward(self, images):
         x = self.backbone.forward_features(images)
         _x = {'outcome': x[list(x.keys())[0]].clone()}
         __x = x[list(x.keys())[0]].clone()
-        #x0 = self.neck(x)
+        x0 = self.neck(x)
         x1 = self.neck1(_x)
 
-        #r1 = [x0[t] for t in x0.keys()]
+        r1 = [x0[t] for t in x0.keys()]
         r2 = [x1[t] for t in x1.keys()][0]
 
-        return r2, __x
+        return r1, r2, __x
 
 
 class AnchorPoints(nn.Module):
@@ -124,17 +124,16 @@ class DPAP2PNet(nn.Module):
         """
         super().__init__()
         self.backbone = backbone
-        self.num_classes = num_classes
         self.get_aps = AnchorPoints(space)
         self.num_levels = num_levels
         self.hidden_dim = hidden_dim
         self.with_mask = with_mask
         self.strides = [2 ** (i + 2) for i in range(self.num_levels)]
 
-        self.deform_layer = MLP(768, hidden_dim, 2, 8, drop=dropout)
+        self.deform_layer = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
 
-        #self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
-        self.cls_head = MLP(768, hidden_dim, 2, 4 * (num_classes + 1), drop=dropout)
+        self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
+        self.cls_head = MLP(hidden_dim, hidden_dim, 2, num_classes + 1, drop=dropout)
 
         self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
 
@@ -147,41 +146,65 @@ class DPAP2PNet(nn.Module):
 
     def forward(self, images, train=False):
         # extract features
-        (feats1, x) = self.backbone(images)
+        (feats, feats1, x) = self.backbone(images)
+        if not train:
+            proposals = self.get_aps(images)
+        else:
+            if random.random() <= 0.75:
+                space = 8
+                w = 256
+                h = 256
+                bs = images.shape[0]
 
-        bs = images.shape[0]
+                anchors = np.stack(
+                    np.meshgrid(
+                        np.arange(np.ceil(w / space)),
+                        np.arange(np.ceil(h / space))),
+                    -1) * space
 
-        proposals = self.get_aps(images)
+                origin_coord = np.array([w % space or space, h % space or space]) / 2
+                anchors += origin_coord
+                random_floats_x = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
+                random_floats_y = 2.9 * (torch.rand(bs, 32, 32) - 0.5)
 
-        o = self.backbone.backbone.forward_defrom_features(images)
+                random_floats_x = random_floats_x.unsqueeze(-1)
+                random_floats_y = random_floats_y.unsqueeze(-1)
+
+            # Reshape the tensor to have a third dimension of size 2
+                tensor = torch.stack([random_floats_x, random_floats_y], 3).squeeze()
+                anchors = torch.from_numpy(anchors).float()
+                anchors = anchors.repeat(bs, 1, 1, 1)
+                anchors += tensor
+                proposals = anchors.to(images.device)
+            else:
+                proposals = self.get_aps(images)
 
         # DPP
-        #feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
-        #grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
-        #roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
+        feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
+        grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
+
+        roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
         # roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)
-        deltas2deform = self.deform_layer(o)
-        deltas2deform = deltas2deform.reshape(bs, 16, 16, 2, 2, 2).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, 2)
+        deltas2deform = self.deform_layer(roi_features.permute(0, 2, 3, 1))
         deformed_proposals = proposals + deltas2deform
 
         # print(deformed_proposals[0])
 
         # MSD
-        #roi_features = []
-        #for i in range(self.num_levels):
-        #    grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
-        #    roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
+        roi_features = []
+        for i in range(self.num_levels):
+            grid = (2.0 * deformed_proposals / self.strides[i] / feat_sizes[i] - 1.0)
+            roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
 
-        #roi_features = torch.cat(roi_features, 1)
-        #roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
-        #deltas2refine = self.reg_head(roi_features)
-        #pred_coords = deformed_proposals + deltas2refine
+        roi_features = torch.cat(roi_features, 1)
+        roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
+        deltas2refine = self.reg_head(roi_features)
+        pred_coords = deformed_proposals + deltas2refine
 
-        pred_logits = self.cls_head(o).reshape(bs, 16, 16, 2, 2,
-                                               (self.num_classes + 1)).permute(0, 1, 3, 2, 4, 5).reshape(bs, 32, 32, (self.num_classes + 1))
+        pred_logits = self.cls_head(roi_features)
 
         output = {
-            'pred_coords': deformed_proposals.flatten(1, 2),
+            'pred_coords': pred_coords.flatten(1, 2),
             'pred_logits': pred_logits.flatten(1, 2),
             'pred_masks': F.interpolate(
                 self.mask_head(feats1), size=images.shape[2:], mode='bilinear', align_corners=True)

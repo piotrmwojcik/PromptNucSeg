@@ -248,13 +248,6 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
                 init_values=init_values, norm_layer=kwargs['norm_layer'], drop_path=dpr[i])
             for i in range(kwargs['depth'])])
 
-        self.deform_blocks = nn.Sequential(*[
-            Block(
-                dim=kwargs['embed_dim'], num_heads=kwargs['num_heads'], mlp_ratio=kwargs['mlp_ratio'],
-                qkv_bias=kwargs['qkv_bias'],
-                init_values=init_values, norm_layer=kwargs['norm_layer'], drop_path=dpr[i])
-            for i in range(2)])
-
         self.global_pool = global_pool
         norm_layer = kwargs['norm_layer']
         embed_dim = kwargs['embed_dim']
@@ -269,25 +262,6 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
         num_patches = self.patch_embed.num_patches
 
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim), requires_grad=False)
-
-    def forward_defrom_features(self, x):
-        B = x.shape[0]
-        x = self.patch_embed(x)
-
-        cls_tokens = self.cls_token.expand(B, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
-        x = torch.cat((cls_tokens, x), dim=1)
-        x = x + self.pos_embed
-        x = self.pos_drop(x)
-
-        for blk in self.blocks:
-            x = blk(x)
-
-        for blk in self.deform_blocks:
-            x = blk(x)
-
-        outcome = x[:, 1:, :].view(B, self.patch_size, self.patch_size, 768)
-        return outcome
-
 
     def forward_features(self, x):
         B = x.shape[0]

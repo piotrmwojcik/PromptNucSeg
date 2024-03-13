@@ -29,7 +29,7 @@ def train_one_epoch(
     metric_logger.add_meter("lr", SmoothedValue(window_size=1, fmt="{value:.6f}"))
     header = f"Epoch: [{epoch}]"
 
-    for data_iter_step, (images, masks, points_list, labels_list) in enumerate(
+    for data_iter_step, (images, inst_mask, masks, points_list, labels_list) in enumerate(
             metric_logger.log_every(train_loader, args.print_freq, header)):
         images = images.to(device)
         masks = masks.to(device)
@@ -120,7 +120,7 @@ def evaluate(
     epoch_iterator = tqdm(test_loader, file=sys.stdout, desc="Test (X / X Steps)",
                           dynamic_ncols=True, disable=not is_main_process())
 
-    for data_iter_step, (images, gt_points, labels, masks, ori_shape) in enumerate(epoch_iterator):
+    for data_iter_step, (images, gt_points, labels, inst_mask, masks, ori_shape) in enumerate(epoch_iterator):
         assert len(images) == 1, 'batch size must be 1'
 
         if data_iter_step % get_world_size() != get_rank():  # To avoid duplicate evaluation for some test samples

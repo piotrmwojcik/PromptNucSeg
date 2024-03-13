@@ -144,7 +144,7 @@ class DPAP2PNet(nn.Module):
             nn.Conv2d(hidden_dim, 1, kernel_size=1, padding=1)
         )
 
-    def forward(self, images, train=False):
+    def forward(self, images):
         # extract features
         (feats, feats1, x) = self.backbone(images)
         proposals = self.get_aps(images)

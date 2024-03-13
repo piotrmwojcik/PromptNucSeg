@@ -95,10 +95,8 @@ class DataFolder(Dataset):
         mask = res[-2]
         type_maps = res[-1]
 
-        for i in range(1, len(type_maps)):
-            type_maps[i] += float(i)
-
-        print(type_maps[i])
+        type_map = torch.sum(type_maps)
+        print(type_map)
 
         #print('!!!')
         #print(mask.shape)

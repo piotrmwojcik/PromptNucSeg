@@ -50,8 +50,13 @@ class Criterion(nn.Module):
     def loss_for(self, outputs, targets, indices, num_points):
         pred_coordinates = outputs['pred_coords']
         bs = pred_coordinates.shape[0]
-        pred_coordinates = pred_coordinates.reshape(bs, 32, 32)
+        pred_coordinates = pred_coordinates.reshape(bs, 32, 32, 2)
         gt_masks = targets['gt_masks']
+        grid = (2.0 * pred_coordinates / 256 - 1.0)
+        target_classes = F.grid_sample(pred_coordinates, grid, mode='bilinear', align_corners=True)
+        print('!!!')
+        print(target_classes.shape)
+
 
     def loss_mask(self, outputs, targets, indices, num_points):
         pred_masks = outputs['pred_masks']

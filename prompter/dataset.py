@@ -77,7 +77,9 @@ class DataFolder(Dataset):
         unique_values = np.unique(type_map)
         type_masks = []
 
-        print(unique_values[1:])
+        if not len(unique_values[1:]):
+            type_masks.append(type_map)
+
         for value in unique_values[1:]:
             mask = (type_map == value).astype(np.uint8)
             type_masks.append(mask.astype(float))

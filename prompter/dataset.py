@@ -103,9 +103,6 @@ class DataFolder(Dataset):
         for t in range(len(type_maps)):
             type_map += (t+1) * type_maps[t]
 
-
-        print(type_map)
-
         type_map -= 1.0
         type_map[type_map == -1.0] = 5.0
 

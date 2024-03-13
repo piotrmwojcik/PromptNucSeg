@@ -97,14 +97,18 @@ class DataFolder(Dataset):
         mask = res[-1][0]
         type_maps = res[-1][1:]
 
+        print('!!!')
+        print(mask)
+        print(type_maps)
+
         type_map = torch.zeros_like(torch.tensor(type_maps[0]))
         for t in range(len(type_maps)):
             type_map += (t+1) * type_maps[t]
 
         #print('!!!')
         #print(mask.shape)
-        print(mask.bool())
-        print(torch.tensor(type_map))
+        #print(mask.bool())
+        #print(torch.tensor(type_map))
         #print(mask)
         #print()
         print(torch.eq(mask.bool(), torch.tensor(type_map) > 0.0).all().item())

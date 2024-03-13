@@ -97,9 +97,10 @@ class DataFolder(Dataset):
 
         type_map = torch.zeros_like(torch.tensor(type_maps[0]))
         for t in range(1, len(type_maps)):
+            print(t)
             type_map += t
 
-        print(type_map)
+        #print(type_map)
 
         #print('!!!')
         #print(mask.shape)

@@ -73,8 +73,7 @@ class DataFolder(Dataset):
             inst_map = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
                         'inst_map']
 
-        print('!!!!!!')
-        mask = (inst_map > 0).astype(float)
+        mask = (mask > 0).astype(float)
 
         values.append(mask)
         values.append(type_map)
@@ -95,6 +94,6 @@ class DataFolder(Dataset):
         #print('!!!')
         #print(mask.shape)
         #print(inst_map)
-        #print(torch.eq(mask.bool(), torch.tensor(inst_map) > 0).all().item())
+        print(torch.eq(mask.bool(), torch.tensor(type_map) > 0).all().item())
 
         return img, torch.cat(res[1:-2]), torch.cat(labels), type_map, mask, torch.as_tensor(ori_shape)

@@ -92,4 +92,4 @@ class DataFolder(Dataset):
         print(inst_map)
         print(torch.eq(mask.bool(), torch.tensor(inst_map) > 0).all().item())
 
-        return img, torch.cat(res[1:-1]), torch.cat(labels), inst_map, mask, torch.as_tensor(ori_shape)
+        return img, torch.cat(res[1:-2]), torch.cat(labels), inst_map, mask, torch.as_tensor(ori_shape)

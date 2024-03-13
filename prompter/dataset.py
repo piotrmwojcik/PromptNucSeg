@@ -81,7 +81,7 @@ class DataFolder(Dataset):
 
         img = res[0]
         labels = []
-        print(res)        for i in range(1, len(res) - 2):
+        for i in range(1, len(res) - 2):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
         mask = res[-2]

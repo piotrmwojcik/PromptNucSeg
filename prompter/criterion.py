@@ -57,6 +57,7 @@ class Criterion(nn.Module):
 
         print('!!!')
         print(type_map.view(bs, -1).shape)
+        print(torch.min(linear_indices))
         print(torch.max(linear_indices))
 
         loss_cls = F.cross_entropy(src_logits.transpose(1, 2), target_classes.long(), self.class_weight)

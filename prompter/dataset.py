@@ -74,7 +74,7 @@ class DataFolder(Dataset):
                         'inst_map']
 
         print('!!!!!!')
-        print(inst_map.shape)
+        print(type_map.shape)
 
         inst_mask = mask
         mask = (inst_mask > 0).astype(float)

@@ -42,7 +42,10 @@ class Criterion(nn.Module):
         #target_classes_o = torch.cat([cls[J] for cls, (_, J) in zip(targets['gt_labels'], indices)])
         #target_classes[idx] = target_classes_o
 
-        points = outputs['pred_coords']
+        print('!!')
+        print(outputs['pred_coords'].shape)
+
+        points = outputs['pred_coords'].flaten(1, 2)
         type_map = targets['gt_type_map']
         target_classes = type_map[points.int()[:, 1], points.int()[:, 0]]
 

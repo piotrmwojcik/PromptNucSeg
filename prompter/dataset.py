@@ -28,7 +28,7 @@ class DataFolder(Dataset):
         self.classes = anno_json.pop('classes')
         self.data = anno_json
         self.img_paths = list(anno_json.keys())
-        self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] + ['masks']
+        self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] + ['mask']
 
         self.phase = mode
         self.dataset = cfg.data.name
@@ -71,15 +71,18 @@ class DataFolder(Dataset):
                         'type_map']
 
         mask = (mask > 0).astype(float)
-        values.append(mask)
+        masks = [mask]
+
         unique_values = np.unique(type_map)
 
         if not len(unique_values[1:]):
-            values.append(type_map.astype(float))
+            masks.append(type_map.astype(float))
 
         for value in unique_values[1:]:
             mask = (type_map == value).astype(np.uint8)
-            values.append(mask.astype(float))
+            masks.append(mask.astype(float))
+
+        values.append(masks)
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))

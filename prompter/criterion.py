@@ -54,8 +54,8 @@ class Criterion(nn.Module):
 
         print('!!!')
         print(type_map.view(bs, -1).shape)
-        print(torch.min(linear_indices))
-        print(torch.max(linear_indices))
+        print(torch.min(type_map))
+        print(torch.max(type_map))
 
         gathered_values = torch.gather(type_map.view(bs, -1), 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)

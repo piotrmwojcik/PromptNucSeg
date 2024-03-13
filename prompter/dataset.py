@@ -29,7 +29,7 @@ class DataFolder(Dataset):
         self.data = anno_json
         self.img_paths = list(anno_json.keys())
         self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] \
-                    + ['mask', 'inst_mask']
+                    + ['mask', 'type_map']
 
         self.phase = mode
         self.dataset = cfg.data.name

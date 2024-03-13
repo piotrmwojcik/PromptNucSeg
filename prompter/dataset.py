@@ -96,13 +96,13 @@ class DataFolder(Dataset):
         type_maps = res[-1]
 
         type_map = torch.zeros_like(torch.tensor(type_maps[0]))
-        for t in range(0, len(type_maps)):
+        for t in range(0, len(type_maps) - 1):
             type_map += type_maps[t]
 
         #print('!!!')
         #print(mask.shape)
         #print(mask.bool())
-        print(torch.tensor(type_map))
-        #print(torch.eq(mask.bool(), torch.tensor(type_map) > 0).all().item())
+        #print(torch.tensor(type_map))
+        print(torch.eq(mask.bool(), torch.tensor(type_map) > 0).all().item())
 
         return img, torch.cat(res[1:-2]), torch.cat(labels), type_maps, mask, torch.as_tensor(ori_shape)

@@ -29,7 +29,7 @@ def train_one_epoch(
     metric_logger.add_meter("lr", SmoothedValue(window_size=1, fmt="{value:.6f}"))
     header = f"Epoch: [{epoch}]"
 
-    for data_iter_step, (images, inst_mask, masks, points_list, labels_list) in enumerate(
+    for data_iter_step, (images, type_map, masks, points_list, labels_list) in enumerate(
             metric_logger.log_every(train_loader, args.print_freq, header)):
         images = images.to(device)
         masks = masks.to(device)

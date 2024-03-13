@@ -74,7 +74,7 @@ class DataFolder(Dataset):
         mask = (mask > 0).astype(float)
 
         values.append(mask)
-        values.append(type_map)
+        values.append(type_map.astype(float))
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))
@@ -83,7 +83,6 @@ class DataFolder(Dataset):
 
         img = res[0]
         labels = []
-        print(res)
 
         for i in range(1, len(res) - 2):
             res[i] = torch.tensor(res[i])

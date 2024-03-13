@@ -95,7 +95,10 @@ class DataFolder(Dataset):
         mask = res[-2]
         type_maps = res[-1]
 
-        type_map = torch.sum(type_maps)
+        type_map = torch.zeros_like(type_maps[0])
+        for t in type_map:
+            type_map += t
+
         print(type_map)
 
         #print('!!!')

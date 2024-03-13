@@ -46,6 +46,9 @@ class Criterion(nn.Module):
         points = outputs['pred_coords']
         type_map = targets['gt_type_map']
 
+        print('!!!')
+        print(points.shape)
+
         indices = points.flatten(1, 2).to(torch.int64)
 
         linear_indices = indices[:, :, 1] * 256 + indices[:, :, 0]

@@ -69,7 +69,7 @@ class DataFolder(Dataset):
             mask = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
                         'inst_map']
             type_map = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
-                        'inst_map']
+                        'type_map']
             inst_map = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
                         'inst_map']
 

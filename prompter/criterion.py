@@ -56,6 +56,9 @@ class Criterion(nn.Module):
         gathered_values = torch.gather(type_map.view(bs, -1), 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 
+        print('!!!')
+        print(gathered_values.shape)
+
         loss_cls = F.cross_entropy(src_logits.flatten(1, 2), target_classes, self.class_weight)
         loss_dict = {'loss_cls': loss_cls}
 

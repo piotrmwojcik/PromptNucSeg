@@ -40,9 +40,6 @@ class HungarianMatcher(nn.Module):
         cost_class = - out_prob[:, torch.cat(targets['gt_labels'])]
 
         # Final cost matrix.
-        print('!!!')
-        print(cost_point.shape)
-        print(cost_class.shape)
 
         C = self.cost_point * cost_point + self.cost_class * cost_class
         C = C.view(bs, num_queries, -1).detach().cpu()

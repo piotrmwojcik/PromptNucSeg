@@ -79,8 +79,8 @@ class DataFolder(Dataset):
             masks.append(type_map.astype(float))
 
         for value in unique_values[1:]:
-            mask = (type_map == value).astype(np.uint8)
-            masks.append(mask.astype(float))
+            m = (type_map == value).astype(np.uint8)
+            masks.append(m.astype(float))
 
         values.append(masks)
 

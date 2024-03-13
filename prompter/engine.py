@@ -33,9 +33,10 @@ def train_one_epoch(
             metric_logger.log_every(train_loader, args.print_freq, header)):
         images = images.to(device)
         masks = masks.to(device)
+        type_map = type_map.to(device)
 
         targets = {
-            'gt_type_map': type_map.to(device),
+            'gt_type_map': type_map,
             'gt_masks': masks,
             'gt_nums': [len(points) for points in points_list],
             'gt_points': [points.view(-1, 2).to(device).float() for points in points_list],
@@ -61,8 +62,6 @@ def train_one_epoch(
 
         loss_dict_reduced = reduce_dict(loss_dict)
         losses_reduced = sum(loss for loss in loss_dict_reduced.values())
-        print('!!!')
-        print(losses_reduced)
         loss_value = losses_reduced.item()
 
         for k, v in loss_dict_reduced.items():

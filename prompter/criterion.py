@@ -44,8 +44,9 @@ class Criterion(nn.Module):
 
         print('!!')
         print(outputs['pred_coords'].shape)
+        print(src_logits.shape)
 
-        points = outputs['pred_coords'].flaten(1, 2)
+        points = outputs['pred_coords']
         type_map = targets['gt_type_map']
         target_classes = type_map[points.int()[:, 1], points.int()[:, 0]]
 

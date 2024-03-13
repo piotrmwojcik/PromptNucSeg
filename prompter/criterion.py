@@ -59,7 +59,7 @@ class Criterion(nn.Module):
         print(type_map.view(bs, -1).shape)
         print(torch.max(linear_indices))
 
-        loss_cls = F.cross_entropy(src_logits.flatten(1, 2), target_classes, self.class_weight)
+        loss_cls = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)
         loss_dict = {'loss_cls': loss_cls}
 
         return loss_dict

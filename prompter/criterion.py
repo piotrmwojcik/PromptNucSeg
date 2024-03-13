@@ -47,6 +47,10 @@ class Criterion(nn.Module):
 
         return loss_dict
 
+    def loss_for(self, outputs, targets, indices, num_points):
+        print('!!!')
+        print(targets)
+
     def loss_mask(self, outputs, targets, indices, num_points):
         pred_masks = outputs['pred_masks']
         gt_masks = targets['gt_masks']
@@ -87,6 +91,7 @@ class Criterion(nn.Module):
         loss_map = {
             'loss_reg': self.loss_reg,
             'loss_cls': self.loss_cls,
+            'loss_for': self.loss_for,
             'loss_mask': self.loss_mask
         }
 

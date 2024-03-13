@@ -34,10 +34,6 @@ def train_one_epoch(
         images = images.to(device)
         masks = masks.to(device)
 
-        print('!!!')
-        print(masks.shape)
-        print(masks[0])
-
         targets = {
             'gt_masks': masks,
             'gt_nums': [len(points) for points in points_list],

@@ -29,7 +29,7 @@ class DataFolder(Dataset):
         self.data = anno_json
         self.img_paths = list(anno_json.keys())
         self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] \
-                    + ['mask', 'type_map']
+                    + ['mask', 'type_maps']
 
         self.phase = mode
         self.dataset = cfg.data.name
@@ -69,7 +69,7 @@ class DataFolder(Dataset):
             mask = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
                         'inst_map']
             type_map = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
-                        'type_maps']
+                        'type_map']
 
         mask = (mask > 0).astype(float)
 

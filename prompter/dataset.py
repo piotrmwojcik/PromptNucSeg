@@ -74,12 +74,10 @@ class DataFolder(Dataset):
                         'inst_map']
 
         print('!!!!!!')
-        print(type_map)
-
         mask = (inst_map > 0).astype(float)
 
         values.append(mask)
-        values.append(type_mask)
+        values.append(type_map)
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))
@@ -92,11 +90,11 @@ class DataFolder(Dataset):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
         mask = res[-2]
-        inst_map = res[-1]
+        type_map = res[-1]
 
         #print('!!!')
         #print(mask.shape)
         #print(inst_map)
         #print(torch.eq(mask.bool(), torch.tensor(inst_map) > 0).all().item())
 
-        return img, torch.cat(res[1:-2]), torch.cat(labels), inst_map, mask, torch.as_tensor(ori_shape)
+        return img, torch.cat(res[1:-2]), torch.cat(labels), type_map, mask, torch.as_tensor(ori_shape)

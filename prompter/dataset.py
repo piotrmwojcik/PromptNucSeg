@@ -28,7 +28,8 @@ class DataFolder(Dataset):
         self.classes = anno_json.pop('classes')
         self.data = anno_json
         self.img_paths = list(anno_json.keys())
-        self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] + ['mask']
+        self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] \
+                    + ['mask', 'inst_mask']
 
         self.phase = mode
         self.dataset = cfg.data.name
@@ -71,6 +72,7 @@ class DataFolder(Dataset):
         mask = (inst_mask > 0).astype(float)
 
         values.append(mask)
+        values.append(inst_mask)
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))
@@ -83,4 +85,9 @@ class DataFolder(Dataset):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
         mask = res[-1]
-        return img, torch.cat(res[1:-1]), torch.cat(labels), inst_mask, mask, torch.as_tensor(ori_shape)
+        inst_map = res[-1]
+
+        print('!!!')
+        print(torch.eq(mask, inst_map).all().item())
+
+        return img, torch.cat(res[1:-1]), torch.cat(labels), inst_map, mask, torch.as_tensor(ori_shape)

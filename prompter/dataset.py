@@ -28,8 +28,7 @@ class DataFolder(Dataset):
         self.classes = anno_json.pop('classes')
         self.data = anno_json
         self.img_paths = list(anno_json.keys())
-        self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] \
-                    + ['mask', 'type_maps']
+        self.keys = ['image', 'keypoints'] + [f'keypoints{i}' for i in range(1, cfg.data.num_classes)] + ['masks']
 
         self.phase = mode
         self.dataset = cfg.data.name
@@ -72,17 +71,16 @@ class DataFolder(Dataset):
                         'type_map']
 
         mask = (mask > 0).astype(float)
-
         values.append(mask)
         unique_values = np.unique(type_map)
         type_masks = []
 
         if not len(unique_values[1:]):
-            type_masks.append(type_map)
+            values.append(type_map)
 
         for value in unique_values[1:]:
             mask = (type_map == value).astype(np.uint8)
-            type_masks.append(mask.astype(float))
+            values.append(mask.astype(float))
         values.append(type_masks)
 
         ori_shape = values[0].shape[:2]
@@ -93,11 +91,11 @@ class DataFolder(Dataset):
         img = res[0]
         labels = []
 
-        for i in range(1, len(res) - 2):
+        for i in range(1, len(res) - 1):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
-        mask = res[-2]
-        type_maps = res[-1]
+        mask = res[-1][0]
+        type_maps = res[-1][1:]
 
         type_map = torch.zeros_like(torch.tensor(type_maps[0]))
         for t in range(len(type_maps)):

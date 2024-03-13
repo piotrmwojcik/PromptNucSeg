@@ -84,10 +84,10 @@ class DataFolder(Dataset):
         for i in range(1, len(res) - 1):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
-        mask = res[-1]
+        mask = res[-2]
         inst_map = res[-1]
 
         print('!!!')
-        print(torch.eq(mask, inst_map).all().item())
+        print(torch.eq(mask, inst_map > 0).all().item())
 
         return img, torch.cat(res[1:-1]), torch.cat(labels), inst_map, mask, torch.as_tensor(ori_shape)

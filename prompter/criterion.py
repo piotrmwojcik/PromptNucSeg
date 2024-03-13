@@ -43,7 +43,7 @@ class Criterion(nn.Module):
         #target_classes[idx] = target_classes_o
 
         points = outputs['pred_coords']
-        type_map = outputs['type_maps']
+        type_map = targets['type_maps']
         target_classes = type_map[points.astype(int)[:, 1], points.astype(int)[:, 0]]
 
         loss_cls = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)

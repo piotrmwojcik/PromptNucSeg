@@ -51,7 +51,7 @@ class Criterion(nn.Module):
         indices = points.to(torch.long)
 
         linear_indices = indices[:, :, 0].long() * 256 + indices[:, :, 1].long()
-        linear_indices = torch.clamp(linear_indices, min=0, max=65535)
+        #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
         gathered_values = torch.gather(type_map.view(bs, -1), 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 

@@ -35,7 +35,7 @@ def train_one_epoch(
         masks = masks.to(device)
 
         targets = {
-            'gt_type_map': type_map,
+            'gt_type_map': type_map.to(device),
             'gt_masks': masks,
             'gt_nums': [len(points) for points in points_list],
             'gt_points': [points.view(-1, 2).to(device).float() for points in points_list],

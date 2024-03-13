@@ -95,7 +95,10 @@ class DataFolder(Dataset):
         mask = res[-2]
         type_maps = res[-1]
 
-        print(labels)
+        for i in range(1, len(type_maps)):
+            type_maps[i] += float(i)
+
+        print(type_maps[i])
 
         #print('!!!')
         #print(mask.shape)

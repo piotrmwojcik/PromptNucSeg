@@ -77,7 +77,7 @@ class DataFolder(Dataset):
         unique_values = np.unique(type_map)
         type_masks = []
 
-        print(type_map)
+        print(unique_values[1:])
         for value in unique_values[1:]:
             mask = (type_map == value).astype(np.uint8)
             type_masks.append(mask.astype(float))
@@ -104,8 +104,8 @@ class DataFolder(Dataset):
         #print('!!!')
         #print(mask.shape)
         #print(mask.bool())
-        print(torch.tensor(type_map))
-        print(mask)
+        #print(torch.tensor(type_map))
+        #print(mask)
         print()
         #print(torch.eq(mask.bool(), torch.tensor(type_map) != 5.0).all().item())
 

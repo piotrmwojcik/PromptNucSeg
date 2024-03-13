@@ -76,7 +76,7 @@ class DataFolder(Dataset):
         values.append(mask)
         values.append(type_map.astype(float))
 
-        print(torch.eq(mask.bool(), torch.tensor(type_map) > 0).all().item())
+        print(torch.eq(torch.tensor(mask).bool(), torch.tensor(type_map) > 0).all().item())
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))

@@ -55,6 +55,7 @@ class Criterion(nn.Module):
         grid = (2.0 * pred_coordinates / 256 - 1.0)
         target_classes = F.grid_sample(pred_coordinates, grid, mode='bilinear', align_corners=True)
         print('!!!')
+        print(grid.shape)
         print(target_classes.shape)
 
 

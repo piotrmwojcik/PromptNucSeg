@@ -61,6 +61,8 @@ def train_one_epoch(
 
         loss_dict_reduced = reduce_dict(loss_dict)
         losses_reduced = sum(loss for loss in loss_dict_reduced.values())
+        print('!!!')
+        print(losses_reduced)
         loss_value = losses_reduced.item()
 
         for k, v in loss_dict_reduced.items():

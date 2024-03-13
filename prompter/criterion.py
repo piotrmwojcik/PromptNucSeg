@@ -48,8 +48,10 @@ class Criterion(nn.Module):
         return loss_dict
 
     def loss_for(self, outputs, targets, indices, num_points):
-        print('!!!')
-        print(targets)
+        pred_coordinates = outputs['pred_coords']
+        bs = pred_coordinates.shape[0]
+        pred_coordinates = pred_coordinates.reshape(bs, 32, 32)
+        gt_masks = targets['gt_masks']
 
     def loss_mask(self, outputs, targets, indices, num_points):
         pred_masks = outputs['pred_masks']

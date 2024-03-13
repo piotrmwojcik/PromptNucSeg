@@ -47,19 +47,6 @@ class Criterion(nn.Module):
 
         return loss_dict
 
-    def loss_for(self, outputs, targets, indices, num_points):
-        pred_coordinates = outputs['pred_coords']
-        bs = pred_coordinates.shape[0]
-        pred_coordinates = pred_coordinates.reshape(bs, 32, 32, 2)
-        gt_masks = targets['gt_masks']
-        grid = (2.0 * pred_coordinates / 256 - 1.0)
-        target_classes = F.grid_sample(pred_coordinates, grid, mode='bilinear', align_corners=True)
-        print('!!!')
-        print(gt_masks.shape)
-        print(grid.shape)
-        print(target_classes.shape)
-
-
     def loss_mask(self, outputs, targets, indices, num_points):
         pred_masks = outputs['pred_masks']
         gt_masks = targets['gt_masks']
@@ -100,7 +87,6 @@ class Criterion(nn.Module):
         loss_map = {
             'loss_reg': self.loss_reg,
             'loss_cls': self.loss_cls,
-            'loss_for': self.loss_for,
             'loss_mask': self.loss_mask
         }
 

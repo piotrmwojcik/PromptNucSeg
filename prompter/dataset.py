@@ -74,13 +74,12 @@ class DataFolder(Dataset):
                         'inst_map']
 
         print('!!!!!!')
-        print(type_map.shape)
+        print(type_map)
 
-        inst_mask = mask
-        mask = (inst_mask > 0).astype(float)
+        mask = (inst_map > 0).astype(float)
 
         values.append(mask)
-        values.append(inst_mask)
+        values.append(type_mask)
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))

@@ -73,7 +73,6 @@ class DataFolder(Dataset):
         mask = (mask > 0).astype(float)
         values.append(mask)
         unique_values = np.unique(type_map)
-        type_masks = []
 
         if not len(unique_values[1:]):
             values.append(type_map)
@@ -81,7 +80,6 @@ class DataFolder(Dataset):
         for value in unique_values[1:]:
             mask = (type_map == value).astype(np.uint8)
             values.append(mask.astype(float))
-        values.append(type_masks)
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))

@@ -78,7 +78,7 @@ class DataFolder(Dataset):
         type_masks = []
 
         print(type_map)
-        for value in unique_values:
+        for value in unique_values[1:]:
             mask = (type_map == value).astype(np.uint8)
             type_masks.append(mask.astype(float))
         values.append(type_masks)
@@ -98,8 +98,8 @@ class DataFolder(Dataset):
         type_maps = res[-1]
 
         type_map = torch.zeros_like(torch.tensor(type_maps[0]))
-        for t in range(len(type_maps) - 1):
-            type_map += t * type_maps[t]
+        for t in range(len(type_maps)):
+            type_map += (t+1) * type_maps[t]
 
         #print('!!!')
         #print(mask.shape)

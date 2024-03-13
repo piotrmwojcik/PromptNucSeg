@@ -103,7 +103,9 @@ class DataFolder(Dataset):
         for t in range(len(type_maps)):
             type_map += (t+1) * type_maps[t]
 
-        type_map -= 1.0
-        type_map[type_map == -1.0] = 5.0
+        type_map = type_map.int()
+
+        type_map -= 1
+        type_map[type_map == -1] = 5
 
         return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape)

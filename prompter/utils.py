@@ -421,7 +421,7 @@ def predict(
 
 
 def collate_fn(batch):
-    images, points, labels, type_maps, masks = [[] for _ in range(4)]
+    images, points, labels, type_maps, masks = [[] for _ in range(5)]
     for x in batch:
         images.append(x[0])
         points.append(x[1])

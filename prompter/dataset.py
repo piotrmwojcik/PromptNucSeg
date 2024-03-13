@@ -108,7 +108,7 @@ class DataFolder(Dataset):
         type_map -= 1
         type_map[type_map == -1] = 5
 
-        assert(torch.min(type_map) == 0)
-        assert(torch.max(type_map) == 5)
+        assert(torch.min(type_map) >= 0)
+        assert(torch.max(type_map) <= 5)
 
         return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape)

@@ -91,7 +91,6 @@ class DataFolder(Dataset):
 
         #print('!!!')
         #print(mask.shape)
-        print(torch.tensor(type_map))
         print(mask.bool())
         print(torch.tensor(type_map) > 0)
         print(torch.eq(mask.bool(), torch.tensor(type_map) > 0).all().item())

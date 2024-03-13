@@ -107,9 +107,9 @@ class DataFolder(Dataset):
         #print(mask.shape)
         #print(mask.bool())
         #print(torch.tensor(type_map))
-        print(mask)
+        #print(mask)
         #print()
-        print(torch.eq(mask.bool(), torch.tensor(type_map) != 5.0).all().item())
+        print(torch.eq(mask.bool(), torch.tensor(type_map) > 0.0).all().item())
         print()
 
         return img, torch.cat(res[1:-2]), torch.cat(labels), type_map, mask, torch.as_tensor(ori_shape)

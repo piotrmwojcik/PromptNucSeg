@@ -69,14 +69,17 @@ class DataFolder(Dataset):
             mask = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
                         'inst_map']
             type_map = np.load(f'../segmentor/{img_path.replace("Images", "Masks")[:-4]}.npy', allow_pickle=True)[()][
-                        'type_map']
+                        'type_maps']
 
         mask = (mask > 0).astype(float)
 
         values.append(mask)
-        values.append(type_map.astype(float))
-
-        print(torch.eq(torch.tensor(mask).bool(), torch.tensor(type_map) > 0).all().item())
+        unique_values = np.unique(type_map)
+        type_masks = []
+        for value in unique_values:
+            mask = (type_map == value).astype(np.uint8)
+            type_masks.append(mask.astype(float))
+        values.append(type_masks)
 
         ori_shape = values[0].shape[:2]
         sample = dict(zip(self.keys, values))
@@ -90,7 +93,9 @@ class DataFolder(Dataset):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
         mask = res[-2]
-        type_map = res[-1]
+        type_maps = res[-1]
+
+        print(type_maps)
 
         #print('!!!')
         #print(mask.shape)
@@ -98,4 +103,4 @@ class DataFolder(Dataset):
         #print(torch.tensor(type_map) > 0)
         #print(torch.eq(mask.bool(), torch.tensor(type_map) > 0).all().item())
 
-        return img, torch.cat(res[1:-2]), torch.cat(labels), type_map, mask, torch.as_tensor(ori_shape)
+        return img, torch.cat(res[1:-2]), torch.cat(labels), type_maps, mask, torch.as_tensor(ori_shape)

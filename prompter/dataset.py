@@ -88,6 +88,6 @@ class DataFolder(Dataset):
         inst_map = res[-1]
 
         print('!!!')
-        print(torch.eq(mask, inst_map > 0).all().item())
+        print(torch.eq(mask, torch.tensor(inst_map) > 0).all().item())
 
         return img, torch.cat(res[1:-1]), torch.cat(labels), inst_map, mask, torch.as_tensor(ori_shape)

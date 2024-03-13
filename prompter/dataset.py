@@ -96,13 +96,9 @@ class DataFolder(Dataset):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
 
-        print(res[-1])
         mask = res[-1][0]
         type_maps = res[-1][1:]
 
-        print('!!!')
-        print(mask)
-        print(type_maps)
 
         type_map = torch.zeros_like(torch.tensor(type_maps[0]))
         for t in range(len(type_maps)):

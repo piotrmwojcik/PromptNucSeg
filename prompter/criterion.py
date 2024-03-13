@@ -45,6 +45,7 @@ class Criterion(nn.Module):
         points = outputs['pred_coords']
         type_map = targets['gt_type_map']
         print('!!!')
+        print(points.shape)
         print(type_map.shape)
         target_classes = type_map[points.int()[:, :, 1], points.int()[:, :, 0]]
         print(target_classes.shape)

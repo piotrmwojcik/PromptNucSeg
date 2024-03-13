@@ -46,14 +46,10 @@ class Criterion(nn.Module):
         points = outputs['pred_coords']
         type_map = targets['gt_type_map']
 
-        print('!!!')
-        print(points.shape)
+        points[:, 0] = torch.clamp(points[:, 0], min=0, max=255)
+        points[:, 1] = torch.clamp(points[:, 1], min=0, max=255)
 
-        indices = points.flatten(1, 2).to(torch.int64)
-
-        linear_indices = indices[:, :, 1] * 256 + indices[:, :, 0]
-        gathered_values = torch.gather(type_map.view(bs, -1), 1, linear_indices.unsqueeze(1))
-        target_classes = gathered_values.view(bs, 1024)
+        target_classes = type_map[points.astype(int)[:, 0], points.astype(int)[:, 1]]
 
         loss_cls = F.cross_entropy(src_logits.flatten(1, 2), target_classes, self.class_weight)
         loss_dict = {'loss_cls': loss_cls}

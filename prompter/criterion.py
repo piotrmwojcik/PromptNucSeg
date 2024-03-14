@@ -64,7 +64,7 @@ class Criterion(nn.Module):
         target_classes = gathered_values.view(bs, 1024)
 
         loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight_all)
-        loss_cls = 1.0 * loss_cls1 + 0.4 * loss_cls2
+        loss_cls = 1.0 * loss_cls1 + 0.01 * loss_cls2
         loss_dict = {'loss_cls': loss_cls}
 
         return loss_dict

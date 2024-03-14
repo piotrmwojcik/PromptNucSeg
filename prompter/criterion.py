@@ -57,8 +57,8 @@ class Criterion(nn.Module):
         #assert(torch.min(linear_indices))
         #print()
 
-        S = type_map.shape[1]
-        print(torch.max(linear_indices), S)
+        #S = type_map.shape[1]
+        #print(torch.max(linear_indices), S)
         #print(torch.max(indices_[:, :, 0]))
         #print(torch.max(linear_indices) < S)
         #print()

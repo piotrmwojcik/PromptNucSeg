@@ -57,7 +57,7 @@ class Criterion(nn.Module):
         #assert(torch.min(linear_indices))
         #print()
 
-        S = type_map.view(bs, -1).shape[1]
+        S = type_map.shape[1]
         print(torch.max(linear_indices), S)
         print(torch.max(linear_indices) < S)
         gathered_values = torch.gather(type_map, 1, linear_indices)

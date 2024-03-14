@@ -40,7 +40,7 @@ class Criterion(nn.Module):
         idx = self._get_src_permutation_idx(indices)
         src_logits = outputs['pred_logits']
 
-        print(targets['gt_labels'])
+        #print(targets['gt_labels'])
 
         target_classes = torch.full(src_logits.shape[:2], self.num_classes, dtype=torch.long, device=src_logits.device)
         target_classes_o = torch.cat([cls[J] for cls, (_, J) in zip(targets['gt_labels'], indices)])

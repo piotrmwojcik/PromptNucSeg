@@ -46,9 +46,9 @@ class Criterion(nn.Module):
         points = outputs['pred_coords']
         type_map = targets['gt_type_map']
 
-        points[:, 0] = torch.clamp(points[:, 0], min=0, max=255)
-        points[:, 1] = torch.clamp(points[:, 1], min=0, max=255)
         indices = points.to(torch.long)
+        indices[:, 0] = torch.clamp(indices[:, 0], min=0, max=255)
+        indices[:, 1] = torch.clamp(indices[:, 1], min=0, max=255)
 
         #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
         gathered_values = torch.zeros((bs, 1024)).to(points.device)

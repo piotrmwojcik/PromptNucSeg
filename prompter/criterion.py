@@ -48,23 +48,23 @@ class Criterion(nn.Module):
 
         loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)
 
-        #src_logits = outputs['pred_logits']
-        #bs = src_logits.shape[0]
+        src_logits = outputs['pred_logits']
+        bs = src_logits.shape[0]
 
-        #points = outputs['pred_coords']
-        #type_map = targets['gt_type_map'].view(bs, -1)
+        points = outputs['pred_coords']
+        type_map = targets['gt_type_map'].view(bs, -1)
 
-        #points = torch.clamp(points, min=0, max=255).int()
+        points = torch.clamp(points, min=0, max=255).int()
 
-        #linear_indices = points[:, :, 0] * 256
-        #linear_indices = linear_indices.long()
-        #linear_indices += points[:, :, 1]
-        #linear_indices = linear_indices.long()
-        #gathered_values = torch.gather(type_map, 1, linear_indices)
-        #target_classes = gathered_values.view(bs, 1024)
+        linear_indices = points[:, :, 0] * 256
+        linear_indices = linear_indices.long()
+        linear_indices += points[:, :, 1]
+        linear_indices = linear_indices.long()
+        gathered_values = torch.gather(type_map, 1, linear_indices)
+        target_classes = gathered_values.view(bs, 1024)
 
-        #loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight_all)
-        loss_cls = 1.0 * loss_cls1 #+ 0.4 * loss_cls2
+        loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight_all)
+        loss_cls = 1.0 * loss_cls1 + 0.4 * loss_cls2
         loss_dict = {'loss_cls': loss_cls}
 
         return loss_dict

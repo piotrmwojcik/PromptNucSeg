@@ -68,7 +68,8 @@ scheduler = dict(
 
 criterion = dict(
     matcher=dict(type='HungarianMatcher', dis_type='l2', set_cost_point=0.1, set_cost_class=1),
-    eos_coef=0.1,
+    eos_coef=0.4,
+    eos_coef_all=0.1,
     reg_loss_coef=5e-3,
     cls_loss_coef=1.0,
     mask_loss_coef=1.0

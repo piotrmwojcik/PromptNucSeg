@@ -8,12 +8,13 @@ from utils import is_dist_avail_and_initialized, get_world_size
 
 
 class Criterion(nn.Module):
-    def __init__(self, num_classes, matcher, class_weight, loss_weight, reg_loss_type='l2'):
+    def __init__(self, num_classes, matcher, class_weight, class_weight_all, loss_weight, reg_loss_type='l2'):
         super().__init__()
         self.matcher = matcher
         self.num_classes = num_classes
         self.loss_weight = loss_weight
         self.class_weight = class_weight
+        self.class_weight_all = class_weight_all,
         self.reg_loss_type = reg_loss_type
 
         self.focal_loss = BinaryFocalLoss()
@@ -74,7 +75,7 @@ class Criterion(nn.Module):
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 
-        loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight)
+        loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight_all)
         loss_cls = 0.6 * loss_cls1 + 0.4 * loss_cls2
         loss_dict = {'loss_cls': loss_cls}
 
@@ -139,6 +140,9 @@ def build_criterion(cfg, device):
     class_weight = torch.ones(cfg.data.num_classes + 1, dtype=torch.float).to(device)
     class_weight[-1] = cfg.criterion.eos_coef
 
+    class_weight_all = torch.ones(cfg.data.num_classes + 1, dtype=torch.float).to(device)
+    class_weight_all[-1] = cfg.criterion.eos_coef_all
+
     loss_weight = {
         'loss_cls': lambda epoch: cfg.criterion.cls_loss_coef,
         'loss_reg': lambda epoch: cfg.criterion.reg_loss_coef,
@@ -150,6 +154,7 @@ def build_criterion(cfg, device):
         cfg.data.num_classes,
         matcher,
         class_weight=class_weight,
+        class_weight_all=class_weight_all,
         loss_weight=loss_weight
     )
 

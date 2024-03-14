@@ -53,6 +53,8 @@ class Criterion(nn.Module):
         #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
         gathered_values = torch.zeros_like(points)
         _, l, _ = points.shape
+        print('!!!')
+        print(gathered_values.shape)
         for b in range(bs):
             for i in range(l):
                     gathered_values[:, i] = type_map[b, indices[b, i, 0], indices[b, i, 1]]

@@ -52,11 +52,10 @@ class Criterion(nn.Module):
 
         #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
         gathered_values = torch.zeros_like(points)
-        _, o_h, o_w, _ = points.shape
+        _, l, _ = points.shape
         for b in range(bs):
-            for i in range(o_h):
-                for j in range(o_w):
-                    gathered_values[:, i, j] = type_map[b, i, j]
+            for i in range(l):
+                    gathered_values[:, i] = type_map[b, indices[b, i, 0], indices[b, i, 1]]
         target_classes = gathered_values.view(bs, 1024)
 
         loss_cls = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight)

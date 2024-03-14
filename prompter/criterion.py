@@ -48,6 +48,7 @@ class Criterion(nn.Module):
 
         points[:, 0] = torch.clamp(points[:, 0], min=0, max=255)
         points[:, 1] = torch.clamp(points[:, 1], min=0, max=255)
+        points = points.int()
 
         #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
         gathered_values = torch.zeros((bs, 1024)).to(points.device)

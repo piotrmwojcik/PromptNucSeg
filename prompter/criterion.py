@@ -53,7 +53,7 @@ class Criterion(nn.Module):
         #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
         gathered_values = torch.zeros((bs, 1024)).to(points.device)
         _, l, _ = points.shape
-        gathered_values1 = torch.gather(type_map, 1, points[:, 0])
+        gathered_values1 = torch.gather(type_map, 1, points[:, 0].unsqueeze(-1))
         print('!!!')
         print(gathered_values1.shape)
         target_classes = gathered_values.view(bs, 1024)

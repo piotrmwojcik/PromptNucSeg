@@ -46,7 +46,7 @@ class Criterion(nn.Module):
         points = outputs['pred_coords']
         type_map = targets['gt_type_map'].view(bs, -1)
 
-        points = torch.clamp(points, min=0, max=255)
+        points = torch.clamp(points, min=0, max=255).int()
 
         linear_indices = points[:, :, 0] * 256
         linear_indices = linear_indices.long()

@@ -153,7 +153,7 @@ class DPAP2PNet(nn.Module):
         feat_sizes = [torch.tensor(feat.shape[:1:-1], dtype=torch.float, device=proposals.device) for feat in feats]
         grid = (2.0 * proposals / self.strides[0] / feat_sizes[0] - 1.0)
 
-        roi_features = F.grid_sample(feats[1], grid, mode='bilinear', align_corners=True)
+        roi_features = F.grid_sample(feats[0], grid, mode='bilinear', align_corners=True)
         # roi_features2 = F.grid_sample(x, grid, mode='bilinear', align_corners=True)
         deltas2deform = self.deform_layer(roi_features.permute(0, 2, 3, 1))
         deformed_proposals = proposals + deltas2deform

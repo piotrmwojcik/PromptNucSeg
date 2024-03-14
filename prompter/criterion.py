@@ -14,7 +14,7 @@ class Criterion(nn.Module):
         self.num_classes = num_classes
         self.loss_weight = loss_weight
         self.class_weight = class_weight
-        self.class_weight_all = class_weight_all,
+        self.class_weight_all = class_weight_all
         self.reg_loss_type = reg_loss_type
 
         self.focal_loss = BinaryFocalLoss()

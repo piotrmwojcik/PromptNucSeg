@@ -51,7 +51,7 @@ class Criterion(nn.Module):
         indices = points.to(torch.long)
 
         #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
-        gathered_values = torch.zeros((bs, 1024))
+        gathered_values = torch.zeros((bs, 1024)).to(points.device)
         _, l, _ = points.shape
         for b in range(bs):
             for i in range(l):

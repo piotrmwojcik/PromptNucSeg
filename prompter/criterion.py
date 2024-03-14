@@ -40,42 +40,30 @@ class Criterion(nn.Module):
         idx = self._get_src_permutation_idx(indices)
         src_logits = outputs['pred_logits']
 
+        print()
+
         target_classes = torch.full(src_logits.shape[:2], self.num_classes, dtype=torch.long, device=src_logits.device)
         target_classes_o = torch.cat([cls[J] for cls, (_, J) in zip(targets['gt_labels'], indices)])
         target_classes[idx] = target_classes_o
 
         loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)
 
-        src_logits = outputs['pred_logits']
-        bs = src_logits.shape[0]
+        #src_logits = outputs['pred_logits']
+        #bs = src_logits.shape[0]
 
-        #target_classes = torch.full(src_logits.shape[:2], self.num_classes, dtype=torch.long, device=src_logits.device)
-        #target_classes_o = torch.cat([cls[J] for cls, (_, J) in zip(targets['gt_labels'], indices)])
-        #target_classes[idx] = target_classes_o
+        #points = outputs['pred_coords']
+        #type_map = targets['gt_type_map'].view(bs, -1)
 
-        points = outputs['pred_coords']
-        type_map = targets['gt_type_map'].view(bs, -1)
+        #points = torch.clamp(points, min=0, max=255).int()
 
-        points = torch.clamp(points, min=0, max=255).int()
+        #linear_indices = points[:, :, 0] * 256
+        #linear_indices = linear_indices.long()
+        #linear_indices += points[:, :, 1]
+        #linear_indices = linear_indices.long()
+        #gathered_values = torch.gather(type_map, 1, linear_indices)
+        #target_classes = gathered_values.view(bs, 1024)
 
-        linear_indices = points[:, :, 0] * 256
-        linear_indices = linear_indices.long()
-        linear_indices += points[:, :, 1]
-        linear_indices = linear_indices.long()
-        #S = type_map.view(bs, -1).shape[1]
-        #print(torch.max(linear_indices), S)
-        #assert(torch.min(linear_indices))
-        #print()
-
-        #S = type_map.shape[1]
-        #print(torch.max(linear_indices), S)
-        #print(torch.max(indices_[:, :, 0]))
-        #print(torch.max(linear_indices) < S)
-        #print()
-        gathered_values = torch.gather(type_map, 1, linear_indices)
-        target_classes = gathered_values.view(bs, 1024)
-
-        loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight_all)
+        #loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight_all)
         loss_cls = 1.0 * loss_cls1 #+ 0.4 * loss_cls2
         loss_dict = {'loss_cls': loss_cls}
 

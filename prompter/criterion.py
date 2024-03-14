@@ -46,14 +46,16 @@ class Criterion(nn.Module):
         points = outputs['pred_coords']
         type_map = targets['gt_type_map']
 
-        points[:, 0] = torch.clamp(points[:, 0], min=0, max=254)
-        points[:, 1] = torch.clamp(points[:, 1], min=0, max=254)
+        points[:, 0] = torch.clamp(points[:, 0], min=0, max=255)
+        points[:, 1] = torch.clamp(points[:, 1], min=0, max=255)
         indices = points.to(torch.long)
 
         linear_indices = indices[:, :, 0].long() * 256 + indices[:, :, 1].long()
+        linear_indices = linear_indices.long()
         S = type_map.view(bs, -1).shape[1]
-        assert(torch.max(linear_indices) < S, f"{S} {torch.max(linear_indices)}")
-        assert(torch.min(linear_indices) >= 0)
+        print(torch.max(linear_indices), S)
+        assert(torch.min(linear_indices))
+        print()
         gathered_values = torch.gather(type_map.view(bs, -1), 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 

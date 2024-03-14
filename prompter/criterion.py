@@ -48,9 +48,9 @@ class Criterion(nn.Module):
 
         points[:, 0] = torch.clamp(points[:, 0], min=0, max=255)
         points[:, 1] = torch.clamp(points[:, 1], min=0, max=255)
-        indices_ = points.to(torch.long)
 
-        linear_indices = indices_[:, :, 0].long() * 256 + indices_[:, :, 1].long()
+        linear_indices = points[:, :, 0] * 256
+        linear_indices += points[:, :, 1]
         linear_indices = linear_indices.long()
         #S = type_map.view(bs, -1).shape[1]
         #print(torch.max(linear_indices), S)
@@ -59,9 +59,9 @@ class Criterion(nn.Module):
 
         S = type_map.shape[1]
         print(torch.max(linear_indices), S)
-        print(torch.max(indices_[:, :, 0]))
-        print(torch.max(linear_indices) < S)
-        print()
+        #print(torch.max(indices_[:, :, 0]))
+        #print(torch.max(linear_indices) < S)
+        #print()
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 

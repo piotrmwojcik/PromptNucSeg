@@ -61,6 +61,7 @@ class Criterion(nn.Module):
         print(torch.max(linear_indices), S)
         print(torch.max(indices_[:, :, 0]))
         print(torch.max(linear_indices) < S)
+        print()
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 

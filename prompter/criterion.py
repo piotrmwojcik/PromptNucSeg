@@ -53,9 +53,9 @@ class Criterion(nn.Module):
         #linear_indices = torch.clamp(linear_indices, min=0, max=65535)
         gathered_values = torch.zeros((bs, 1024)).to(points.device)
         _, l, _ = points.shape
-        for b in range(bs):
-            for i in range(l):
-                    gathered_values[:, i] = type_map[b, points[b, i, 0], points[b, i, 1]]
+        gathered_values1 = torch.gather(type_map, 1, points[:, 0])
+        print('!!!')
+        print(gathered_values1.shape)
         target_classes = gathered_values.view(bs, 1024)
 
         loss_cls = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight)

@@ -44,7 +44,7 @@ class Criterion(nn.Module):
         #target_classes[idx] = target_classes_o
 
         points = outputs['pred_coords']
-        type_map = targets['gt_type_map'].numpy()
+        type_map = targets['gt_type_map'].cpu().numpy()
 
         points[:, 0] = torch.clamp(points[:, 0], min=0, max=255).cpu().numpy()
         points[:, 1] = torch.clamp(points[:, 1], min=0, max=255).cpu().numpy()

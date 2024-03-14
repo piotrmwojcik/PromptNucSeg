@@ -36,6 +36,15 @@ class Criterion(nn.Module):
     def loss_cls(self, outputs, targets, indices, num_points):
         """Classification loss """
         #idx = self._get_src_permutation_idx(indices)
+        idx = self._get_src_permutation_idx(indices)
+        src_logits = outputs['pred_logits']
+
+        target_classes = torch.full(src_logits.shape[:2], self.num_classes, dtype=torch.long, device=src_logits.device)
+        target_classes_o = torch.cat([cls[J] for cls, (_, J) in zip(targets['gt_labels'], indices)])
+        target_classes[idx] = target_classes_o
+
+        loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)
+
         src_logits = outputs['pred_logits']
         bs = src_logits.shape[0]
 
@@ -65,7 +74,8 @@ class Criterion(nn.Module):
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 
-        loss_cls = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight)
+        loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight)
+        loss_cls = 0.7 * loss_cls1 + 0.3 * loss_cls2
         loss_dict = {'loss_cls': loss_cls}
 
         return loss_dict

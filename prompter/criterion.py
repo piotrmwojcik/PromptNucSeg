@@ -52,10 +52,10 @@ class Criterion(nn.Module):
 
         linear_indices = indices[:, :, 0].long() * 256 + indices[:, :, 1].long()
         linear_indices = linear_indices.long()
-        S = type_map.view(bs, -1).shape[1]
-        print(torch.max(linear_indices), S)
-        assert(torch.min(linear_indices))
-        print()
+        #S = type_map.view(bs, -1).shape[1]
+        #print(torch.max(linear_indices), S)
+        #assert(torch.min(linear_indices))
+        #print()
         gathered_values = torch.gather(type_map.view(bs, -1), 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 

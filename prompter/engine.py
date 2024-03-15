@@ -75,13 +75,13 @@ def train_one_epoch(
             plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
             plt.close()
 
-             mask = gt_type_mask.cpu().numpy()
+            mask = gt_type_mask.cpu().numpy()
 
-             colors = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
-             cmap = mcolors.ListedColormap(colors)
-             plt.imshow(mask, cmap=cmap)
-             plt.axis('off')
-             plt.savefig(f'/data/pwojcik/prompter_dump/mask_{idx}.png', bbox_inches='tight', pad_inches=0)
+            colors = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
+            cmap = mcolors.ListedColormap(colors)
+            plt.imshow(mask, cmap=cmap)
+            plt.axis('off')
+            plt.savefig(f'/data/pwojcik/prompter_dump/mask_{idx}.png', bbox_inches='tight', pad_inches=0)
 
         loss_dict_reduced = reduce_dict(loss_dict)
         losses_reduced = sum(loss for loss in loss_dict_reduced.values())

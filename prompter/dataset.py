@@ -73,7 +73,7 @@ class DataFolder(Dataset):
         mask = (mask > 0).astype(float)
         masks = [mask]
 
-        for value in range(5):
+        for value in range(1, 5):
             m = (type_map == value).astype(np.uint8)
             masks.append(m.astype(float))
 

@@ -79,7 +79,7 @@ def train_one_epoch(
             mask = gt_type_mask.cpu().numpy()
 
             colors = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
-            cmap = mcolors.ListedColormap(colors)
+            cmap = mcolors.ListedColormap(colors, N=6)
             plt.imshow(mask, cmap=cmap)
             plt.axis('off')
             plt.savefig(f'/data/pwojcik/prompter_dump/mask_{idx}.png', bbox_inches='tight', pad_inches=0)

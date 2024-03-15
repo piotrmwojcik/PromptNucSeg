@@ -73,12 +73,7 @@ class DataFolder(Dataset):
         mask = (mask > 0).astype(float)
         masks = [mask]
 
-        unique_values = np.unique(type_map)
-
-        if not len(unique_values[1:]):
-            masks.append(type_map.astype(float))
-
-        for value in unique_values[1:]:
+        for value in range(5):
             m = (type_map == value).astype(np.uint8)
             masks.append(m.astype(float))
 

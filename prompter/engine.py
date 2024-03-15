@@ -61,7 +61,7 @@ def train_one_epoch(
             classes = np.argmax(scores, axis=-1)
             valid_flag = classes < (scores.shape[-1] - 1)
 
-            points = points[valid_flag]
+            points = pd_points[valid_flag]
             scores = scores[valid_flag].max(1)
 
             #gt_type_mask = targets['gt_type_map'][idx]

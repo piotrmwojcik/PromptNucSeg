@@ -54,12 +54,13 @@ def train_one_epoch(
 
         for idx in range(10):
             image = images[idx]
-            gt_points = outputs['pred_coords'][idx]
+            pd_points = outputs['pred_coords'].clone()[idx]
+            pd_points = pd_points.detach().numpy()
             gt_type_mask = targets['gt_type_map'][idx]
 
             image = image.permute(1, 2, 0).cpu().numpy()
             plt.imshow(image)
-            points = gt_points.cpu().numpy()
+            points = pd_points.cpu().numpy()
             plt.scatter(points[:, 0], points[:, 1], c='r', marker='o')
             plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
             plt.close()

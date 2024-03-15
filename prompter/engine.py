@@ -56,6 +56,7 @@ def train_one_epoch(
             image = images[idx]
             pd_points = outputs['pred_coords'].clone()[idx]
             pd_points = pd_points.detach().cpu().numpy()
+            gt_type_mask = targets['gt_type_map'][idx].cpu().numpy()
             scores = outputs['pred_logits'][idx].softmax(-1).detach().cpu().numpy()
             import numpy as np
             classes = np.argmax(scores, axis=-1)

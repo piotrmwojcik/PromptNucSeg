@@ -103,6 +103,4 @@ class DataFolder(Dataset):
         type_map -= 1
         type_map[type_map == -1] = 5
 
-        assert not torch.all(type_map.int() == 0)
-
         return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape)

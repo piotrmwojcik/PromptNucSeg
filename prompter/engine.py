@@ -57,6 +57,8 @@ def train_one_epoch(
             pd_points = outputs['pred_coords'].clone()[idx]
             pd_points = pd_points.detach().cpu().numpy()
             gt_type_mask = targets['gt_type_map'][idx]
+
+            assert not torch.all(gt_type_mask.int() == 0)
             scores = outputs['pred_logits'][idx].softmax(-1).detach().cpu().numpy()
             import numpy as np
             classes = np.argmax(scores, axis=-1)

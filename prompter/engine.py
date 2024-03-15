@@ -61,7 +61,7 @@ def train_one_epoch(
             image = image.permute(1, 2, 0).cpu().numpy()
             plt.imshow(image)
             points = pd_points
-            plt.scatter(points[:, 0], points[:, 1], c='r', marker='o')
+            plt.scatter(points[:, 0], points[:, 1], c='r', marker='o', s=10)
             plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
             plt.close()
 

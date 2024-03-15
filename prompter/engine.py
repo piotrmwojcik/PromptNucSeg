@@ -55,7 +55,7 @@ def train_one_epoch(
         for idx in range(10):
             image = images[idx]
             pd_points = outputs['pred_coords'].clone()[idx]
-            #pd_points = pd_points.detach().cpu().numpy()
+            pd_points = pd_points.detach().cpu().numpy()
             scores = outputs['pred_logits'][0].softmax(-1).detach().cpu().numpy()
             import numpy as np
             classes = np.argmax(scores, axis=-1)

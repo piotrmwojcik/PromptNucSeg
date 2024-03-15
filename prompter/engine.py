@@ -56,11 +56,19 @@ def train_one_epoch(
             image = images[idx]
             pd_points = outputs['pred_coords'].clone()[idx]
             pd_points = pd_points.detach().cpu().numpy()
+            scores = outputs['pred_logits'][0].softmax(-1).cpu().numpy()
+            import numpy as np
+            classes = np.argmax(scores, axis=-1)
+            valid_flag = classes < (scores.shape[-1] - 1)
+
+            points = points[valid_flag]
+            scores = scores[valid_flag].max(1)
+
             #gt_type_mask = targets['gt_type_map'][idx]
 
             image = image.permute(1, 2, 0).cpu().numpy()
             plt.imshow(image)
-            points = pd_points
+            #points = pd_points
             plt.scatter(points[:, 0], points[:, 1], c='r', marker='o', s=10)
             plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
             plt.close()

@@ -50,7 +50,7 @@ def train_one_epoch(
             loss_dict = criterion(outputs, targets, epoch)
             losses = sum(loss for loss in loss_dict.values())
 
-        if epoch >= 10:
+        if epoch >= 20:
             for idx in range(10):
                 image = images[idx]
                 pd_points = outputs['pred_coords'].clone()[idx]

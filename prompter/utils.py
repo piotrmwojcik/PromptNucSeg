@@ -427,13 +427,13 @@ def predict(
         plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
         plt.close()
 
-        mask = gt_type_mask.cpu().numpy()
+        #mask = gt_type_mask.cpu().numpy()
 
-        colors = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
-        cmap = mcolors.ListedColormap(colors, N=6)
-        plt.imshow(mask, cmap=cmap)
-        plt.axis('off')
-        plt.savefig(f'/data/pwojcik/prompter_dump/mask_{idx}.png', bbox_inches='tight', pad_inches=0)
+        #colors = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
+        #cmap = mcolors.ListedColormap(colors, N=6)
+        #plt.imshow(mask, cmap=cmap)
+        #plt.axis('off')
+        #plt.savefig(f'/data/pwojcik/prompter_dump/mask_{idx}.png', bbox_inches='tight', pad_inches=0)
 
     np.clip(points[:, 0], a_min=0, a_max=ori_w - 1, out=points[:, 0])
     np.clip(points[:, 1], a_min=0, a_max=ori_h - 1, out=points[:, 1])

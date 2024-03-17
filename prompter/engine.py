@@ -117,6 +117,8 @@ def train_one_epoch(
         metric_logger.update(loss=losses_reduced, **loss_dict_reduced)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
 
+        log_info["lr"] = optimizer.param_groups[0]["lr"]
+
     return log_info
 
 

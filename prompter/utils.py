@@ -6,6 +6,7 @@ import scipy.spatial as S
 import torchvision.transforms as T
 
 import datetime
+import numpy as np
 import errno
 import os
 import time
@@ -406,7 +407,7 @@ def predict(
 
         #assert not torch.all(gt_type_mask.int() == 0)
         scores = outputs['pred_logits'][idx].softmax(-1).detach().cpu().numpy()
-        import numpy as np
+
         import matplotlib.pyplot as plt
         import matplotlib.colors as mcolors
         classes = np.argmax(scores, axis=-1)

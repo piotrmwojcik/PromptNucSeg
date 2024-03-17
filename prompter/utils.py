@@ -406,23 +406,23 @@ def predict(
         #gt_type_mask = targets['gt_type_map'][idx]
 
         #assert not torch.all(gt_type_mask.int() == 0)
-        scores = outputs['pred_logits'][idx].softmax(-1).detach().cpu().numpy()
+        mscores = outputs['pred_logits'][idx].softmax(-1).detach().cpu().numpy()
 
         import matplotlib.pyplot as plt
         import matplotlib.colors as mcolors
         classes = np.argmax(scores, axis=-1)
-        valid_flag = classes < (scores.shape[-1] - 1)
+        valid_flag = classes < (mscores.shape[-1] - 1)
 
-        points = pd_points[valid_flag]
+        mpoints = pd_points[valid_flag]
         rest = pd_points[~valid_flag]
-        scores = scores[valid_flag].max(1)
+        mscores = mscores[valid_flag].max(1)
 
         #gt_type_mask = targets['gt_type_map'][idx]
 
         image = image.permute(1, 2, 0).cpu().numpy()
         plt.imshow(image)
         #points = pd_points
-        plt.scatter(points[:, 0], points[:, 1], c='r', marker='.', s=10)
+        plt.scatter(mpoints[:, 0], mpoints[:, 1], c='r', marker='.', s=10)
         plt.scatter(rest[:, 0], rest[:, 1], c='b', marker='+', s=10)
         plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
         plt.close()

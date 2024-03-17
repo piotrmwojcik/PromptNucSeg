@@ -399,7 +399,7 @@ def predict(
     scores = outputs['pred_logits'][0].softmax(-1).cpu().numpy()
     classes = np.argmax(scores, axis=-1)
 
-    for idx in range(10):
+    for idx in range(1):
         image = image[idx]
         pd_points = outputs['pred_coords'].clone()[idx]
         pd_points = pd_points.detach().cpu().numpy()

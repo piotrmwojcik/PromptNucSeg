@@ -62,7 +62,7 @@ optimizer = dict(
 
 scheduler = dict(
      type='CosineLR',
-     t_initial=50, lr_min=2e-8, cycle_mul=1., cycle_decay=1., cycle_limit=1,
+     t_initial=100, lr_min=2e-8, cycle_mul=1., cycle_decay=1., cycle_limit=1,
      warmup_t=10, warmup_lr_init=1e-6
  )
 

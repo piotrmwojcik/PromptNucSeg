@@ -9,6 +9,7 @@ from models.dpa_p2pnet import build_model
 from engine import train_one_epoch, evaluate
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
+from timm.scheduler import create_scheduler
 
 
 def parse_args():
@@ -149,12 +150,18 @@ def main():
         weight_decay=cfg.optimizer.weight_decay
     )
 
-    scheduler = getattr(torch.optim.lr_scheduler, cfg.scheduler.type)(
-        optimizer,
-        milestones=cfg.scheduler.milestones,
-        gamma=cfg.scheduler.gamma,
-    )
+    class AttrDict(dict):
+         def __init__(self, *args, **kwargs):
+             super(AttrDict, self).__init__(*args, **kwargs)
+             self.__dict__ = self
 
+     scheduler, _ = create_scheduler(
+         AttrDict(dict(epochs=args.epochs, sched='cosine',
+         t_initial=cfg.scheduler.t_initial, min_lr=cfg.scheduler.lr_min, cycle_mul=cfg.scheduler.cycle_mul,
+         cycle_decay=cfg.scheduler.cycle_decay, cycle_limit=cfg.scheduler.cycle_limit,
+         warmup_epochs=cfg.scheduler.warmup_t, warmup_lr=cfg.scheduler.warmup_lr_init, cooldown_epochs=0)),
+         optimizer
+     )
     scaler = torch.cuda.amp.Gradcaler() if args.amp else None
 
     if args.use_wandb and is_main_process():
@@ -203,7 +210,7 @@ def main():
             model_ema,
             scaler
         )
-        scheduler.step()
+        scheduler.step(epoch=epoch)
 
         if args.output_dir:
             checkpoint = {

@@ -61,10 +61,10 @@ optimizer = dict(
 )
 
 scheduler = dict(
-    type='MultiStepLR',
-    milestones=[50, 100],
-    gamma=0.5
-)
+     type='CosineLR',
+     t_initial=100, lr_min=2e-8, cycle_mul=1., cycle_decay=1., cycle_limit=1,
+     warmup_t=10, warmup_lr_init=1e-6
+ )
 
 criterion = dict(
     matcher=dict(type='HungarianMatcher', dis_type='l2', set_cost_point=0.1, set_cost_class=1),

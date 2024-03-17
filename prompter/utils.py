@@ -398,6 +398,42 @@ def predict(
     scores = outputs['pred_logits'][0].softmax(-1).cpu().numpy()
     classes = np.argmax(scores, axis=-1)
 
+    for idx in range(10):
+        image = image[idx]
+        pd_points = outputs['pred_coords'].clone()[idx]
+        pd_points = pd_points.detach().cpu().numpy()
+        #gt_type_mask = targets['gt_type_map'][idx]
+
+        #assert not torch.all(gt_type_mask.int() == 0)
+        scores = outputs['pred_logits'][idx].softmax(-1).detach().cpu().numpy()
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import matplotlib.colors as mcolors
+        classes = np.argmax(scores, axis=-1)
+        valid_flag = classes < (scores.shape[-1] - 1)
+
+        points = pd_points[valid_flag]
+        rest = pd_points[~valid_flag]
+        scores = scores[valid_flag].max(1)
+
+        #gt_type_mask = targets['gt_type_map'][idx]
+
+        image = image.permute(1, 2, 0).cpu().numpy()
+        plt.imshow(image)
+        #points = pd_points
+        plt.scatter(points[:, 0], points[:, 1], c='r', marker='.', s=10)
+        plt.scatter(rest[:, 0], rest[:, 1], c='b', marker='+', s=10)
+        plt.savefig(f'/data/pwojcik/prompter_dump/img_{idx}.png')
+        plt.close()
+
+        mask = gt_type_mask.cpu().numpy()
+
+        colors = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
+        cmap = mcolors.ListedColormap(colors, N=6)
+        plt.imshow(mask, cmap=cmap)
+        plt.axis('off')
+        plt.savefig(f'/data/pwojcik/prompter_dump/mask_{idx}.png', bbox_inches='tight', pad_inches=0)
+
     np.clip(points[:, 0], a_min=0, a_max=ori_w - 1, out=points[:, 0])
     np.clip(points[:, 1], a_min=0, a_max=ori_h - 1, out=points[:, 1])
     valid_flag = classes < (scores.shape[-1] - 1)

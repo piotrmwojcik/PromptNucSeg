@@ -63,12 +63,12 @@ class Criterion(nn.Module):
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, 1024)
 
-        # counts = {}
-        # for i in range(6):
-        #     counts[i] = (target_classes == i).sum().item()
-        # for value, count in counts.items():
-        #     print(f"Value {value}: {count} occurrences")
-        # print()
+        #counts = {}
+        #for i in range(6):
+        #    counts[i] = (target_classes == i).sum().item()
+        #for value, count in counts.items():
+        #    print(f"Value {value}: {count} occurrences")
+        #print()
 
         loss_cls2 = F.cross_entropy(src_logits.transpose(1, 2), target_classes.to(torch.long), self.class_weight_all)
         loss_cls = loss_cls1 + 0.05 * loss_cls2

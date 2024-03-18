@@ -388,7 +388,7 @@ def pre_processing(img):
 def predict(
         model,
         image,
-        data_iter_step,
+        data_iter_step=0,
         nms_thr=-1,
         ori_shape=None,
         filtering=False
@@ -400,44 +400,9 @@ def predict(
     scores = outputs['pred_logits'][0].softmax(-1).cpu().numpy()
     classes = np.argmax(scores, axis=-1)
 
-    # image = image[0]
-    # pd_points = outputs['pred_coords'].clone()[0]
-    # pd_points = pd_points.detach().cpu().numpy()
-    # #gt_type_mask = targets['gt_type_map'][idx]
-    #
-    # #assert not torch.all(gt_type_mask.int() == 0)
-    # mscores = outputs['pred_logits'][0].softmax(-1).detach().cpu().numpy()
-    #
-    # import matplotlib.pyplot as plt
-    # import matplotlib.colors as mcolors
-    # classes = np.argmax(scores, axis=-1)
-    # valid_flag = classes < (mscores.shape[-1] - 1)
-    #
-    # mpoints = pd_points[valid_flag]
-    # rest = pd_points[~valid_flag]
-    # mscores = mscores[valid_flag].max(1)
-    #
-    # #gt_type_mask = targets['gt_type_map'][idx]
-    #
-    # image = image.permute(1, 2, 0).cpu().numpy()
-    # plt.imshow(image)
-    # #points = pd_points
-    # plt.scatter(mpoints[:, 0], mpoints[:, 1], c='r', marker='.', s=10)
-    # plt.scatter(rest[:, 0], rest[:, 1], c='b', marker='+', s=10)
-    # plt.savefig(f'/data/pwojcik/prompter_dump/img_{data_iter_step}.png')
-    # plt.close()
-    #
-    #     #mask = gt_type_mask.cpu().numpy()
-    #
-    #     #colors = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
-    #     #cmap = mcolors.ListedColormap(colors, N=6)
-    #     #plt.imshow(mask, cmap=cmap)
-    #     #plt.axis('off')
-    #     #plt.savefig(f'/data/pwojcik/prompter_dump/mask_{idx}.png', bbox_inches='tight', pad_inches=0)
-
     np.clip(points[:, 0], a_min=0, a_max=ori_w - 1, out=points[:, 0])
     np.clip(points[:, 1], a_min=0, a_max=ori_h - 1, out=points[:, 1])
-    valid_flag = classes < (scores.shape[-1] - 1)
+    valid_flag = classes < (scores.shape[-1])
 
     points = points[valid_flag]
     scores = scores[valid_flag].max(1)
@@ -450,9 +415,6 @@ def predict(
         points = points[valid_flag]
         scores = scores[valid_flag]
         classes = classes[valid_flag]
-
-    if len(points) and nms_thr > 0:
-        points, scores, classes = point_nms(points, scores, classes, nms_thr)
 
     return points, scores, classes, mask
 

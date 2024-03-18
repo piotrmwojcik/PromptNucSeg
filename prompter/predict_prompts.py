@@ -35,9 +35,11 @@ transform = A.Compose([
     ToTensorV2()
 ], p=1)
 
+run_name = '_nl'
 
 def process_files(files):
-    for file in tqdm(files):
+    for file in sorted(tqdm(files)):
+        print(file)
         img = io.imread(f'../segmentor/{file}')[..., :3]
 
         image = transform(image=img)['image'].unsqueeze(0).to(device)
@@ -53,20 +55,21 @@ def process_files(files):
         save_content = np.concatenate([points, classes[:, None]], axis=-1)
 
         np.save(
-            f'../segmentor/prompts/{dataset}/{file.split("/")[-1][:-4]}',
+            f'../segmentor/prompts/{dataset}{run_name}/{file.split("/")[-1][:-4]}',
             save_content
         )
 
 
-mkdir(f'../segmentor/prompts/{dataset}')
+mkdir(f'../segmentor/prompts/{dataset}{run_name}')
 
 
 test_files = np.load(f'../segmentor/datasets/{dataset}_test_files.npy')
 process_files(test_files)
 
 try:
-    val_files = np.load(f'../segmentor/datasets/{dataset}_val_files.npy')
-    process_files(val_files)
+    pass
+    #val_files = np.load(f'../segmentor/datasets/{dataset}_val_files.npy')
+    #process_files(val_files)
 
 except FileNotFoundError:
     pass

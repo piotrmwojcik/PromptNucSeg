@@ -50,7 +50,7 @@ class Criterion(nn.Module):
 
         bs = src_logits.shape[0]
         src_logits = outputs['pred_logits']
-        mask = outputs['gt_masks'].squeeze() > 0
+        mask = targets['gt_masks'].squeeze() > 0
         mask = mask.view(bs, -1)
 
         points = outputs['pred_coords']

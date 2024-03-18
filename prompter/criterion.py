@@ -65,11 +65,11 @@ class Criterion(nn.Module):
         gathered_mask = torch.gather(mask, 1, linear_indices).view(bs, 1024)
         #linear_indices = linear_indices[gathered_mask]
 
-        print('!!!')
-        print(src_logits.transpose(1, 2).shape)
-
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, -1)
+        target_classes = target_classes[gathered_mask]
+        src_logits = src_logits.transpose(1, 2)
+        src_logits = src_logits[gathered_mask]
 
         #counts = {}
         #for i in range(6):

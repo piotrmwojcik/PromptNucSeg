@@ -69,7 +69,8 @@ class Criterion(nn.Module):
         target_classes = gathered_values.view(bs, -1)
         target_classes = target_classes[gathered_mask]
         src_logits = src_logits.transpose(1, 2)
-        src_logits = src_logits[gathered_mask.unsqueeze(1).repeat(1, 6, 1)]
+        src_logits = src_logits[gathered_mask.unsqueeze(1).repeat(1, 6, 1)].view(target_classes.shape[0], 6)
+
 
         #counts = {}
         #for i in range(6):

@@ -48,11 +48,10 @@ class Criterion(nn.Module):
 
         loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)
 
-        src_logits = outputs['pred_logits']
-        mask = outputs['pred_masks']
-        print('!!')
-        print(mask.shape)
         bs = src_logits.shape[0]
+        src_logits = outputs['pred_logits']
+        mask = outputs['gt_masks'].squeeze() > 0
+        mask = mask.view(bs, -1)
 
         points = outputs['pred_coords']
         type_map = targets['gt_type_map'].view(bs, -1)
@@ -63,8 +62,12 @@ class Criterion(nn.Module):
         linear_indices = linear_indices.long()
         linear_indices += points[:, :, 1]
         linear_indices = linear_indices.long()
+        gathered_mask = torch.gather(mask, 1, linear_indices).view(bs, 1024)
+        linear_indices = linear_indices[gathered_mask]
+
+
         gathered_values = torch.gather(type_map, 1, linear_indices)
-        target_classes = gathered_values.view(bs, 1024)
+        target_classes = gathered_values.view(bs, -1)
 
         #counts = {}
         #for i in range(6):

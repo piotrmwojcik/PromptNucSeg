@@ -73,9 +73,7 @@ class DataFolder(Dataset):
         mask = (mask > 0).astype(float)
         masks = [mask]
 
-        print(np.unique(type_map))
-
-        for value in range(1, 5):
+        for value in range(1, 6):
             m = (type_map == value).astype(np.uint8)
             masks.append(m.astype(float))
 
@@ -104,7 +102,6 @@ class DataFolder(Dataset):
 
         type_map -= 1
         type_map[type_map == -1] = 5
-
 
 
         return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape)

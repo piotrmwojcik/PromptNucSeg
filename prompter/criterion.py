@@ -62,12 +62,11 @@ class Criterion(nn.Module):
         linear_indices = linear_indices.long()
         linear_indices += points[:, :, 1]
         linear_indices = linear_indices.long()
-        print('!!!')
-        print(mask.shape)
-        print(type_map.shape)
         gathered_mask = torch.gather(mask, 1, linear_indices).view(bs, 1024)
-        linear_indices = linear_indices[gathered_mask]
+        #linear_indices = linear_indices[gathered_mask]
 
+        print('!!!')
+        print(src_logits.transpose(1, 2).shape)
 
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, -1)

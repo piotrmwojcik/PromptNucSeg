@@ -68,6 +68,9 @@ class Criterion(nn.Module):
         gathered_values = torch.gather(type_map, 1, linear_indices)
         target_classes = gathered_values.view(bs, -1)
         target_classes = target_classes[gathered_mask]
+        print('!!!')
+        print(torch.unique(target_classes))
+
         src_logits = src_logits.transpose(1, 2)
         src_logits = src_logits[gathered_mask.unsqueeze(1).repeat(1, 6, 1)].view(target_classes.shape[0], 6)
 

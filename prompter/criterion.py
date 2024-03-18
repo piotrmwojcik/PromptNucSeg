@@ -49,6 +49,9 @@ class Criterion(nn.Module):
         loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)
 
         src_logits = outputs['pred_logits']
+        mask = outputs['pred_masks']
+        print('!!')
+        print(mask.shape)
         bs = src_logits.shape[0]
 
         points = outputs['pred_coords']

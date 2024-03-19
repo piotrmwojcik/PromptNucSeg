@@ -170,11 +170,10 @@ class DPAP2PNet(nn.Module):
         roi_features_c = self.conv(roi_features).permute(0, 2, 3, 1)
         deltas2refine = self.reg_head(roi_features_c)
         pred_coords = deformed_proposals + deltas2refine
-
-        pred_logits = self.cls_head(roi_features.flatten(2, 3).permute(0, 2, 1))
+        #pred_logits = self.cls_head(roi_features.flatten(2, 3).permute(0, 2, 1)
+        pred_logits = self.cls_head(roi_features_c)
         print('!!!')
         print(pred_logits.shape)
-
 
         output = {
             'pred_coords': pred_coords.flatten(1, 2),

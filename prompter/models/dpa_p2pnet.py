@@ -167,11 +167,12 @@ class DPAP2PNet(nn.Module):
             roi_features.append(F.grid_sample(feats[i], grid, mode='bilinear', align_corners=True))
 
         roi_features = torch.cat(roi_features, 1)
-        roi_features_c = self.conv(roi_features).permute(0, 2, 3, 1)
-        deltas2refine = self.reg_head(roi_features_c)
+        roi_features = self.conv(roi_features).permute(0, 2, 3, 1)
+        deltas2refine = self.reg_head(roi_features)
         pred_coords = deformed_proposals + deltas2refine
-        #pred_logits = self.cls_head(roi_features.flatten(2, 3).permute(0, 2, 1)
-        pred_logits = self.cls_head(roi_features_c)
+
+        pred_logits = self.cls_head(roi_features)
+
         print('!!!')
         print(pred_logits.shape)
 

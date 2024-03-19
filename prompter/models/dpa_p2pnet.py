@@ -174,7 +174,7 @@ class DPAP2PNet(nn.Module):
         print('!!!')
         print(roi_features.shape)
 
-        pred_logits = self.cls_head(roi_features)
+        pred_logits = self.cls_head(roi_features.flatten(2, 3).permute(0, 2, 1))
 
         output = {
             'pred_coords': pred_coords.flatten(1, 2),

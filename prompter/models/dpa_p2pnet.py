@@ -171,6 +171,9 @@ class DPAP2PNet(nn.Module):
         deltas2refine = self.reg_head(roi_features_c)
         pred_coords = deformed_proposals + deltas2refine
 
+        print('!!!')
+        print(roi_features.shape)
+
         pred_logits = self.cls_head(roi_features)
 
         output = {

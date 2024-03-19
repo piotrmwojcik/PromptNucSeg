@@ -28,7 +28,7 @@ data = dict(
         #dict(type='RandomSizedCrop', min_max_height=(int(256 / 2), 256),
         #     height=256,
         #     width=256,
-        #     p=0.2),
+        #                                                                                                                                                                                                                   p=0.2),
         #dict(type='Downscale', scale_max=0.5, scale_min=0.5, p=0.15),
         dict(type='Blur', blur_limit=10, p=0.2),
         dict(type='GaussNoise', var_limit=50, p=0.25),
@@ -62,7 +62,7 @@ optimizer = dict(
 
 scheduler = dict(
      type='CosineLR',
-     t_initial=100, lr_min=2e-8, cycle_mul=1., cycle_decay=1., cycle_limit=1,
+     t_initial=100, lr_min=1e-8, cycle_mul=1., cycle_decay=1., cycle_limit=1,
      warmup_t=10, warmup_lr_init=1e-6
  )
 

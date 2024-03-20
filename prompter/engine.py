@@ -122,18 +122,33 @@ def train_one_epoch(
     return log_info
 
 import matplotlib.pyplot as plt
-def visualise_prompts(im, pt, cl, path, limit):
+def visualise_prompts(img_path, gt_pt, gt_cl, pt, cl, path, limit):
     colormap = np.array(['red', 'blue', 'green', 'brown', 'yellow', 'black'])
+    brighter_colormap = np.array([
+        '#FF6666',  # Brighter red
+        '#6666FF',  # Brighter blue
+        '#66FF66',  # Brighter green
+        '#CD853F',  # Brighter brown
+        '#FFFF66',  # Brighter yellow
+        '#FF00FF',  # Brighter magenta
+        '#00FFFF'  # Brighter cyan
+    ])
     mkdir(f'{path}')
     if limit < 50:
-        plt.imshow(im.cpu().permute((1,2,0)))
+        im = plt.imread('../segmentor/' + img_path)
+        implot = plt.imshow(im, cmap='gray')
+
+        gt_prompt = gt_pt
+        if len(gt_prompt) > 0:
+            categories = gt_cl
+            plt.scatter(gt_prompt[:, 0], gt_prompt[:, 1], s=40, c=brighter_colormap[categories], marker='o')
 
         a = pt
         if len(a) > 0:
             categories = cl
             plt.scatter(a[:, 0], a[:, 1], s=40, c=colormap[categories.astype(int)], marker='+')
 
-        plt.savefig(f'{path}/{limit}.png')
+        plt.savefig(f'{path}/{os.path.basename(img_path)}')
         plt.clf()
 
 
@@ -168,7 +183,7 @@ def evaluate(
 
     i = 0
 
-    for data_iter_step, (images, gt_points, labels, inst_mask, masks, ori_shape) in enumerate(epoch_iterator):
+    for data_iter_step, (images, gt_points, labels, inst_mask, masks, ori_shape, img_path) in enumerate(epoch_iterator):
         assert len(images) == 1, 'batch size must be 1'
 
         if data_iter_step % get_world_size() != get_rank():  # To avoid duplicate evaluation for some test samples
@@ -189,7 +204,7 @@ def evaluate(
         )
 
         if visualise:
-            visualise_prompts(images[0], pd_points, pd_classes, vis_path, i)
+            visualise_prompts(img_path[0], gt_points[0], labels[0], pd_points, pd_classes, vis_path, i)
             i += 1
 
         if pd_masks is not None:

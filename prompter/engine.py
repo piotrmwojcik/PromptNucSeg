@@ -121,6 +121,21 @@ def train_one_epoch(
 
     return log_info
 
+import matplotlib.pyplot as plt
+def visualise_prompts(im, pt, cl, path, limit):
+    colormap = np.array(['red', 'blue', 'green', 'brown', 'yellow', 'black'])
+    mkdir(f'{path}')
+    if limit < 50:
+        plt.imshow(im.cpu().permute((1,2,0)))
+
+        a = pt
+        if len(a) > 0:
+            categories = cl
+            plt.scatter(a[:, 0], a[:, 1], s=40, c=colormap[categories.astype(int)], marker='+')
+
+        plt.savefig(f'{path}/{limit}.png')
+        plt.clf()
+
 
 @torch.inference_mode()
 def evaluate(
@@ -130,6 +145,8 @@ def evaluate(
         device,
         epoch=0,
         calc_map=False,
+        visualise=False,
+        vis_path='',
 ):
     model.eval()
     class_names = test_loader.dataset.classes
@@ -148,6 +165,8 @@ def evaluate(
 
     epoch_iterator = tqdm(test_loader, file=sys.stdout, desc="Test (X / X Steps)",
                           dynamic_ncols=True, disable=not is_main_process())
+
+    i = 0
 
     for data_iter_step, (images, gt_points, labels, inst_mask, masks, ori_shape) in enumerate(epoch_iterator):
         assert len(images) == 1, 'batch size must be 1'
@@ -168,6 +187,10 @@ def evaluate(
             filtering=cfg.test.filtering,
             nms_thr=cfg.test.nms_thr
         )
+
+        if visualise:
+            visualise_prompts(images[0], pd_points, pd_classes, vis_path, i)
+            i += 1
 
         if pd_masks is not None:
             masks = masks[0].numpy()

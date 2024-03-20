@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import json
+from mmengine.config import Config
 
+cfg = Config.fromfile(f'../prompter/config/pannuke123.py')
 def read_from_json(json_path):
     with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -10,9 +12,8 @@ def read_from_json(json_path):
 
 
 test_path_raw = 'datasets/pannuke/Images/'
-run_name = '_nl'
-prompt_path = f'prompts/pannuke123{run_name}/'
-to_save = f'results/prompts/pannuke123/{run_name}/'
+prompt_path = cfg.prompts_path
+to_save = f'results/{prompt_path}'
 os.makedirs(to_save, exist_ok=True)
 
 gt = read_from_json('../prompter/datasets/pannuke123/test.json')

@@ -35,7 +35,6 @@ transform = A.Compose([
     ToTensorV2()
 ], p=1)
 
-run_name = '_nl'
 
 def process_files(files):
     for file in sorted(tqdm(files)):
@@ -55,12 +54,12 @@ def process_files(files):
         save_content = np.concatenate([points, classes[:, None]], axis=-1)
 
         np.save(
-            f'../segmentor/prompts/{dataset}{run_name}/{file.split("/")[-1][:-4]}',
+            f'../segmentor/{cfg.prompts_path}{file.split("/")[-1][:-4]}',
             save_content
         )
 
 
-mkdir(f'../segmentor/prompts/{dataset}{run_name}')
+mkdir(f'../segmentor/{cfg.prompts_path}')
 
 
 test_files = np.load(f'../segmentor/datasets/{dataset}_test_files.npy')

@@ -56,8 +56,7 @@ class DataFolder(Dataset):
     def __init__(
             self,
             cfg,
-            mode,
-            visualise=False
+            mode
     ):
         anno_json = read_from_json(f'datasets/{cfg.data.name}/{mode}.json')
         self.classes = anno_json.pop('classes')
@@ -67,7 +66,6 @@ class DataFolder(Dataset):
 
         self.phase = mode
         self.dataset = cfg.data.name
-        self.visualise = visualise
 
         additional_targets = {}
         for i in range(1, cfg.data.num_classes):
@@ -140,7 +138,5 @@ class DataFolder(Dataset):
         type_map[type_map == -1] = 5
 
         #visualize_type_map(type_map.int().numpy(), f'{os.path.basename(img_path)}')
-        if self.visualise:
-            return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape), img_path
 
-        return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape)
+        return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape), img_path

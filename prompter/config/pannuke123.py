@@ -75,6 +75,6 @@ criterion = dict(
 
 test = dict(nms_thr=12, match_dis=12, filtering=False)
 
-prompts_path = 'prompts/pannuke123_nl2/'
+prompts_path = '/data/pwojcik/prompts/pannuke123_nl2/'
 
-vis_path = 'vis/pannuke123_nl2/'
+vis_path = '/data/pwojcik/vis/pannuke123_nl2/'

@@ -40,12 +40,13 @@ class Criterion(nn.Module):
         idx = self._get_src_permutation_idx(indices)
         src_logits = outputs['pred_logits']
 
-        #print(targets['gt_labels'])
-
-        arget_classes = torch.full(src_logits.shape[:2], self.num_classes, dtype=torch.long, device=src_logits.device)
+        target_classes = torch.full(src_logits.shape[:2], self.num_classes, dtype=torch.long, device=src_logits.device)
         target_classes_o = torch.cat([cls[J] for cls, (_, J) in zip(targets['gt_labels'], indices)])
 
         #target_classes[idx] = target_classes_o
+
+        print('!!!')
+        print(src_logits.shape)
 
         loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2)[idx], target_classes_o, self.class_weight)
 

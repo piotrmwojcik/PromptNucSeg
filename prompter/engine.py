@@ -121,6 +121,36 @@ def train_one_epoch(
 
     return log_info
 
+import matplotlib.pyplot as plt
+def visualise_prompts(img_path, gt_pt, gt_cl, pt, cl, path, limit):
+    colormap = np.array(['red', 'blue', 'green', 'brown', 'yellow', 'black'])
+    brighter_colormap = np.array([
+        '#FF6666',  # Brighter red
+        '#6666FF',  # Brighter blue
+        '#66FF66',  # Brighter green
+        '#CD853F',  # Brighter brown
+        '#FFFF66',  # Brighter yellow
+        '#FF00FF',  # Brighter magenta
+        '#00FFFF'  # Brighter cyan
+    ])
+    mkdir(f'{path}')
+    if limit < 50:
+        im = plt.imread('../segmentor/' + img_path)
+        implot = plt.imshow(im, cmap='gray')
+
+        gt_prompt = gt_pt
+        if len(gt_prompt) > 0:
+            categories = gt_cl
+            plt.scatter(gt_prompt[:, 0], gt_prompt[:, 1], s=40, c=brighter_colormap[categories], marker='o')
+
+        a = pt
+        if len(a) > 0:
+            categories = cl
+            plt.scatter(a[:, 0], a[:, 1], s=40, c=colormap[categories.astype(int)], marker='+')
+
+        plt.savefig(f'{path}/{os.path.basename(img_path)}')
+        plt.clf()
+
 
 @torch.inference_mode()
 def evaluate(
@@ -130,6 +160,8 @@ def evaluate(
         device,
         epoch=0,
         calc_map=False,
+        visualise=False,
+        vis_path='',
 ):
     model.eval()
     class_names = test_loader.dataset.classes
@@ -149,7 +181,8 @@ def evaluate(
     epoch_iterator = tqdm(test_loader, file=sys.stdout, desc="Test (X / X Steps)",
                           dynamic_ncols=True, disable=not is_main_process())
 
-    for data_iter_step, (images, gt_points, labels, inst_mask, masks, ori_shape) in enumerate(epoch_iterator):
+    i = 0
+    for data_iter_step, (images, gt_points, labels, inst_mask, masks, ori_shape, img_path) in enumerate(epoch_iterator):
         assert len(images) == 1, 'batch size must be 1'
 
         if data_iter_step % get_world_size() != get_rank():  # To avoid duplicate evaluation for some test samples
@@ -166,8 +199,13 @@ def evaluate(
             data_iter_step=data_iter_step,
             ori_shape=ori_shape[0].numpy(),
             filtering=cfg.test.filtering,
-            nms_thr=cfg.test.nms_thr
+            nms_thr=cfg.test.nms_thr,
+            visualise=visualise
         )
+
+        if visualise:
+            visualise_prompts(img_path[0], gt_points[0], labels[0], pd_points, pd_classes, vis_path, i)
+            i += 1
 
         if pd_masks is not None:
             masks = masks[0].numpy()

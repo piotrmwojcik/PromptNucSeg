@@ -27,6 +27,7 @@ def parse_args():
 
     # * Run Mode
     parser.add_argument('--eval', action='store_true')
+    parser.add_argument('--vis', action='store_true')
 
     # * Train
     parser.add_argument('--seed', default=42, type=int)
@@ -112,7 +113,7 @@ def main():
     except FileNotFoundError:
         pass
 
-    test_dataset = DataFolder(cfg, 'test')
+    test_dataset = DataFolder(cfg, 'test', visualise=args.vis)
     test_dataloader = DataLoader(
         test_dataset,
         batch_size=1,
@@ -130,7 +131,9 @@ def main():
             model,
             test_dataloader,
             device,
-            calc_map=True
+            calc_map=True,
+            visualise=args.vis,
+            vis_path=cfg.vis_path
         )
         return
 

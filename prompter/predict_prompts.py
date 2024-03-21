@@ -37,7 +37,7 @@ transform = A.Compose([
 
 
 def process_files(files):
-    for file in tqdm(files):
+    for file in sorted(tqdm(files)):
         img = io.imread(f'../segmentor/{file}')[..., :3]
 
         image = transform(image=img)['image'].unsqueeze(0).to(device)
@@ -53,20 +53,21 @@ def process_files(files):
         save_content = np.concatenate([points, classes[:, None]], axis=-1)
 
         np.save(
-            f'../segmentor/prompts/{dataset}/{file.split("/")[-1][:-4]}',
+            f'../segmentor/{cfg.prompts_path}{file.split("/")[-1][:-4]}',
             save_content
         )
 
 
-mkdir(f'../segmentor/prompts/{dataset}')
+mkdir(f'../segmentor/{cfg.prompts_path}')
 
 
 test_files = np.load(f'../segmentor/datasets/{dataset}_test_files.npy')
 process_files(test_files)
 
 try:
-    val_files = np.load(f'../segmentor/datasets/{dataset}_val_files.npy')
-    process_files(val_files)
+    if not args.vis:
+        val_files = np.load(f'../segmentor/datasets/{dataset}_val_files.npy')
+        process_files(val_files)
 
 except FileNotFoundError:
     pass

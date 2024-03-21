@@ -11,6 +11,40 @@ from albumentations.pytorch import ToTensorV2
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
+import matplotlib.pyplot as plt
+import re
+import matplotlib.colors as mcolors
+
+
+def visualize_type_map(type_map, filename):
+    brighter_colormap = np.array([
+        '#FF6666',  # Brighter red
+        '#6666FF',  # Brighter blue
+        '#66FF66',  # Brighter green
+        '#CD853F',  # Brighter brown
+        '#FFFF66',  # Brighter yellow
+        '#000000'  # Brighter cyan
+    ])
+    classes = ["Neoplastic", "Inflammatory", "Connective", "Dead", "Epithelial", "Background"]
+
+    cmap = mcolors.ListedColormap(brighter_colormap, N=len(brighter_colormap))
+
+    bounds = list(range(len(brighter_colormap) + 1))
+    norm = mcolors.BoundaryNorm(bounds, cmap.N)
+
+    plt.figure(figsize=(8, 6))
+    plt.imshow(type_map, cmap=cmap, interpolation='nearest', norm=norm)
+
+    norm = plt.Normalize(vmin=0, vmax=len(classes) - 1)
+    cbar = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ticks=range(len(classes)))
+    cbar.ax.set_yticklabels(classes)
+
+    plt.title('Type Map Visualization')
+    plt.xlabel('Width')
+    plt.ylabel('Height')
+
+    plt.savefig(f'gt_class_vis/{filename[:-4]}.png')
+    plt.clf()
 
 def read_from_json(json_path):
     with open(json_path, 'r', encoding='utf-8') as f:
@@ -22,7 +56,8 @@ class DataFolder(Dataset):
     def __init__(
             self,
             cfg,
-            mode
+            mode,
+            visualise=False
     ):
         anno_json = read_from_json(f'datasets/{cfg.data.name}/{mode}.json')
         self.classes = anno_json.pop('classes')
@@ -32,6 +67,7 @@ class DataFolder(Dataset):
 
         self.phase = mode
         self.dataset = cfg.data.name
+        self.visualise = visualise
 
         additional_targets = {}
         for i in range(1, cfg.data.num_classes):
@@ -103,5 +139,8 @@ class DataFolder(Dataset):
         type_map -= 1
         type_map[type_map == -1] = 5
 
+        #visualize_type_map(type_map.int().numpy(), f'{os.path.basename(img_path)}')
+        if self.visualise:
+            return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape), img_path
 
         return img, torch.cat(res[1:-1]), torch.cat(labels), type_map.int(), mask, torch.as_tensor(ori_shape)

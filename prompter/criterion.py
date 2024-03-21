@@ -48,6 +48,7 @@ class Criterion(nn.Module):
         src_logits = src_logits[idx]
         print('!!!')
         print(src_logits.shape)
+        print(target_classes_o.shape)
 
 
         loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2), target_classes_o, self.class_weight)

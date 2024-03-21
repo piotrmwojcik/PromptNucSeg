@@ -66,9 +66,9 @@ test_files = np.load(f'../segmentor/datasets/{dataset}_test_files.npy')
 process_files(test_files)
 
 try:
-    pass
-    #val_files = np.load(f'../segmentor/datasets/{dataset}_val_files.npy')
-    #process_files(val_files)
+    if not args.vis:
+        val_files = np.load(f'../segmentor/datasets/{dataset}_val_files.npy')
+        process_files(val_files)
 
 except FileNotFoundError:
     pass

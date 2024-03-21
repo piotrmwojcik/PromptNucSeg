@@ -113,7 +113,7 @@ def main():
     except FileNotFoundError:
         pass
 
-    test_dataset = DataFolder(cfg, 'test')
+    test_dataset = DataFolder(cfg, 'test', visualise=args.vis)
     test_dataloader = DataLoader(
         test_dataset,
         batch_size=1,

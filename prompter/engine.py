@@ -200,7 +200,8 @@ def evaluate(
             data_iter_step=data_iter_step,
             ori_shape=ori_shape[0].numpy(),
             filtering=cfg.test.filtering,
-            nms_thr=cfg.test.nms_thr
+            nms_thr=cfg.test.nms_thr,
+            visualise=visualise
         )
 
         if visualise:

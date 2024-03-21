@@ -391,7 +391,8 @@ def predict(
         data_iter_step=0,
         nms_thr=-1,
         ori_shape=None,
-        filtering=False
+        filtering=False,
+        visualise=False
 ):
     ori_h, ori_w = ori_shape
     outputs = model(image)
@@ -402,7 +403,11 @@ def predict(
 
     np.clip(points[:, 0], a_min=0, a_max=ori_w - 1, out=points[:, 0])
     np.clip(points[:, 1], a_min=0, a_max=ori_h - 1, out=points[:, 1])
-    valid_flag = classes < (scores.shape[-1])
+
+    if visualise:
+        valid_flag = classes < (scores.shape[-1])
+    else:
+        valid_flag = classes < (scores.shape[-1] - 1)
 
     points = points[valid_flag]
     scores = scores[valid_flag].max(1)
@@ -415,6 +420,9 @@ def predict(
         points = points[valid_flag]
         scores = scores[valid_flag]
         classes = classes[valid_flag]
+
+    if (not visualise) and len(points) and nms_thr > 0:
+        points, scores, classes = point_nms(points, scores, classes, nms_thr)
 
     return points, scores, classes, mask
 

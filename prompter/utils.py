@@ -421,7 +421,8 @@ def predict(
         scores = scores[valid_flag]
         classes = classes[valid_flag]
 
-    if (not visualise) and len(points) and nms_thr > 0:
+    #if (not visualise) and len(points) and nms_thr > 0:
+    if len(points) and nms_thr > 0:
         points, scores, classes = point_nms(points, scores, classes, nms_thr)
 
     return points, scores, classes, mask

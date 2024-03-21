@@ -6,6 +6,8 @@ import prettytable as pt
 from utils import *
 from tqdm import tqdm
 from eval_map import eval_map
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from collections import OrderedDict
 
 
@@ -42,8 +44,7 @@ def train_one_epoch(
             'gt_points': [points.view(-1, 2).to(device).float() for points in points_list],
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
-        import matplotlib.pyplot as plt
-        import matplotlib.colors as mcolors
+
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)
@@ -121,7 +122,7 @@ def train_one_epoch(
 
     return log_info
 
-import matplotlib.pyplot as plt
+
 def visualise_prompts(img_path, gt_pt, gt_cl, pt, cl, path, limit):
     colormap = np.array(['red', 'blue', 'green', 'brown', 'yellow', 'black'])
     brighter_colormap = np.array([

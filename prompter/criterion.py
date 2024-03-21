@@ -47,10 +47,6 @@ class Criterion(nn.Module):
 
         target_classes[idx] = target_classes_o
 
-        print('!!!!')
-        print(idx[0].shape)
-        print(idx[1].shape)
-
         loss_cls1 = F.cross_entropy(src_logits.transpose(1, 2), target_classes, self.class_weight)
 
         bs = src_logits.shape[0]
@@ -87,10 +83,8 @@ class Criterion(nn.Module):
 
         loss_cls2 = F.cross_entropy(src_logits, target_classes.to(torch.long), self.class_weight_all)
 
-        loss_cls = loss_cls1 + 0.07 * loss_cls2
+        loss_cls = 0.0 * loss_cls1 + 0.15 * loss_cls2
 
-        print('!!!!')
-        print(loss_cls1, 0.07 * loss_cls2)
         loss_dict = {'loss_cls': loss_cls}
 
         return loss_dict

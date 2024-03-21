@@ -38,7 +38,6 @@ transform = A.Compose([
 
 def process_files(files):
     for file in sorted(tqdm(files)):
-        print(file)
         img = io.imread(f'../segmentor/{file}')[..., :3]
 
         image = transform(image=img)['image'].unsqueeze(0).to(device)

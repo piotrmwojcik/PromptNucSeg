@@ -388,7 +388,7 @@ def pre_processing(img):
 def predict(
         model,
         image,
-        data_iter_step=0,
+        data_iter_step,
         nms_thr=-1,
         ori_shape=None,
         filtering=False,

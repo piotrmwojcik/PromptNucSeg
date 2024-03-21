@@ -182,7 +182,6 @@ def evaluate(
                           dynamic_ncols=True, disable=not is_main_process())
 
     i = 0
-
     for data_iter_step, (images, gt_points, labels, inst_mask, masks, ori_shape, img_path) in enumerate(epoch_iterator):
         assert len(images) == 1, 'batch size must be 1'
 

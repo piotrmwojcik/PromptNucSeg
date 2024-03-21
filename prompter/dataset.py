@@ -56,6 +56,7 @@ class DataFolder(Dataset):
     def __init__(
             self,
             cfg,
+            mode
     ):
         anno_json = read_from_json(f'datasets/{cfg.data.name}/{mode}.json')
         self.classes = anno_json.pop('classes')

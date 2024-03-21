@@ -46,13 +46,9 @@ class Criterion(nn.Module):
         #target_classes[idx] = target_classes_o
 
         src_logits = src_logits[idx]
-        print('!!!')
-        print(src_logits.shape)
-        print(target_classes_o.shape)
-
-
         loss_cls1 = F.cross_entropy(src_logits, target_classes_o, self.class_weight)
 
+        src_logits = outputs['pred_logits']
         bs = src_logits.shape[0]
         src_logits = outputs['pred_logits']
         mask = targets['gt_masks'].squeeze() > 0
@@ -77,7 +73,6 @@ class Criterion(nn.Module):
         src_logits = src_logits.transpose(1, 2)
         #src_logits = src_logits[gathered_mask.unsqueeze(1).repeat(1, 6, 1)].view(target_classes.shape[0], 6)
 
-
         #counts = {}
         #for i in range(6):
         #    counts[i] = (target_classes == i).sum().item()
@@ -87,7 +82,7 @@ class Criterion(nn.Module):
 
         loss_cls2 = F.cross_entropy(src_logits, target_classes.to(torch.long), self.class_weight_all)
 
-        loss_cls = 0.0 * loss_cls1 + 0.4 * loss_cls2
+        loss_cls = loss_cls1 + 0.4 * loss_cls2
         #print('!!!')
         #print(loss_cls1, 0.15 * loss_cls2)
 

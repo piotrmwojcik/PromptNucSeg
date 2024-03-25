@@ -123,21 +123,33 @@ def train_one_epoch(
     return log_info
 
 
-def visualise_prompts(img_path, gt_pt, gt_cl, pt, cl, path, limit):
-    colormap = np.array(['red', 'blue', 'green', 'brown', 'yellow', 'black'])
+def visualise_prompts(img_path, gt_pt, gt_cl, type_map, pt, cl, path, limit):
+    colormap = np.array(['orange', 'blue', 'green', 'cyan', 'yellow', 'black'])
     brighter_colormap = np.array([
-        '#FF6666',  # Brighter red
+        '#FFA500',  # Brighter orange
         '#6666FF',  # Brighter blue
         '#66FF66',  # Brighter green
-        '#CD853F',  # Brighter brown
+        '#00FFFF',  # Brighter cyan
         '#FFFF66',  # Brighter yellow
-        '#FF00FF',  # Brighter magenta
-        '#00FFFF'  # Brighter cyan
     ])
+    transparent_colormap = np.array([np.array(mcolors.to_rgba(color)) for color in colormap])
+    transparent_colormap[:, 3] = 0.35
+
     mkdir(f'{path}')
-    if limit < 50:
+    if limit < 100:
         im = plt.imread('../segmentor/' + img_path)
         implot = plt.imshow(im, cmap='gray')
+
+        classes = ["Neoplastic", "Inflammatory", "Connective", "Dead", "Epithelial", "Background"]
+        cmap = mcolors.ListedColormap(transparent_colormap, N=len(transparent_colormap))
+        bounds = list(range(len(transparent_colormap) + 1))
+        norm = mcolors.BoundaryNorm(bounds, cmap.N)
+        plt.imshow(type_map, cmap=cmap, interpolation='nearest', norm=norm)
+
+        norm = plt.Normalize(vmin=0, vmax=len(classes) - 1)
+        cmap = mcolors.ListedColormap(colormap, N=len(colormap))
+        cbar = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ticks=range(len(classes)))
+        cbar.ax.set_yticklabels(classes)
 
         gt_prompt = gt_pt
         if len(gt_prompt) > 0:
@@ -205,7 +217,7 @@ def evaluate(
         )
 
         if visualise:
-            visualise_prompts(img_path[0], gt_points[0], labels[0], pd_points, pd_classes, vis_path, i)
+            visualise_prompts(img_path[0], gt_points[0], labels[0], inst_mask[0], pd_points, pd_classes, vis_path, i)
             i += 1
 
         if pd_masks is not None:

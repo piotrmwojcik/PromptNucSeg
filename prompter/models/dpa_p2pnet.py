@@ -117,7 +117,8 @@ class DPAP2PNet(nn.Module):
             dropout=0.1,
             space: int = 16,
             hidden_dim: int = 256,
-            with_mask=False
+            with_mask=False,
+            num_reg_layers=3
     ):
         """
             Initializes the model.
@@ -132,7 +133,14 @@ class DPAP2PNet(nn.Module):
 
         self.deform_layer = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
 
-        self.reg_head = MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout)
+        self.reg_head_layers = nn.ModuleList()
+        for _ in range(num_reg_layers):
+            self.reg_head_layers.append(MLP(hidden_dim, hidden_dim, 2, hidden_dim, drop=dropout))
+
+        self.reg_head_coord = nn.ModuleList()
+        for _ in range(num_reg_layers):
+            self.reg_head_coord.append(MLP(hidden_dim, hidden_dim, 2, 2, drop=dropout))
+
         self.cls_head = MLP(hidden_dim * num_levels, hidden_dim, 2, num_classes + 1, drop=dropout)
 
         self.conv = nn.Conv2d(hidden_dim * num_levels, hidden_dim, kernel_size=3, padding=1)
@@ -168,10 +176,18 @@ class DPAP2PNet(nn.Module):
 
         roi_features = torch.cat(roi_features, 1)
         roi_features_c = self.conv(roi_features).permute(0, 2, 3, 1)
-        deltas2refine = self.reg_head(roi_features_c)
-        pred_coords = deformed_proposals + deltas2refine
+
+        deltas2refine = []
+        for layer, to_coord_layer in zip(self.reg_head_layers, self.reg_head_coord):
+            # forward one layer
+            roi_features_c = layer(roi_features_c)
+            # save coords
+            deltas2refine.append(to_coord_layer(roi_features_c))
+
+        pred_coords = torch.cat([deformed_proposals + d for d in deltas2refine], dim=1)
 
         pred_logits = self.cls_head(roi_features.flatten(2, 3).permute(0, 2, 1))
+        pred_logits = torch.cat([pred_logits for _ in deltas2refine], dim=1)
 
         output = {
             'pred_coords': pred_coords.flatten(1, 2),

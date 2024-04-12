@@ -25,6 +25,7 @@ class DataFolder(Dataset):
         self.files = np.load(f'datasets/{dataset}_{mode}_files.npy')
 
         self.dataset = dataset
+        self.prompts = cfg.data.prompts
 
         self.transform = A.Compose(
             [getattr(A, tf_dict.pop('type'))(**tf_dict) for tf_dict in cfg.data.get(mode).transform]
@@ -69,7 +70,7 @@ class DataFolder(Dataset):
             ori_size = inst_map.shape
 
             img_name = img_path.split('/')[-1]
-            prompt_points = np.load(f'prompts/{self.dataset}/{img_name[:-4]}.npy')
+            prompt_points = np.load(f'prompts/{self.prompts}/{img_name[:-4]}.npy')
             prompt_points = torch.from_numpy(prompt_points).float()
             prompt_points, prompt_cell_types = prompt_points[..., :2].unsqueeze(1), prompt_points[..., -1]
             prompt_labels = torch.ones(prompt_points.shape[:2], dtype=torch.int)

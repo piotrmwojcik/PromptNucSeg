@@ -73,7 +73,7 @@ class Sam(nn.Module):
             only_det=False
     ):
         # image_embeddings, outputs = self.image_encoder(images)
-        image_embeddings = self.image_encoder.forward_features(images)
+        image_embeddings = self.image_encoder(images)
 
         # if only_det:
         #     return outputs

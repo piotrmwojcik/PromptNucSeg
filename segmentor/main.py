@@ -110,7 +110,7 @@ def main():
 
     model_without_ddp = model
     if args.distributed:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=True)
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
         model_without_ddp = model.module
 
     criterion = build_criterion(cfg).to(device)
@@ -138,7 +138,7 @@ def main():
             map_location="cpu"
         )
 
-        msg = model_without_ddp.load_state_dict(checkpoint["model"])
+        model_without_ddp.load_state_dict(checkpoint["model"])
 
         if "optimizer" in checkpoint:
             optimizer.load_state_dict(checkpoint["optimizer"])
@@ -170,14 +170,7 @@ def main():
             device,
         )
 
-    for layer_name, p in model_without_ddp.image_encoder.named_parameters():
-        p.requires_grad = False
-
     for epoch in range(args.start_epoch, args.epochs):
-
-        if epoch >= 50:
-            for layer_name, p in model_without_ddp.image_encoder.named_parameters():
-                p.requires_grad = True
 
         wandb_log_info = train_on_epoch(
             args,

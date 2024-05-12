@@ -9,7 +9,6 @@ import torch.nn.functional as F
 
 from functools import partial
 from .modeling import ImageEncoderViT, MaskDecoder, PromptEncoder, Sam, TwoWayTransformer
-from .modeling.sim_vit import vit_base_patch16
 
 
 def build_sam_vit_h(cfg):
@@ -53,30 +52,6 @@ sam_model_registry = {
 }
 
 
-def interpolate_pos_embed(model, checkpoint_model):
-    if 'pos_embed' in checkpoint_model:
-        pos_embed_checkpoint = checkpoint_model['pos_embed']
-        embedding_size = pos_embed_checkpoint.shape[-1]
-        num_patches = model.patch_embed.num_patches
-        num_extra_tokens = model.pos_embed.shape[-2] - num_patches
-        # height (== width) for the checkpoint position embedding
-        orig_size = int((pos_embed_checkpoint.shape[-2] - num_extra_tokens) ** 0.5)
-        # height (== width) for the new position embedding
-        new_size = int(num_patches ** 0.5)
-        # class_token and dist_token are kept unchanged
-        if orig_size != new_size:
-            print("Position interpolate from %dx%d to %dx%d" % (orig_size, orig_size, new_size, new_size))
-            extra_tokens = pos_embed_checkpoint[:, :num_extra_tokens]
-            # only the position tokens are interpolated
-            pos_tokens = pos_embed_checkpoint[:, num_extra_tokens:]
-            pos_tokens = pos_tokens.reshape(-1, orig_size, orig_size, embedding_size).permute(0, 3, 1, 2)
-            pos_tokens = torch.nn.functional.interpolate(
-                pos_tokens, size=(new_size, new_size), mode='bicubic', align_corners=False)
-            pos_tokens = pos_tokens.permute(0, 2, 3, 1).flatten(1, 2)
-            new_pos_embed = torch.cat((extra_tokens, pos_tokens), dim=1)
-            checkpoint_model['pos_embed'] = new_pos_embed
-
-
 def _build_sam(
         cfg,
         encoder_embed_dim,
@@ -90,10 +65,20 @@ def _build_sam(
 
     image_embedding_size = image_size // vit_patch_size
     sam = Sam(
-        image_encoder=vit_base_patch16(
-            drop_rate=0.0,
-            drop_path_rate=0.0,
-            init_values=None),
+        image_encoder=ImageEncoderViT(
+            depth=encoder_depth,
+            embed_dim=encoder_embed_dim,
+            img_size=image_size,
+            mlp_ratio=4,
+            norm_layer=partial(torch.nn.LayerNorm, eps=1e-6),
+            num_heads=encoder_num_heads,
+            patch_size=vit_patch_size,
+            qkv_bias=True,
+            use_rel_pos=True,
+            global_attn_indexes=encoder_global_attn_indexes,
+            window_size=14,
+            out_chans=prompt_embed_dim,
+        ),
         prompt_encoder=PromptEncoder(
             embed_dim=prompt_embed_dim,
             image_embedding_size=(image_embedding_size, image_embedding_size),
@@ -131,24 +116,9 @@ def _build_sam(
         pretrained_state_dict = torch.load(f, map_location='cpu')
 
         model_state_dict = sam.state_dict()
-        updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if
-                              k in model_state_dict and not k.startswith("image_encoder.")}
-
-        neck_dict = {k.split("image_encoder.", 1)[-1]: v for k, v in pretrained_state_dict.items() if
-                     k in model_state_dict and k.startswith("image_encoder.neck")}
-
+        updated_state_dict = {k: v for k, v in pretrained_state_dict.items() if k in model_state_dict}
         model_state_dict.update(updated_state_dict)
 
         sam.load_state_dict(model_state_dict)
-
-        checkpoint = torch.load('/data/pwojcik/SimMIM/TCGA_256/checkpoint-latest.pth', map_location='cpu')
-        checkpoint_model = checkpoint['model']
-        checkpoint_model.update(neck_dict)
-        interpolate_pos_embed(sam.image_encoder, checkpoint_model)
-
-        msg = sam.image_encoder.load_state_dict(checkpoint_model, strict=False)
-        print('!!!!')
-        print(msg)
-        print()
 
     return sam

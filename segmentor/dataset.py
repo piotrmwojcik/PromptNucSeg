@@ -94,9 +94,14 @@ class DataFolder(Dataset):
                     pid
                 )
 
+                print('!!!')
+                print(mask_single_cell.shape)
+
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]
+
+                print(pt)
 
                 all_points.append(pt)
 

@@ -120,7 +120,7 @@ class DataFolder(Dataset):
 
                 inst_maps.append(mask_single_cell)
                 prompt_boxes.append(
-                    masks_to_boxes(mask_single_cell.unsqueeze(0)).squeeze())
+                    masks_to_boxes(mask_single_cell.unsqueeze(0)))
 
             prompt_boxes = torch.stack(prompt_boxes, dim=0)
             prompt_labels = torch.ones(prompt_boxes.shape[:2])

@@ -358,7 +358,7 @@ def evaluate(
     header = f"Test:"
 
     excel_info = []
-    for data_iter_step, (images, inst_maps, type_maps, prompt_points, prompt_labels, prompt_cell_types,
+    for data_iter_step, (images, inst_maps, type_maps, prompt_boxes, prompt_labels, prompt_cell_types,
                          cell_nums, ori_sizes, file_inds) in (
             enumerate(metric_logger.log_every(test_dataloader, args.print_freq, header))):
 
@@ -385,7 +385,7 @@ def evaluate(
             if cell_nums.sum() > 0:
                 outputs = model(
                     images,
-                    prompt_points.to(device),
+                    prompt_boxes.to(device),
                     prompt_labels.to(device),
                     cell_nums.to(device)
                 )
@@ -488,19 +488,19 @@ def evaluate(
             all_classes = []
             all_inds = []
 
-            inds = torch.arange(len(prompt_points))
+            inds = torch.arange(len(prompt_boxes))
 
             for idx, crop_box in enumerate(crop_boxes):
                 x1, y1, x2, y2 = crop_box
 
-                keep = (prompt_points[..., 0] >= x1) & (prompt_points[..., 0] < x2) & \
-                       (prompt_points[..., 1] >= y1) & (prompt_points[..., 1] < y2)
+                keep = (prompt_boxes[..., 0] >= x1) & (prompt_boxes[..., 0] < x2) & \
+                       (prompt_boxes[..., 1] >= y1) & (prompt_boxes[..., 1] < y2)
                 keep = keep.squeeze(1)
 
                 if keep.sum() == 0:
                     continue
 
-                sub_prompt_points = prompt_points[keep] - torch.as_tensor([x1, y1])
+                sub_prompt_points = prompt_boxes[keep] - torch.as_tensor([x1, y1])
                 sub_prompt_labels = prompt_labels[keep]
 
                 k = test_dataloader.dataset.num_neg_prompt

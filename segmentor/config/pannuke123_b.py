@@ -7,7 +7,7 @@ segmentor = dict(
 
 input_shape = segmentor['img_size']
 data = dict(
-    name='pannuke123_boxes',
+    name='pannuke123',
     num_classes=5,
     num_mask_per_img=20,
     batch_size_per_gpu=16,

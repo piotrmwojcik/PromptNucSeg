@@ -94,8 +94,9 @@ class DataFolder(Dataset):
                     pid
                 )
 
-                print('!!!')
-                print(mask_single_cell.shape)
+                x_min, y_min = torch.min(mask_single_cell, axis=1)
+                x_max, y_max = torch.max(mask_single_cell, axis=1)
+                print(x_min, y_min, x_max, y_max)
 
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)

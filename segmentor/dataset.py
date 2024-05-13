@@ -8,6 +8,7 @@ import albumentations as A
 
 from skimage import io
 from torch.utils.data import Dataset
+from torchvision.ops import masks_to_boxes
 from albumentations.pytorch import ToTensorV2
 
 
@@ -94,10 +95,8 @@ class DataFolder(Dataset):
                     pid
                 )
 
-                x_min, y_min = torch.argmin(mask_single_cell, axis=1)
-                x_max, y_max = torch.argmax(mask_single_cell, axis=1)
-                print(x_min, y_min, x_max, y_max)
-
+                boxes = masks_to_boxes(mask_single_cell)
+                print(boxes)
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]

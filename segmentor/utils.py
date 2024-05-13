@@ -17,36 +17,41 @@ from scipy.spatial.distance import directed_hausdorff as hausdorff
 
 
 def train_collate_fn(batch):
-    images, masks, prompt_points, prompt_labels, all_points, all_points_types, cell_nums = [[] for _ in range(7)]
+    images, masks, prompt_boxes, prompt_labels, all_points, all_points_types, cell_nums = [[] for _ in range(7)]
     for x in batch:
         images.append(x[0])
         masks.append(x[1])
-        prompt_points.append(x[2])
+        prompt_boxes.append(x[2])
         prompt_labels.append(x[3])
         all_points_types.append(x[4])
         all_points.append(x[5])
         cell_nums.append(len(x[2]))
 
-    return (torch.stack(images), torch.cat(masks), torch.cat(prompt_points), torch.cat(prompt_labels),
+        print(images.shape)
+        print(masks.shape)
+        print(prompt_boxes.shape)
+        print(prompt_labels.shape)
+
+    return (torch.stack(images), torch.cat(masks), torch.cat(prompt_boxes), torch.cat(prompt_labels),
             all_points, all_points_types, torch.as_tensor(cell_nums))
 
 
 def test_collate_fn(batch):
-    (images, inst_maps, type_maps, prompt_points, prompt_labels, prompt_cell_types, cell_nums, ori_sizes, file_inds) = [
+    (images, inst_maps, type_maps, prompt_boxes, prompt_labels, prompt_cell_types, cell_nums, ori_sizes, file_inds) = [
         [] for _ in range(9)]
 
     for x in batch:
         images.append(x[0])
         inst_maps.append(x[1])
         type_maps.append(x[2])
-        prompt_points.append(x[3])
+        prompt_boxes.append(x[3])
         prompt_labels.append(x[4])
         prompt_cell_types.append(x[5])
         cell_nums.append(len(x[3]))
         ori_sizes.append(x[6])
         file_inds.append(x[7])
 
-    return (torch.stack(images), torch.stack(inst_maps), torch.stack(type_maps), torch.cat(prompt_points),
+    return (torch.stack(images), torch.stack(inst_maps), torch.stack(type_maps), torch.cat(prompt_boxes),
             torch.cat(prompt_labels), torch.cat(prompt_cell_types), torch.as_tensor(cell_nums),
             torch.as_tensor(ori_sizes), torch.as_tensor(file_inds))
 

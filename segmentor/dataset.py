@@ -95,7 +95,7 @@ class DataFolder(Dataset):
                     pid
                 )
 
-                boxes = masks_to_boxes(mask_single_cell)
+                boxes = masks_to_boxes(mask_single_cell.unsqueeze(0))
                 print(boxes)
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)

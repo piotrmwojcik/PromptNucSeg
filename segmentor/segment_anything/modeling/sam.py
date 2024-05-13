@@ -67,7 +67,7 @@ class Sam(nn.Module):
     def forward(
             self,
             images,
-            prompt_points=None,
+            prompt_boxes=None,
             prompt_labels=None,
             cell_nums=None,
             only_det=False
@@ -82,10 +82,10 @@ class Sam(nn.Module):
         #     return outputs
 
         outputs = {}
-        if prompt_points is not None:
+        if prompt_boxes is not None:
             sparse_embeddings, dense_embeddings = self.prompt_encoder(
-                points=(prompt_points, prompt_labels),
-                boxes=None,
+                boxes=(prompt_boxes, prompt_labels),
+                points=None,
                 masks=None,
             )
 

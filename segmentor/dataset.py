@@ -72,7 +72,7 @@ class DataFolder(Dataset):
             img_name = img_path.split('/')[-1]
             prompt_boxes = np.load(f'prompts/{self.dataset}/{img_name[:-4]}.npy')
             prompt_boxes = torch.from_numpy(prompt_boxes).float()
-            prompt_boxes, prompt_cell_types = prompt_boxes[..., :2].unsqueeze(1), prompt_boxes[..., -1]
+            prompt_boxes, prompt_cell_types = prompt_boxes[..., :4].unsqueeze(1), prompt_boxes[..., -1]
             prompt_labels = torch.ones(prompt_boxes.shape[:2], dtype=torch.int)
 
             return img, inst_map, type_map, prompt_boxes, prompt_labels, prompt_cell_types, ori_size, idx

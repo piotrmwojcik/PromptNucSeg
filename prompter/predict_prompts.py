@@ -60,7 +60,6 @@ def process_files(files):
 
 mkdir(f'../segmentor/{cfg.prompts_path}')
 
-
 test_files = np.load(f'../segmentor/datasets/{dataset}_test_files.npy')
 process_files(test_files)
 

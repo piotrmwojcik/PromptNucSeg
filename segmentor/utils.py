@@ -17,17 +17,18 @@ from scipy.spatial.distance import directed_hausdorff as hausdorff
 
 
 def train_collate_fn(batch):
-    images, masks, prompt_boxes, prompt_labels, all_points, all_points_types, cell_nums = [[] for _ in range(7)]
+    images, masks, prompt_points, prompt_boxes, prompt_labels, all_points, all_points_types, cell_nums = [[] for _ in range(8)]
     for x in batch:
         images.append(x[0])
         masks.append(x[1])
         prompt_boxes.append(x[2])
-        prompt_labels.append(x[3])
-        all_points_types.append(x[4])
-        all_points.append(x[5])
-        cell_nums.append(len(x[2]))
+        prompt_points.append(x[3])
+        prompt_labels.append(x[4])
+        all_points_types.append(x[5])
+        all_points.append(x[6])
+        cell_nums.append(len(x[7]))
 
-    return (torch.stack(images), torch.cat(masks), torch.cat(prompt_boxes), torch.cat(prompt_labels),
+    return (torch.stack(images), torch.cat(masks), torch.cat(prompt_boxes), torch.cat(prompt_points), torch.cat(prompt_labels),
             all_points, all_points_types, torch.as_tensor(cell_nums))
 
 

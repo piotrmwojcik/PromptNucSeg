@@ -279,7 +279,7 @@ def train_on_epoch(
             images=images,
             prompt_labels=prompt_labels,
             cell_nums=cell_nums,
-            prompt_points=prompt_points,
+            prompt_points=prompt_boxes,
         )
 
         loss_dict = criterion(

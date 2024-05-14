@@ -258,16 +258,15 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         prompt_boxes = prompt_boxes.to(device).squeeze()
-
         prompt_labels = prompt_labels.to(device)
 
         cell_nums = cell_nums.to(device)
 
         outputs = model(
             images,
-            prompt_boxes,
             prompt_labels,
-            cell_nums
+            cell_nums,
+            prompt_boxes=prompt_boxes,
         )
 
         loss_dict = criterion(
@@ -387,9 +386,9 @@ def evaluate(
             if cell_nums.sum() > 0:
                 outputs = model(
                     images,
-                    prompt_boxes.to(device),
                     prompt_labels.to(device),
-                    cell_nums.to(device)
+                    cell_nums.to(device),
+                    prompt_boxes=prompt_boxes.to(device),
                 )
             model_time = time.time() - model_time
             metric_logger.update(model_time=model_time)

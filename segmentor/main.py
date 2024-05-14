@@ -1,6 +1,7 @@
 import sys
 import wandb
 import math
+import random
 import pandas as pd
 import torch.nn.functional as F
 from mmengine.config import Config
@@ -257,6 +258,10 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         prompt_boxes = prompt_boxes.to(device)
+
+        print('!!!')
+        print(prompt_boxes.shape)
+
         prompt_labels = prompt_labels.to(device)
 
         cell_nums = cell_nums.to(device)

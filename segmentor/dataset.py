@@ -87,6 +87,7 @@ class DataFolder(Dataset):
 
         if cell_num:
             all_boxes = []
+            all_points = []
             cell_types = []
 
             for pid in unique_pids:
@@ -101,11 +102,13 @@ class DataFolder(Dataset):
                 )[None, [1, 0]]
 
                 all_boxes.append(boxes)
+                all_points.append(pt)
 
                 assert type_map[pt[0, 1], pt[0, 0]] > 0
                 cell_types.append(type_map[pt[0, 1], pt[0, 0]] - 1)
 
             all_boxes = torch.from_numpy(np.concatenate(all_boxes)).float()
+            all_points = torch.from_numpy(np.concatenate(all_points)).float()
 
             chosen_pids = np.random.choice(
                 unique_pids,
@@ -115,13 +118,19 @@ class DataFolder(Dataset):
 
             inst_maps = []
             prompt_boxes = []
+            prompt_points = []
             for pid in chosen_pids:
                 mask_single_cell = torch.eq(inst_map, pid)
 
                 inst_maps.append(mask_single_cell)
+                prompt_points.append(
+                    random.choice(
+                        torch.argwhere(mask_single_cell)
+                    )[None, [1, 0]].float())
                 prompt_boxes.append(
                     masks_to_boxes(mask_single_cell.unsqueeze(0)))
 
+            prompt_points = torch.stack(prompt_points, dim=0)
             prompt_boxes = torch.stack(prompt_boxes, dim=0)
             prompt_labels = torch.ones(prompt_boxes.shape[:2])
             cell_types = torch.as_tensor(cell_types)
@@ -138,13 +147,14 @@ class DataFolder(Dataset):
                     k=self.num_neg_prompt
                 )
         else:
+            prompt_points = torch.empty(0, (self.num_neg_prompt + 1), 2)
             prompt_boxes = torch.empty(0, (self.num_neg_prompt + 1), 4)
             prompt_labels = torch.empty(0, (self.num_neg_prompt + 1))
             all_boxes = torch.empty(0, 2)
             inst_map = torch.empty(0, 256, 256)
             cell_types = torch.empty(0)
 
-        return img, inst_map.long(), prompt_boxes, prompt_labels, cell_types, all_boxes
+        return img, inst_map.long(), prompt_points, prompt_boxes, prompt_labels, cell_types, all_boxes
 
 
 def load_maskfile(mask_path: str):

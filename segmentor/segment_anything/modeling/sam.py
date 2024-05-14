@@ -68,6 +68,7 @@ class Sam(nn.Module):
             self,
             images,
             prompt_boxes=None,
+            prompt_points=None,
             prompt_labels=None,
             cell_nums=None,
             only_det=False
@@ -82,12 +83,17 @@ class Sam(nn.Module):
         #     return outputs
 
         outputs = {}
-        if prompt_boxes is not None:
-            sparse_embeddings, dense_embeddings = self.prompt_encoder(
-                boxes=prompt_boxes,
-                points=None,
-                masks=None,
-            )
+        if prompt_boxes is not None or prompt_points is not None:
+            if prompt_boxes is not None:
+                sparse_embeddings, dense_embeddings = self.prompt_encoder(
+                    boxes=prompt_boxes,
+                    points=None,
+                    masks=None,)
+            elif prompt_points is not None:
+                sparse_embeddings, dense_embeddings = self.prompt_encoder(
+                    boxes=None,
+                    points=(prompt_points, prompt_labels),
+                    masks=None,)
 
             low_res_masks, iou_predictions = self.mask_decoder(
             # low_res_masks, iou_predictions, cls_predictions = self.mask_decoder(

@@ -2,6 +2,7 @@ import sys
 import wandb
 import math
 import random
+import torch
 import pandas as pd
 import torch.nn.functional as F
 from mmengine.config import Config
@@ -266,6 +267,7 @@ def train_on_epoch(
         w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
 
         print(h)
+        offsets = torch.randint(-1, 2, size=prompt_boxes).to(device)
 
         prompt_labels = prompt_labels.to(device)
 

@@ -260,16 +260,13 @@ def train_on_epoch(
         prompt_boxes = prompt_boxes.to(device).squeeze()
         prompt_labels = prompt_labels.to(device)
 
-        print('!!!')
-        print(prompt_boxes)
-
         cell_nums = cell_nums.to(device)
 
         outputs = model(
             images=images,
             prompt_labels=prompt_labels,
             cell_nums=cell_nums,
-            prompt_boxes=prompt_boxes,
+            prompt_points=prompt_points,
         )
 
         loss_dict = criterion(

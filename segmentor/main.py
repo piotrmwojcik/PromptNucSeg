@@ -267,7 +267,7 @@ def train_on_epoch(
         w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
 
         print(h)
-        offsets = torch.randint(-1, 2, size=prompt_boxes).to(device)
+        offsets = torch.randint(-1, 2, size=prompt_boxes.shape).to(device)
 
         prompt_labels = prompt_labels.to(device)
 

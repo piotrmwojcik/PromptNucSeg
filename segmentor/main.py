@@ -265,6 +265,8 @@ def train_on_epoch(
         h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
         w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
 
+        print(h)
+
         prompt_labels = prompt_labels.to(device)
 
         cell_nums = cell_nums.to(device)

@@ -21,8 +21,8 @@ def train_collate_fn(batch):
     for x in batch:
         images.append(x[0])
         masks.append(x[1])
-        prompt_boxes.append(x[2])
-        prompt_points.append(x[3])
+        prompt_points.append(x[2])
+        prompt_boxes.append(x[3])
         prompt_labels.append(x[4])
         all_points_types.append(x[5])
         all_points.append(x[6])

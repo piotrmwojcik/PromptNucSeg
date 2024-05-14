@@ -433,8 +433,8 @@ def collate_fn(batch):
     for x in batch:
         images.append(x[0])
         points.append(x[1])
-        points.append(x[2])
+        boxes.append(x[2])
         labels.append(x[3])
         type_maps.append((x[4]))
         masks.append(x[5])
-    return torch.stack(images), torch.stack(type_maps), torch.stack(masks), points, labels
+    return torch.stack(images), torch.stack(type_maps), torch.stack(masks), points, boxes, labels

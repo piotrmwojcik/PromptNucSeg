@@ -259,9 +259,9 @@ def train_on_epoch(
 
         prompt_boxes = prompt_boxes.to(device)
 
-        print('!!!')
-        print(prompt_boxes.shape)
-        print(prompt_labels.shape)
+        #print('!!!')
+        #print(prompt_boxes.shape)
+        #print(prompt_labels.shape)
 
         prompt_labels = prompt_labels.to(device)
 

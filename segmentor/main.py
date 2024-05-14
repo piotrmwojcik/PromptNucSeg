@@ -269,7 +269,7 @@ def train_on_epoch(
 
         outputs = model(
             images,
-            prompt_boxes,
+            prompt_boxes.squeeze(),
             prompt_labels,
             cell_nums
         )

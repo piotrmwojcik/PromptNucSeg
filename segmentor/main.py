@@ -263,9 +263,9 @@ def train_on_epoch(
         cell_nums = cell_nums.to(device)
 
         outputs = model(
-            images,
-            prompt_labels,
-            cell_nums,
+            images=images,
+            prompt_labels=prompt_labels,
+            cell_nums=cell_nums,
             prompt_boxes=prompt_boxes,
         )
 
@@ -385,9 +385,9 @@ def evaluate(
         if 'pannuke' in test_dataloader.dataset.dataset:
             if cell_nums.sum() > 0:
                 outputs = model(
-                    images,
-                    prompt_labels.to(device),
-                    cell_nums.to(device),
+                    images=images,
+                    prompt_labels=prompt_labels.to(device),
+                    cell_nums=cell_nums.to(device),
                     prompt_boxes=prompt_boxes.to(device),
                 )
             model_time = time.time() - model_time

@@ -257,7 +257,7 @@ def train_on_epoch(
         images = images.to(device)
         true_masks = true_masks.to(device)
 
-        prompt_boxes = prompt_boxes.to(device)
+        prompt_boxes = prompt_boxes.to(device).squeeze()
 
         print('!!!')
         print(prompt_boxes.shape)
@@ -269,7 +269,7 @@ def train_on_epoch(
 
         outputs = model(
             images,
-            prompt_boxes.squeeze(),
+            prompt_boxes,
             prompt_labels,
             cell_nums
         )

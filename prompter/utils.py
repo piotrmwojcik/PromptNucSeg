@@ -429,12 +429,11 @@ def predict(
 
 
 def collate_fn(batch):
-    images, points, boxes, labels, type_maps, masks = [[] for _ in range(6)]
+    images, points, labels, type_maps, masks = [[] for _ in range(5)]
     for x in batch:
         images.append(x[0])
         points.append(x[1])
-        boxes.append(x[2])
-        labels.append(x[3])
-        type_maps.append((x[4]))
-        masks.append(x[5])
-    return torch.stack(images), torch.stack(type_maps), torch.stack(masks), points, boxes, labels
+        labels.append(x[2])
+        type_maps.append((x[3]))
+        masks.append(x[4])
+    return torch.stack(images), torch.stack(type_maps), torch.stack(masks), points, labels

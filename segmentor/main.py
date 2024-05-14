@@ -258,6 +258,13 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         prompt_boxes = prompt_boxes.to(device).squeeze()
+
+        print('!!!')
+        print(prompt_boxes.shape)
+
+        h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
+        w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
+
         prompt_labels = prompt_labels.to(device)
 
         cell_nums = cell_nums.to(device)

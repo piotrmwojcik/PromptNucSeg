@@ -296,6 +296,8 @@ def train_on_epoch(
             prompt_boxes=prompt_boxes,
         )
 
+        print(prompt_points)
+
         outputs_p = model(
             images=images,
             prompt_labels=prompt_labels,
@@ -307,6 +309,12 @@ def train_on_epoch(
 
         for k in outputs_b.keys():
             outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
+
+        for k in outputs_b.keys():
+            outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
+
+        print('!!!')
+        print(true_masks.shape)
 
         loss_dict = criterion(
             outputs,

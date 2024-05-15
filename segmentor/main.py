@@ -290,6 +290,7 @@ def train_on_epoch(
         print('!!!')
         print(cell_nums.shape)
         print(images.shape)
+        print(cell_nums)
 
         outputs_b = model(
             images=images,

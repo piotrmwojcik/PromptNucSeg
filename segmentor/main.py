@@ -287,14 +287,14 @@ def train_on_epoch(
         cell_nums = cell_nums.to(device)
 
         outputs_b = model(
-            images=images[area >= 70.0],
-            prompt_labels=prompt_labels,
+            images=images,
+            prompt_labels=None,
             cell_nums=cell_nums,
             prompt_boxes=prompt_boxes,
         )
 
         outputs_p = model(
-            images=images[area < 70.0],
+            images=images,
             prompt_labels=prompt_labels,
             cell_nums=cell_nums,
             prompt_points=prompt_points,

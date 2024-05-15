@@ -296,12 +296,10 @@ def train_on_epoch(
             prompt_boxes=prompt_boxes,
         )
 
-        print('!!!!')
-
         outputs_p = model(
             images=images,
             prompt_labels=prompt_labels,
-            cell_nums=cell_nums,
+            cell_nums=cell_nums - cell_nums_b,
             prompt_points=prompt_points,
         )
 

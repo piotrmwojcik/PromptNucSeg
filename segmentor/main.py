@@ -290,8 +290,8 @@ def train_on_epoch(
         cell_nums_b = torch.tensor(([torch.sum(f).item() for f in cell_nums_b])).to(device)
 
         print('!!!')
-        print(cell_nums.shape)
-        print(cell_nums_b.shape)
+        print(cell_nums)
+        print(cell_nums_b)
 
         outputs_b = model(
             images=images,

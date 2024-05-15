@@ -261,12 +261,6 @@ def train_on_epoch(
         prompt_boxes = prompt_boxes.to(device).squeeze()
         prompt_points = prompt_points.to(device).squeeze()
 
-
-        print('!Q!!')
-        print(prompt_points.shape)
-        print(prompt_labels.shape)
-
-
         bshape = prompt_boxes.shape
 
         h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
@@ -303,8 +297,7 @@ def train_on_epoch(
         )
 
         print('!!!')
-        print(prompt_points.shape)
-        print(prompt_labels.shape)
+        print(cell_nums - cell_nums_b)
 
         outputs_p = model(
             images=images,

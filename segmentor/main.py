@@ -288,6 +288,7 @@ def train_on_epoch(
         cell_nums = cell_nums.to(device)
 
         print('!!!')
+        print(cell_nums.shape)
         print(images.shape)
 
         outputs_b = model(

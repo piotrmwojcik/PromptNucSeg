@@ -262,6 +262,7 @@ def train_on_epoch(
 
         h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
         w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
+        print(w)
         print(torch.mul(h, w))
 
         h = h.to(device) * 0.25

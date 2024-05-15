@@ -15,7 +15,7 @@ class CPU_Unpickler(pickle.Unpickler):
             return super().find_class(module, name)
 
 
-SCORE_THRESHOLD = 0.355
+SCORE_THRESHOLD = 0.350
 DISTANCE = 12
 
 def box_cxcywh_to_xyxy(x):

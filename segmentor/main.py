@@ -276,6 +276,7 @@ def train_on_epoch(
 
         prompt_boxes = prompt_boxes[area >= 70.0]
         prompt_points = prompt_points[area < 70.0]
+        prompt_points = prompt_points.to(device)
         prompt_labels = prompt_labels.to(device)
         prompt_labels = prompt_labels[area < 70.0]
 

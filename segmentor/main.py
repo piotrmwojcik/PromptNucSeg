@@ -311,12 +311,12 @@ def train_on_epoch(
         for k in outputs_b.keys():
             outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
 
-        print('!!!')
-        print(true_masks.shape)
+        true_masks_b = true_masks[area >= 70.0]
+        true_masks_p = true_masks[area < 70.0]
 
         loss_dict = criterion(
             outputs,
-            true_masks,
+            torch.cat([true_masks_b, true_masks_p], dim=0),
         )
 
         losses = sum(loss for loss in loss_dict.values())

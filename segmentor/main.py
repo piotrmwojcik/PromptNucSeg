@@ -286,11 +286,8 @@ def train_on_epoch(
         prompt_labels = prompt_labels[area < 70.0]
 
         cell_nums = cell_nums.to(device)
-
-        print('!!!')
-        print(cell_nums.shape)
-        print(images.shape)
-        print(cell_nums)
+        cell_nums_b = torch.split(area >= 70.0, cell_nums.tolist())
+        print([torch.sum(cell_nums_b).item() for f in cell_nums_b])
 
         outputs_b = model(
             images=images,

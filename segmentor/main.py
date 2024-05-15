@@ -259,6 +259,7 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         prompt_boxes = prompt_boxes.to(device).squeeze()
+        prompt_points = prompt_points.to(device)
 
         h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
         w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
@@ -268,9 +269,9 @@ def train_on_epoch(
         area = torch.mul(h, w)
         prompt_boxes = prompt_boxes[area >= 70.0]
         prompt_points = prompt_points[area < 70.0]
-        offsets = offsets[area >= 70.0]
 
         offsets = torch.randint(-1, 2, size=prompt_boxes.shape).to(device)
+        offsets = offsets[area >= 70.0]
 
         prompt_boxes[:, 0] += torch.mul(offsets[:, 0], h)
         prompt_boxes[:, 1] += torch.mul(offsets[:, 1], w)
@@ -278,7 +279,6 @@ def train_on_epoch(
         prompt_boxes[:, 3] += torch.mul(offsets[:, 3], w)
 
 
-        prompt_points = prompt_points.to(device)
         prompt_labels = prompt_labels.to(device)
         prompt_labels = prompt_labels[area < 70.0]
 

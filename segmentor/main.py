@@ -259,7 +259,7 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         prompt_boxes = prompt_boxes.to(device).squeeze()
-        prompt_points = prompt_points.to(device)
+        prompt_points = prompt_points.to(device).squeeze()
 
         h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
         w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
@@ -275,7 +275,7 @@ def train_on_epoch(
 
         print('!!!')
         print(prompt_boxes.shape)
-        print(prompt_points.shape)
+        print(offsets.shape)
 
         prompt_boxes[:, 0] += torch.mul(offsets[:, 0], h)
         prompt_boxes[:, 1] += torch.mul(offsets[:, 1], w)

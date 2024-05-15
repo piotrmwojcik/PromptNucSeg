@@ -296,8 +296,6 @@ def train_on_epoch(
             prompt_boxes=prompt_boxes,
         )
 
-        print(prompt_points)
-
         outputs_p = model(
             images=images,
             prompt_labels=prompt_labels,

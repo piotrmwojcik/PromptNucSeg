@@ -281,11 +281,15 @@ def train_on_epoch(
         prompt_boxes[:, 2] += torch.mul(offsets[:, 2], h)
         prompt_boxes[:, 3] += torch.mul(offsets[:, 3], w)
 
-
         prompt_labels = prompt_labels.to(device)
         prompt_labels = prompt_labels[area < 70.0]
 
         cell_nums = cell_nums.to(device)
+
+        print('!!!')
+        print(prompt_labels.shape)
+        print(prompt_points.shape)
+        print(prompt_boxes.shape)
 
         outputs_b = model(
             images=images,
@@ -293,10 +297,6 @@ def train_on_epoch(
             cell_nums=cell_nums,
             prompt_boxes=prompt_boxes,
         )
-
-        print('!!!')
-        print(prompt_labels.shape)
-        print(prompt_points.shape)
 
         outputs_p = model(
             images=images,

@@ -274,10 +274,12 @@ def train_on_epoch(
         offsets = torch.randint(-1, 2, size=bshape).to(device)
         offsets = offsets[area >= 70.0]
 
-        prompt_boxes[:, 0] += torch.mul(offsets[:, 0], h[area >= 70.0])
-        prompt_boxes[:, 1] += torch.mul(offsets[:, 1], w[area >= 70.0])
-        prompt_boxes[:, 2] += torch.mul(offsets[:, 2], h[area >= 70.0])
-        prompt_boxes[:, 3] += torch.mul(offsets[:, 3], w[area >= 70.0])
+        h = h[area >= 70.0]
+        w = w[area >= 70.0]
+        prompt_boxes[:, 0] += torch.mul(offsets[:, 0], h)
+        prompt_boxes[:, 1] += torch.mul(offsets[:, 1], w)
+        prompt_boxes[:, 2] += torch.mul(offsets[:, 2], h)
+        prompt_boxes[:, 3] += torch.mul(offsets[:, 3], w)
 
 
         prompt_labels = prompt_labels.to(device)
@@ -296,7 +298,7 @@ def train_on_epoch(
             images=images,
             prompt_labels=prompt_labels,
             cell_nums=cell_nums,
-            prompt_points=(prompt_points, prompt_labels),
+            prompt_points=prompt_points,
         )
 
         outputs = {}

@@ -289,16 +289,16 @@ def train_on_epoch(
         cell_nums_b = torch.split(area >= 70.0, cell_nums.tolist())
         cell_nums_b = torch.tensor(([torch.sum(f).item() for f in cell_nums_b])).to(device)
 
-        print('!!!')
-        print(cell_nums)
-        print(cell_nums_b)
-
         outputs_b = model(
             images=images,
             prompt_labels=None,
             cell_nums=cell_nums_b,
             prompt_boxes=prompt_boxes,
         )
+
+        print('!!!')
+        print(prompt_points.shape)
+        print(prompt_labels.shape)
 
         outputs_p = model(
             images=images,

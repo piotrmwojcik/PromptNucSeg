@@ -286,6 +286,9 @@ def train_on_epoch(
             prompt_boxes=prompt_boxes,
         )
 
+        print('!!!!')
+        print(outputs.shape)
+
         loss_dict = criterion(
             outputs,
             true_masks,

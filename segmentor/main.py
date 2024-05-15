@@ -287,7 +287,7 @@ def train_on_epoch(
         )
 
         print('!!!!')
-        print(outputs.keys())
+        print(outputs['pred_masks'].shape)
 
         loss_dict = criterion(
             outputs,

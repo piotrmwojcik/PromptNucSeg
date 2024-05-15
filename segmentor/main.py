@@ -268,6 +268,9 @@ def train_on_epoch(
         area = torch.mul(h, w)
         h = h.to(device) * 0.2
         w = w.to(device) * 0.2
+        print('!!!')
+        print( prompt_boxes.shape)
+
         prompt_boxes = prompt_boxes[area >= 70.0]
         prompt_points = prompt_points[area < 70.0]
 

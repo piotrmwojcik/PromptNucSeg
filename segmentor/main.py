@@ -265,8 +265,8 @@ def train_on_epoch(
 
         h = h.to(device) * 0.2
         w = w.to(device) * 0.2
-        area = torch.mul(h, w) <= 70.0
-        print(area)
+        area = torch.mul(h, w)
+        prompt_boxes = prompt_boxes[area >= 70.0]
 
         offsets = torch.randint(-1, 2, size=prompt_boxes.shape).to(device)
 

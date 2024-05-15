@@ -176,31 +176,31 @@ def load_maskfile(mask_path: str):
 
 
 def add_k_nearest_neg_prompt(
-        prompt_points,
+        prompt_boxes,
         global_indices,
-        all_points,
+        all_boxes,
         k: int = 1
 ):
-    if len(prompt_points) == 1:
-        prompt_points = torch.cat([prompt_points, torch.zeros(1, k, 2)], dim=1)
-        prompt_labels = torch.ones(prompt_points.shape[:2], dtype=torch.int)
+    if len(prompt_boxes) == 1:
+        prompt_boxes = torch.cat([prompt_boxes, torch.zeros(1, k, 2)], dim=1)
+        prompt_labels = torch.ones(prompt_boxes.shape[:2], dtype=torch.int)
         prompt_labels[0, 1] = -1
     else:
-        all_points = all_points.view(-1, 2)
-        dis = torch.cdist(all_points, all_points, p=2.0)
+        all_boxes = all_boxes.view(-1, 2)
+        dis = torch.cdist(all_boxes, all_boxes, p=2.0)
         dis = dis.fill_diagonal_(np.inf)
 
-        available_num = min(k, len(prompt_points) - 1)
-        neg_prompt_points = all_points[
+        available_num = min(k, len(prompt_boxes) - 1)
+        neg_prompt_boxes = all_boxes[
                             torch.topk(dis[global_indices], available_num, dim=1, largest=False).indices, :
                             ]
-        prompt_points = torch.cat(
-            [prompt_points, neg_prompt_points, torch.zeros(len(prompt_points), k - available_num, 2)],
+        prompt_boxes = torch.cat(
+            [prompt_boxes, neg_prompt_boxes, torch.zeros(len(prompt_boxes), k - available_num, 2)],
             dim=1
         )
 
-        prompt_labels = torch.ones(prompt_points.shape[:2], dtype=torch.int)
+        prompt_labels = torch.ones(prompt_boxes.shape[:2], dtype=torch.int)
         prompt_labels[:, 1:available_num + 1] = 0
         prompt_labels[:, available_num + 1:] = -1
 
-    return prompt_points, prompt_labels
+    return prompt_boxes, prompt_labels

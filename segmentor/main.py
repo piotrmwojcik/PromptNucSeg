@@ -259,7 +259,7 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         prompt_boxes = prompt_boxes.to(device).squeeze()
-        prompt_points = prompt_points.to(device).squeeze()
+        prompt_points = prompt_points.to(device)
 
         bshape = prompt_boxes.shape
 
@@ -295,9 +295,6 @@ def train_on_epoch(
             cell_nums=cell_nums_b,
             prompt_boxes=prompt_boxes,
         )
-
-        print('!!!')
-        print(cell_nums - cell_nums_b)
 
         outputs_p = model(
             images=images,

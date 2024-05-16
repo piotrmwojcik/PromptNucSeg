@@ -260,6 +260,8 @@ def train_on_epoch(
         images = images.to(device)
         true_masks = true_masks.to(device)
 
+        all_points = prompt_points.clone()
+
         prompt_boxes = prompt_boxes.to(device).squeeze()
         prompt_points = prompt_points.to(device)
 
@@ -323,7 +325,7 @@ def train_on_epoch(
             images=images,
             prompt_labels=prompt_labels,
             cell_nums=cell_nums,
-            prompt_points=prompt_points,
+            prompt_points=all_points,
         )
 
         for k in outputs.keys():

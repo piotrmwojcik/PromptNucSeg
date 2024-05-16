@@ -440,6 +440,8 @@ def evaluate(
 
                 cnt = cnt.permute(0, 2, 1)
 
+                print(cnt)
+
                 outputs = model(
                     images=images,
                     prompt_labels=prompt_labels.to(device),

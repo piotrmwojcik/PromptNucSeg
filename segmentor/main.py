@@ -447,7 +447,7 @@ def evaluate(
                     prompt_labels=prompt_labels.to(device),
                     cell_nums=cell_nums.to(device),
                     prompt_boxes=prompt_boxes,
-                    prompt_points=cnt.to(device),
+                    prompt_points=None,
                 )
             model_time = time.time() - model_time
             metric_logger.update(model_time=model_time)

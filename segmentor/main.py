@@ -436,7 +436,7 @@ def evaluate(
             print(prompt_boxes.shape)
             if cell_nums.sum() > 0:
                 centroid_x = (prompt_boxes[:, :,  0] + prompt_boxes[:, :, 2]) / 2
-                centroid_y = (prompt_boxes[:, :, 1] + prompt_boxes[:, 3]) / 2
+                centroid_y = (prompt_boxes[:, :, 1] + prompt_boxes[:, :, 3]) / 2
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
                 print(cnt.shape)
 

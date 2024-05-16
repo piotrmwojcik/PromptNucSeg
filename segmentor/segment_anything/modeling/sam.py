@@ -84,6 +84,11 @@ class Sam(nn.Module):
 
         outputs = {}
         if prompt_boxes is not None or prompt_points is not None:
+            if prompt_boxes is not None and prompt_points is not None:
+                sparse_embeddings, dense_embeddings = self.prompt_encoder(
+                    boxes=prompt_boxes,
+                    points=(prompt_points, prompt_labels),
+                    masks=None,)
             if prompt_boxes is not None:
                 sparse_embeddings, dense_embeddings = self.prompt_encoder(
                     boxes=prompt_boxes,

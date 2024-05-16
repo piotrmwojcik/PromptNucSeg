@@ -253,6 +253,8 @@ def train_on_epoch(
     wandb_log_info = {}
     model.train()
 
+    THR = 70.0
+
     for data_iter_step, (images, true_masks, prompt_points, prompt_boxes, prompt_labels, all_points, all_points_types, cell_nums) in (
             enumerate(metric_logger.log_every(train_dataloader, args.print_freq, header))):
         images = images.to(device)
@@ -269,24 +271,24 @@ def train_on_epoch(
         h = h.to(device) * 0.2
         w = w.to(device) * 0.2
 
-        prompt_boxes = prompt_boxes[area >= 70.0]
-        prompt_points = prompt_points[area < 70.0]
+        prompt_boxes = prompt_boxes[area >= THR]
+        prompt_points = prompt_points[area < THR]
 
         offsets = torch.randint(-1, 2, size=bshape).to(device)
-        offsets = offsets[area >= 70.0]
+        offsets = offsets[area >= THR]
 
-        h = h[area >= 70.0]
-        w = w[area >= 70.0]
+        h = h[area >= THR]
+        w = w[area >= THR]
         prompt_boxes[:, 0] += torch.mul(offsets[:, 0], h)
         prompt_boxes[:, 1] += torch.mul(offsets[:, 1], w)
         prompt_boxes[:, 2] += torch.mul(offsets[:, 2], h)
         prompt_boxes[:, 3] += torch.mul(offsets[:, 3], w)
 
         prompt_labels = prompt_labels.to(device)
-        prompt_labels = prompt_labels[area < 70.0]
+        prompt_labels = prompt_labels[area < THR]
 
         cell_nums = cell_nums.to(device)
-        cell_nums_b = torch.split(area >= 70.0, cell_nums.tolist())
+        cell_nums_b = torch.split(area >= THR, cell_nums.tolist())
         cell_nums_b = torch.tensor(([torch.sum(f).item() for f in cell_nums_b])).to(device)
 
         outputs_b = model(
@@ -296,23 +298,26 @@ def train_on_epoch(
             prompt_boxes=prompt_boxes,
         )
 
-        outputs_p = model(
-            images=images,
-            prompt_labels=prompt_labels,
-            cell_nums=cell_nums - cell_nums_b,
-            prompt_points=prompt_points,
-        )
+        if not torch.all(torch.eq(cell_nums_b, 0)):
+            outputs_p = model(
+                images=images,
+                prompt_labels=prompt_labels,
+                cell_nums=cell_nums - cell_nums_b,
+                prompt_points=prompt_points,
+            )
 
-        outputs = {}
+            outputs = {}
 
-        for k in outputs_b.keys():
-            outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
+            for k in outputs_b.keys():
+                outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
 
-        for k in outputs_b.keys():
-            outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
+            for k in outputs_b.keys():
+                outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
 
-        true_masks_b = true_masks[area >= 70.0]
-        true_masks_p = true_masks[area < 70.0]
+            true_masks_b = true_masks[area >= THR]
+            true_masks_p = true_masks[area < THR]
+        else:
+            outputs = outputs_b
 
         loss_dict = criterion(
             outputs,

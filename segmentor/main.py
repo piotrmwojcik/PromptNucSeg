@@ -439,11 +439,8 @@ def evaluate(
                 centroid_x = centroid_x[:, 0]
                 centroid_y = centroid_y[:, 0]
 
-                print(prompt_boxes)
-
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
                 cnt = cnt.unsqueeze(dim=1)
-                print(cnt)
 
                 outputs = model(
                     images=images,

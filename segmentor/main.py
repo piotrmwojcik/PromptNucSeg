@@ -436,11 +436,10 @@ def evaluate(
             if cell_nums.sum() > 0:
                 centroid_x = (prompt_boxes[:, :,  0] + prompt_boxes[:, :, 2]) / 2
                 centroid_y = (prompt_boxes[:, :, 1] + prompt_boxes[:, :, 3]) / 2
+                print(centroid_x.shape)
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
 
                 cnt = cnt.permute(0, 2, 1)
-
-                print(cnt)
 
                 outputs = model(
                     images=images,

@@ -274,7 +274,7 @@ def train_on_epoch(
         prompt_boxes = prompt_boxes[area >= THR]
         prompt_points = prompt_points[area < THR]
 
-        offsets = torch.randint(-1, 2, size=bshape).to(device)
+        offsets = torch.rand(bshape, device=device) * 3 - 1
         offsets = offsets[area >= THR]
 
         h = h[area >= THR]

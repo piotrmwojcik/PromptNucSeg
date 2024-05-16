@@ -261,6 +261,7 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         all_points = prompt_points.clone()
+        all_labels = prompt_labels.clone()
 
         prompt_boxes = prompt_boxes.to(device).squeeze()
         prompt_points = prompt_points.to(device)

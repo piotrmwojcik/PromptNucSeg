@@ -324,7 +324,7 @@ def train_on_epoch(
 
         outputs_p = model(
             images=images,
-            prompt_labels=prompt_labels,
+            prompt_labels=all_labels,
             cell_nums=cell_nums,
             prompt_points=all_points,
         )

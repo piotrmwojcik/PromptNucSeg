@@ -446,6 +446,7 @@ def evaluate(
                     images=images,
                     prompt_labels=prompt_labels.to(device),
                     cell_nums=cell_nums.to(device),
+                    prompt_boxes=prompt_boxes,
                     prompt_points=cnt.to(device),
                 )
             model_time = time.time() - model_time

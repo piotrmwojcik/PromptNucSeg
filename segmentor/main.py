@@ -437,9 +437,8 @@ def evaluate(
                 prompt_boxes = prompt_boxes.squeeze()
                 centroid_x = (prompt_boxes[:,  0] + prompt_boxes[:, 2]) / 2
                 centroid_y = (prompt_boxes[:,  1] + prompt_boxes[:, 3]) / 2
-                print(centroid_x.shape)
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
-                print(cnt.shape)
+                cnt = cnt.unsqueeze(1)
 
                 outputs = model(
                     images=images,

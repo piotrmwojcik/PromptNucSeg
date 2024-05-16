@@ -435,6 +435,7 @@ def evaluate(
         if 'pannuke' in test_dataloader.dataset.dataset:
             if cell_nums.sum() > 0:
                 prompt_boxes = prompt_boxes.squeeze()
+                print(prompt_boxes.shape)
                 centroid_x = (prompt_boxes[:,  0] + prompt_boxes[:, 2]) / 2
                 centroid_y = (prompt_boxes[:,  1] + prompt_boxes[:, 3]) / 2
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)

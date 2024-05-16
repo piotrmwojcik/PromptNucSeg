@@ -437,13 +437,12 @@ def evaluate(
                 centroid_x = (prompt_boxes[:, :,  0] + prompt_boxes[:, :, 2]) / 2
                 centroid_y = (prompt_boxes[:, :, 1] + prompt_boxes[:, :, 3]) / 2
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
-                print(cnt.shape)
 
                 outputs = model(
                     images=images,
                     prompt_labels=prompt_labels.to(device),
                     cell_nums=cell_nums.to(device),
-                    prompt_boxes=prompt_boxes.to(device),
+                    prompt_points=cnt.to(device),
                 )
             model_time = time.time() - model_time
             metric_logger.update(model_time=model_time)

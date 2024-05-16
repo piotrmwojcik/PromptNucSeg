@@ -434,7 +434,11 @@ def evaluate(
         batch_inds = torch.repeat_interleave(torch.arange(images.shape[0]), cell_nums)
         if 'pannuke' in test_dataloader.dataset.dataset:
             if cell_nums.sum() > 0:
-                print(prompt_boxes)
+                centroid_x = (prompt_boxes[:, 0] + prompt_boxes[:, 2]) / 2
+                centroid_y = (prompt_boxes[:, 1] + prompt_boxes[:, 3]) / 2
+                cnt = torch.stack((centroid_x, centroid_y), dim=1)
+                print(cnt.shape)
+
                 outputs = model(
                     images=images,
                     prompt_labels=prompt_labels.to(device),
@@ -450,7 +454,6 @@ def evaluate(
                 b_inst_map = np.zeros_like(inst_maps[0])
 
                 if cell_nums.sum() > 0:
-
                     mask_data = MaskData(
                         masks=outputs["pred_masks"][batch_inds == batch_ind],
                         iou_preds=outputs["pred_ious"][batch_inds == batch_ind],

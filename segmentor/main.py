@@ -438,8 +438,7 @@ def evaluate(
                 centroid_y = (prompt_boxes[:, :, 1] + prompt_boxes[:, :, 3]) / 2
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
 
-                print('!!!')
-                print(cnt.shape)
+                cnt = cnt.permute(0, 2, 1)
 
                 outputs = model(
                     images=images,

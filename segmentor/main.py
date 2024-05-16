@@ -434,6 +434,7 @@ def evaluate(
         batch_inds = torch.repeat_interleave(torch.arange(images.shape[0]), cell_nums)
         if 'pannuke' in test_dataloader.dataset.dataset:
             if cell_nums.sum() > 0:
+                print(prompt_boxes)
                 outputs = model(
                     images=images,
                     prompt_labels=prompt_labels.to(device),

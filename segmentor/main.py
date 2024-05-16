@@ -438,6 +438,9 @@ def evaluate(
                 centroid_y = (prompt_boxes[:, :, 1] + prompt_boxes[:, :, 3]) / 2
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
 
+                print('!!!')
+                print(cnt.shape)
+
                 outputs = model(
                     images=images,
                     prompt_labels=prompt_labels.to(device),

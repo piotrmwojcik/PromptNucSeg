@@ -434,12 +434,12 @@ def evaluate(
         batch_inds = torch.repeat_interleave(torch.arange(images.shape[0]), cell_nums)
         if 'pannuke' in test_dataloader.dataset.dataset:
             if cell_nums.sum() > 0:
-                centroid_x = (prompt_boxes[:, :,  0] + prompt_boxes[:, :, 2]) / 2
-                centroid_y = (prompt_boxes[:, :, 1] + prompt_boxes[:, :, 3]) / 2
+                prompt_boxes = prompt_boxes.squeeze()
+                centroid_x = (prompt_boxes[:,  0] + prompt_boxes[:, 2]) / 2
+                centroid_y = (prompt_boxes[:,  1] + prompt_boxes[:, 3]) / 2
                 print(centroid_x.shape)
                 cnt = torch.stack((centroid_x, centroid_y), dim=1)
-
-                cnt = cnt.permute(0, 2, 1)
+                print(cnt.shape)
 
                 outputs = model(
                     images=images,

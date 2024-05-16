@@ -299,7 +299,7 @@ def train_on_epoch(
         )
 
         if not torch.all(torch.eq(cell_nums_b, 0)):
-            outputs_p = model(
+            outputs_sp = model(
                 images=images,
                 prompt_labels=prompt_labels,
                 cell_nums=cell_nums - cell_nums_b,
@@ -309,19 +309,30 @@ def train_on_epoch(
             outputs = {}
 
             for k in outputs_b.keys():
-                outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
+                outputs[k] = torch.cat([outputs_b[k], outputs_sp[k]], dim=0)
 
             for k in outputs_b.keys():
-                outputs[k] = torch.cat([outputs_b[k], outputs_p[k]], dim=0)
+                outputs[k] = torch.cat([outputs_b[k], outputs_sp[k]], dim=0)
 
             true_masks_b = true_masks[area >= THR]
-            true_masks_p = true_masks[area < THR]
+            true_masks_sp = true_masks[area < THR]
         else:
             outputs = outputs_b
 
+        outputs_p = model(
+            images=images,
+            prompt_labels=prompt_labels,
+            cell_nums=cell_nums,
+            prompt_points=prompt_points,
+        )
+
+        for k in outputs.keys():
+            outputs[k] = torch.cat([outputs[k], outputs_p[k]], dim=0)
+
+
         loss_dict = criterion(
             outputs,
-            torch.cat([true_masks_b, true_masks_p], dim=0),
+            torch.cat([true_masks_b, true_masks_sp, true_masks.clone()], dim=0),
         )
 
         losses = sum(loss for loss in loss_dict.values())

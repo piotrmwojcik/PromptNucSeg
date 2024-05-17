@@ -100,7 +100,7 @@ class DataFolder(Dataset):
 
                 print('!!!!!')
                 dupa = masks_to_boxes(mask_single_cell.unsqueeze(0)).shape
-                assert dupa.shape[0] == 1
+                assert dupa[0] == 1
 
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)

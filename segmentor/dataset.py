@@ -104,10 +104,11 @@ class DataFolder(Dataset):
 
                 if (boxes[2] - boxes[0]) * (boxes[3] - boxes[1]) == 0:
                     print(type_map.shape)
-                    print((boxes[2] - boxes[0]) * (boxes[3] - boxes[1]))
                     print(boxes)
                     print(type_map[pt[0, 1], pt[0, 0]])
                     print(img_path)
+                    print(max(int(boxes[0]) - 5, 0), (min(int(boxes[2]) + 5, 254) + 1),
+                          max(int(boxes[1]) - 5, 0), (min(int(boxes[3]) + 5, 254) + 1))
                     print(type_map[max(int(boxes[0]) - 5, 0):(min(int(boxes[2]) + 5, 254) + 1),
                           max(int(boxes[1]) - 5, 0):(min(int(boxes[3]) + 5, 254) + 1)])
                     print()

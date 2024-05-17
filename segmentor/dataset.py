@@ -108,7 +108,8 @@ class DataFolder(Dataset):
                     print(boxes)
                     print(type_map[pt[0, 1], pt[0, 0]])
                     print(img_path)
-                    print(type_map[max(boxes[0] - 5., 0.):min(boxes[2] + 5, 255.), max(boxes[1] - 5., 0.):min(boxes[3] + 5., 255.)])
+                    print(type_map[max(boxes[0] - 5, 0):min(boxes[2] + 5, 255),
+                          max(boxes[1] - 5, 0):min(boxes[3] + 5, 255)])
                     print()
 
                 all_boxes.append(boxes)

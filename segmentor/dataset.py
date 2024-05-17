@@ -98,6 +98,9 @@ class DataFolder(Dataset):
 
                 boxes = masks_to_boxes(mask_single_cell.unsqueeze(0)).squeeze()
 
+                print('!!!!!')
+                print(masks_to_boxes(mask_single_cell).shape)
+
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]

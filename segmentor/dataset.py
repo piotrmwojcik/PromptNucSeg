@@ -99,7 +99,7 @@ class DataFolder(Dataset):
                 boxes = masks_to_boxes(mask_single_cell.unsqueeze(0)).squeeze()
 
                 print('!!!!!')
-                print(masks_to_boxes(mask_single_cell).shape)
+                print(masks_to_boxes(mask_single_cell.unsqueeze(0)).shape)
 
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)

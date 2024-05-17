@@ -97,11 +97,14 @@ class DataFolder(Dataset):
                 )
 
                 boxes = masks_to_boxes(mask_single_cell.unsqueeze(0)).squeeze()
-                if boxes[0] == boxes[2] or boxes[1] == boxes[3]:
-                    print(boxes)
+
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]
+
+                if boxes[0] == boxes[2] or boxes[1] == boxes[3]:
+                    print(boxes)
+                    print(type_map[pt[0, 1], pt[0, 0]])
 
                 all_boxes.append(boxes)
                 all_points.append(pt)

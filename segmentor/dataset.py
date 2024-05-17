@@ -103,7 +103,7 @@ class DataFolder(Dataset):
                 )[None, [1, 0]]
 
                 if (boxes[2] - boxes[0]) * (boxes[3] - boxes[1]) == 0:
-                    print(img.shape)
+                    print(type_map.shape)
                     print((boxes[2] - boxes[0]) * (boxes[3] - boxes[1]))
                     print(boxes)
                     print(type_map[pt[0, 1], pt[0, 0]])

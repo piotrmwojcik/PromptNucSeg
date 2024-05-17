@@ -105,6 +105,7 @@ class DataFolder(Dataset):
                 if boxes[0] == boxes[2] or boxes[1] == boxes[3]:
                     print(boxes)
                     print(type_map[pt[0, 1], pt[0, 0]])
+                    print(img_path)
 
                 all_boxes.append(boxes)
                 all_points.append(pt)

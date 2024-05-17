@@ -107,11 +107,11 @@ class DataFolder(Dataset):
                     print(boxes)
                     print(type_map[pt[0, 1], pt[0, 0]])
                     print(img_path)
-                    print(max(int(boxes[0]) - 5, 0), (min(int(boxes[2]) + 5, 254) + 1),
-                          max(int(boxes[1]) - 5, 0), (min(int(boxes[3]) + 5, 254) + 1))
+                    print(max(int(boxes[0]) - 3, 0), (min(int(boxes[2]) + 3, 254) + 1),
+                          max(int(boxes[1]) - 3, 0), (min(int(boxes[3]) + 3, 254) + 1))
                     print(type_map[
-                          max(int(boxes[1]) - 5, 0):(min(int(boxes[3]) + 5, 254) + 1),
-                          max(int(boxes[0]) - 5, 0):(min(int(boxes[2]) + 5, 254) + 1)
+                          max(int(boxes[1]) - 3, 0):(min(int(boxes[3]) + 3, 254) + 1),
+                          max(int(boxes[0]) - 3, 0):(min(int(boxes[2]) + 3, 254) + 1)
                           ])
                     print()
 

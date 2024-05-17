@@ -102,7 +102,9 @@ class DataFolder(Dataset):
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]
 
-                if (boxes[2] - boxes[0]) * (boxes[3] - boxes[1]) < 100:
+
+                dupa = type_map[pt[0, 1], pt[0, 0]].item()
+                if dupa == 4:
                     print(boxes)
                     print(type_map[pt[0, 1], pt[0, 0]])
                     print(img_path)

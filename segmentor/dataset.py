@@ -102,26 +102,12 @@ class DataFolder(Dataset):
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]
 
-                #if box[0] == box[2]:
-                #    box[0] = max(int(box[0]) - 2, 0)
-                #    box[2] = min(int(box[2]) + 2, 255)
-                #if box[1] == box[3]:
-                #    box[1] =
-
-
-                if (box[2] - box[0]) * (box[3] - box[1]) == 0:
-                    print(mask_single_cell.sum())
-                    print(type_map.shape)
-                    print(box)
-                    print(type_map[pt[0, 1], pt[0, 0]])
-                    print(img_path)
-                    print(max(int(box[0]) - 3, 0), (min(int(box[2]) + 3, 255) + 1),
-                          max(int(box[1]) - 3, 0), (min(int(box[3]) + 3, 255) + 1))
-                    print(type_map[
-                          max(int(box[1]) - 3, 0):(min(int(box[3]) + 3, 256)),
-                          max(int(box[0]) - 3, 0):(min(int(box[2]) + 3, 256))
-                          ])
-                    print()
+                if box[0] == box[2]:
+                    box[0] = max(int(box[0]) - 2, 0)
+                    box[2] = min(int(box[2]) + 2, 255)
+                if box[1] == box[3]:
+                    box[1] = max(int(box[1]) - 2, 0)
+                    box[2] = min(int(box[3]) + 2, 255)
 
                 all_boxes.append(box)
                 all_points.append(pt)

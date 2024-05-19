@@ -270,11 +270,16 @@ def train_on_epoch(
 
         h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
         w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
-        area = torch.mul(h, w)
+        #area = torch.mul(h, w)
         h = h.to(device) * 0.21
         w = w.to(device) * 0.21
 
         offsets = torch.rand(bshape, device=device) * 2 - 1
+        offsets_bigger = torch.rand(bshape, device=device) * 5
+        offsets_bigger[:, 0] *= -1.0
+        offsets_bigger[:, 2] *= -1.0
+
+        print(offsets_bigger)
 
         #print()
         #print(torch.mul(offsets[:, 0], h))

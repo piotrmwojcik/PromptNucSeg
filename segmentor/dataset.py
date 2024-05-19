@@ -102,10 +102,10 @@ class DataFolder(Dataset):
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]
 
-                if box[0] == box[2]:
+                if (box[2] - box[0]) < 1.0:
                     box[0] = max(int(box[0]) - 2, 0)
                     box[2] = min(int(box[2]) + 2, 255)
-                if box[1] == box[3]:
+                if (box[3] - box[1]) < 1.0:
                     box[1] = max(int(box[1]) - 2, 0)
                     box[3] = min(int(box[3]) + 2, 255)
 

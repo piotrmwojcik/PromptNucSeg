@@ -259,8 +259,8 @@ def train_on_epoch(
         true_masks = true_masks.to(device)
 
         prompt_boxes = prompt_boxes.to(device)
-        h = prompt_boxes[:, :,  2] - prompt_boxes[:, :,  0]
-        w = prompt_boxes[:, :, 3] - prompt_boxes[:, :, 1]
+        h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
+        w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
         print(prompt_boxes[h == 0])
         print()
 

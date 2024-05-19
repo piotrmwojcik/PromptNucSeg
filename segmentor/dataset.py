@@ -138,7 +138,7 @@ class DataFolder(Dataset):
                     random.choice(
                         torch.argwhere(mask_single_cell)
                     )[None, [1, 0]].float())
-                box = masks_to_boxes(mask_single_cell.unsqueeze(0))
+                box = masks_to_boxes(mask_single_cell.unsqueeze(0)).squeeze()
                 prompt_boxes.append(self._expand_box(box))
 
             prompt_points = torch.stack(prompt_points, dim=0)

@@ -261,10 +261,6 @@ def train_on_epoch(
         prompt_boxes = prompt_boxes.to(device).squeeze()
         #prompt_points = prompt_points.to(device)
 
-        print('!!!')
-        print(prompt_boxes.shape)
-        print(prompt_boxes)
-
         bshape = prompt_boxes.shape
 
         h = prompt_boxes[:, 2] - prompt_boxes[:, 0]

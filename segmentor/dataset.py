@@ -108,8 +108,8 @@ class DataFolder(Dataset):
                 if box[1] == box[3]:
                     box[1] = max(int(box[1]) - 2, 0)
                     box[3] = min(int(box[3]) + 2, 255)
-                assert(box[0] < box[2])
-                assert(box[1] < box[3])
+                assert(box[0] < box[2] - 1.0)
+                assert(box[1] < box[3] - 1.0)
 
                 all_boxes.append(box)
                 all_points.append(pt)

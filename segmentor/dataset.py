@@ -47,9 +47,10 @@ class DataFolder(Dataset):
     def __len__(self):
         return len(self.files)
 
-    def _expand_box(self, box):
-        print('!!!')
-        print(box.shape)
+    def _expand_box(self, box, dupa=False):
+        if dupa == True:
+            print('!!!')
+            print(box.shape)
         if (box[2] - box[0]) < 1.0:
             box[0] = max(int(box[0]) - 2, 0)
             box[2] = min(int(box[2]) + 2, 255)
@@ -141,7 +142,7 @@ class DataFolder(Dataset):
                         torch.argwhere(mask_single_cell)
                     )[None, [1, 0]].float())
                 box = masks_to_boxes(mask_single_cell.unsqueeze(0))
-                prompt_boxes.append(self._expand_box(box))
+                prompt_boxes.append(self._expand_box(box, dupa=True))
 
             prompt_points = torch.stack(prompt_points, dim=0)
             prompt_boxes = torch.stack(prompt_boxes, dim=0)

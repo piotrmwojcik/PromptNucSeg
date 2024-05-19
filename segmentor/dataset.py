@@ -110,6 +110,7 @@ class DataFolder(Dataset):
                     box[3] = min(int(box[3]) + 2, 255)
 
                 all_boxes.append(box)
+                print(box)
                 all_points.append(pt)
 
                 assert type_map[pt[0, 1], pt[0, 0]] > 0

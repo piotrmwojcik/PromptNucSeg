@@ -263,11 +263,8 @@ def train_on_epoch(
 
         bshape = prompt_boxes.shape
 
-        _w = prompt_boxes[:, 2] - prompt_boxes[:, 0]
-        h = prompt_boxes[:, 3] - prompt_boxes[:, 1]
-        #area = torch.mul(h, w)
-        w = w.to(device) * 0.1
-        h = h.to(device) * 0.1
+        w = (prompt_boxes[:, 2] - prompt_boxes[:, 0]) * 0.1
+        h = (prompt_boxes[:, 3] - prompt_boxes[:, 1]) * 0.1
 
         w_o = torch.normal(mean=torch.ones(prompt_boxes.shape[0]), std=w)
         h_o = torch.normal(mean=torch.ones(prompt_boxes.shape[0]), std=h)

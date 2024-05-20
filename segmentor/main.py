@@ -269,8 +269,6 @@ def train_on_epoch(
         mean = torch.zeros(prompt_boxes.shape[0]).to(device)
         w_o = torch.normal(mean=mean, std=w).to(device)
         h_o = torch.normal(mean=mean, std=h).to(device)
-        print(w_o)
-        print(h_o)
         prompt_boxes[:, 0] += w_o
         prompt_boxes[:, 1] += h_o
         w_o = torch.normal(mean=mean, std=w).to(device)

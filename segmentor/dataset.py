@@ -157,10 +157,6 @@ class DataFolder(Dataset):
                     k=self.num_neg_prompt
                 )
 
-                print('!!!')
-                print(prompt_points.shape)
-                print(prompt_labels.shape)
-
         else:
             prompt_points = torch.empty(0, (self.num_neg_prompt + 1), 2)
             prompt_boxes = torch.empty(0, (self.num_neg_prompt + 1), 4)

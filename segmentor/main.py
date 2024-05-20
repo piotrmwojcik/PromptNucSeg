@@ -277,6 +277,12 @@ def train_on_epoch(
         prompt_boxes[:, 3] += h_o
 
         prompt_labels = prompt_labels.to(device)
+        print('!!!')
+        print(prompt_points.shape)
+        print(prompt_boxes.shape)
+        print(prompt_labels.shape)
+        print(all_points.shape)
+        print()
 
         cell_nums = cell_nums.to(device)
         #cell_nums_b = torch.split(area >= THR, cell_nums.tolist())

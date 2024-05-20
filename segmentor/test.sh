@@ -6,7 +6,7 @@ torchrun --nproc_per_node=4 main.py --resume checkpoint/cpm17_b/latest.pth --eva
 #torchrun --nproc_per_node=4 main.py --resume checkpoint/kumar_l/latest.pth --eval --config kumar_l.py
 #torchrun --nproc_per_node=4 main.py --resume checkpoint/kumar_h/latest.pth --eval --config kumar_h.py
 
-#torchrun --nproc_per_node=4 main.py --resume checkpoint/pannuke123_b/best.pth --eval --config pannuke123_b.py
+#torchrun --nproc_per_node=2 main.py --resume checkpoint/pannuke123_b/best.pth --eval --config pannuke123_b.py
 #torchrun --nproc_per_node=4 main.py --resume checkpoint/pannuke213_b/best.pth --eval --config pannuke213_b.py
 #torchrun --nproc_per_node=4 main.py --resume checkpoint/pannuke321_b/best.pth --eval --config pannuke321_b.py
 

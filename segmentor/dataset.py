@@ -153,7 +153,7 @@ class DataFolder(Dataset):
                 prompt_points, prompt_labels = add_k_nearest_neg_prompt(
                     prompt_points,
                     global_indices,
-                    all_boxes,
+                    all_points,
                     k=self.num_neg_prompt
                 )
                 print('!!!')

@@ -278,9 +278,6 @@ def train_on_epoch(
 
         prompt_labels = prompt_labels.to(device)
 
-        print('!!!')
-        print(prompt_labels)
-
         cell_nums = cell_nums.to(device)
         #cell_nums_b = torch.split(area >= THR, cell_nums.tolist())
         #cell_nums_b = torch.tensor(([torch.sum(f).item() for f in cell_nums_b])).to(device)

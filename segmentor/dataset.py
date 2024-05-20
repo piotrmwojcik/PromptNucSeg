@@ -79,12 +79,12 @@ class DataFolder(Dataset):
             ori_size = inst_map.shape
 
             img_name = img_path.split('/')[-1]
-            prompt_boxes = np.load(f'prompts/{self.dataset}/{img_name[:-4]}.npy')
-            prompt_boxes = torch.from_numpy(prompt_boxes).float()
-            prompt_boxes, prompt_cell_types = prompt_boxes[..., :4].unsqueeze(1), prompt_boxes[..., -1]
-            prompt_labels = torch.ones(prompt_boxes.shape[:2], dtype=torch.int)
+            prompt_points = np.load(f'prompts/{self.dataset}/{img_name[:-4]}.npy')
+            prompt_points = torch.from_numpy(prompt_points).float()
+            prompt_points, prompt_cell_types = prompt_points[..., :4].unsqueeze(1), prompt_points[..., -1]
+            prompt_labels = torch.ones(prompt_points.shape[:2], dtype=torch.int)
 
-            return img, inst_map, type_map, prompt_boxes, prompt_labels, prompt_cell_types, ori_size, idx
+            return img, inst_map, type_map, prompt_points, prompt_labels, prompt_cell_types, ori_size, idx
 
         res = self.transform(image=img, mask=mask)
         img, mask = list(res.values())
@@ -127,7 +127,7 @@ class DataFolder(Dataset):
             )
 
             inst_maps = []
-            prompt_boxes = []
+            prompt_points = []
             prompt_points = []
             for pid in chosen_pids:
                 mask_single_cell = torch.eq(inst_map, pid)
@@ -138,11 +138,11 @@ class DataFolder(Dataset):
                         torch.argwhere(mask_single_cell)
                     )[None, [1, 0]].float())
                 box = masks_to_boxes(mask_single_cell.unsqueeze(0))
-                prompt_boxes.append(self._expand_box(box))
+                prompt_points.append(self._expand_box(box))
 
             prompt_points = torch.stack(prompt_points, dim=0)
-            prompt_boxes = torch.stack(prompt_boxes, dim=0)
-            prompt_labels = torch.ones(prompt_boxes.shape[:2])
+            prompt_points = torch.stack(prompt_points, dim=0)
+            prompt_labels = torch.ones(prompt_points.shape[:2])
             cell_types = torch.as_tensor(cell_types)
 
             inst_map = torch.stack(inst_maps, dim=0)
@@ -150,21 +150,21 @@ class DataFolder(Dataset):
             if self.num_neg_prompt:
                 global_indices = [np.where(unique_pids == pid)[0][0] for pid in chosen_pids]
 
-                prompt_boxes, prompt_labels = add_k_nearest_neg_prompt(
-                    prompt_boxes,
+                prompt_points, prompt_labels = add_k_nearest_neg_prompt(
+                    prompt_points,
                     global_indices,
                     all_boxes,
                     k=self.num_neg_prompt
                 )
         else:
             prompt_points = torch.empty(0, (self.num_neg_prompt + 1), 2)
-            prompt_boxes = torch.empty(0, (self.num_neg_prompt + 1), 4)
+            prompt_points = torch.empty(0, (self.num_neg_prompt + 1), 4)
             prompt_labels = torch.empty(0, (self.num_neg_prompt + 1))
             all_boxes = torch.empty(0, 2)
             inst_map = torch.empty(0, 256, 256)
             cell_types = torch.empty(0)
 
-        return img, inst_map.long(), prompt_points, prompt_boxes, prompt_labels, cell_types, all_boxes
+        return img, inst_map.long(), prompt_points, prompt_points, prompt_labels, cell_types, all_boxes
 
 
 def load_maskfile(mask_path: str):
@@ -186,31 +186,31 @@ def load_maskfile(mask_path: str):
 
 
 def add_k_nearest_neg_prompt(
-        prompt_boxes,
+        prompt_points,
         global_indices,
-        all_boxes,
+        all_points,
         k: int = 1
 ):
-    if len(prompt_boxes) == 1:
-        prompt_boxes = torch.cat([prompt_boxes, torch.zeros(1, k, 2)], dim=1)
-        prompt_labels = torch.ones(prompt_boxes.shape[:2], dtype=torch.int)
+    if len(prompt_points) == 1:
+        prompt_points = torch.cat([prompt_points, torch.zeros(1, k, 2)], dim=1)
+        prompt_labels = torch.ones(prompt_points.shape[:2], dtype=torch.int)
         prompt_labels[0, 1] = -1
     else:
-        all_boxes = all_boxes.view(-1, 2)
-        dis = torch.cdist(all_boxes, all_boxes, p=2.0)
+        all_points = all_points.view(-1, 2)
+        dis = torch.cdist(all_points, all_points, p=2.0)
         dis = dis.fill_diagonal_(np.inf)
 
-        available_num = min(k, len(prompt_boxes) - 1)
-        neg_prompt_boxes = all_boxes[
+        available_num = min(k, len(prompt_points) - 1)
+        neg_prompt_boxes = all_points[
                             torch.topk(dis[global_indices], available_num, dim=1, largest=False).indices, :
-                            ]
-        prompt_boxes = torch.cat(
-            [prompt_boxes, neg_prompt_boxes, torch.zeros(len(prompt_boxes), k - available_num, 2)],
+                           ]
+        prompt_points = torch.cat(
+            [prompt_points, neg_prompt_boxes, torch.zeros(len(prompt_points), k - available_num, 2)],
             dim=1
         )
 
-        prompt_labels = torch.ones(prompt_boxes.shape[:2], dtype=torch.int)
+        prompt_labels = torch.ones(prompt_points.shape[:2], dtype=torch.int)
         prompt_labels[:, 1:available_num + 1] = 0
         prompt_labels[:, available_num + 1:] = -1
 
-    return prompt_boxes, prompt_labels
+    return prompt_points, prompt_labels

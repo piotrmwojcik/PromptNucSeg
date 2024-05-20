@@ -281,7 +281,6 @@ def train_on_epoch(
         print(prompt_points.shape)
         print(prompt_boxes.shape)
         print(prompt_labels.shape)
-        print(all_points.shape)
         print()
 
         cell_nums = cell_nums.to(device)

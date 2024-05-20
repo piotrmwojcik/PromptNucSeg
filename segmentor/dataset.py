@@ -156,8 +156,8 @@ class DataFolder(Dataset):
                     all_points,
                     k=self.num_neg_prompt
                 )
-                prompt_points = prompt_points[:, 1]
-                prompt_labels = prompt_labels[:, 1]
+                prompt_points = prompt_points[:, 1:]
+                prompt_labels = prompt_labels[:, 1:]
 
                 print('!!!')
                 print(prompt_points.shape)

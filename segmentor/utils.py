@@ -31,10 +31,7 @@ def train_collate_fn(batch):
     images = torch.stack(images)
     masks = torch.cat(masks)
     prompt_points = torch.cat(prompt_points)
-    print([p.shape for p in prompt_boxes])
-    print()
     prompt_boxes = torch.cat(prompt_boxes)
-    print('!!!')
     prompt_labels = torch.cat(prompt_labels)
 
     return (images, masks, prompt_points, prompt_boxes, prompt_labels,

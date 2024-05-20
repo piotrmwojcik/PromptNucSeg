@@ -150,19 +150,15 @@ class DataFolder(Dataset):
             if self.num_neg_prompt:
                 global_indices = [np.where(unique_pids == pid)[0][0] for pid in chosen_pids]
 
-                print('!!!')
-                print(prompt_points.shape)
-                print(prompt_labels.shape)
                 prompt_points, prompt_labels = add_k_nearest_neg_prompt(
                     prompt_points,
                     global_indices,
                     all_points,
                     k=self.num_neg_prompt
                 )
+                prompt_points = prompt_points[:, 1]
+                prompt_labels = prompt_labels[:, 1]
 
-                print(prompt_points.shape)
-                print(prompt_labels.shape)
-                print()
         else:
             prompt_points = torch.empty(0, (self.num_neg_prompt + 1), 2)
             prompt_boxes = torch.empty(0, (self.num_neg_prompt + 1), 4)

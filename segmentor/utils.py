@@ -34,7 +34,6 @@ def train_collate_fn(batch):
         print(torch.cat(prompt_points).shape)
         print(torch.cat(prompt_boxes).shape)
         print(torch.cat(prompt_labels).shape)
-        print(all_points.shape)
         print(all_points_types.shape)
         print(torch.as_tensor(cell_nums).shape)
         print()

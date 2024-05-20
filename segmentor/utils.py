@@ -28,6 +28,17 @@ def train_collate_fn(batch):
         all_points.append(x[6])
         cell_nums.append(len(x[2]))
 
+        print('---')
+        print(torch.stack(images).shape)
+        print(torch.cat(masks).shape)
+        print(torch.cat(prompt_points).shape)
+        print(torch.cat(prompt_boxes).shape)
+        print(torch.cat(prompt_labels).shape)
+        print(all_points.shape)
+        print(all_points_types.shape)
+        print(torch.as_tensor(cell_nums).shape)
+        print()
+
     return (torch.stack(images), torch.cat(masks), torch.cat(prompt_points), torch.cat(prompt_boxes), torch.cat(prompt_labels),
             all_points, all_points_types, torch.as_tensor(cell_nums))
 

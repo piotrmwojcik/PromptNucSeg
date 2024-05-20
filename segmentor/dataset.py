@@ -159,7 +159,7 @@ class DataFolder(Dataset):
 
         else:
             prompt_points = torch.empty(0, (self.num_neg_prompt + 1), 2)
-            prompt_boxes = torch.empty(0, (self.num_neg_prompt + 1), 4)
+            prompt_boxes = torch.empty(0, 1, 4)
             prompt_labels = torch.empty(0, (self.num_neg_prompt + 1))
             all_boxes = torch.empty(0, 2)
             inst_map = torch.empty(0, 256, 256)

@@ -263,26 +263,22 @@ def train_on_epoch(
 
         bshape = prompt_boxes.shape
 
-        h = prompt_boxes[:, 2] - prompt_boxes[:, 0]
-        w = prompt_boxes[:, 3] - prompt_boxes[:, 1]
+        _w = prompt_boxes[:, 2] - prompt_boxes[:, 0]
+        h = prompt_boxes[:, 3] - prompt_boxes[:, 1]
         #area = torch.mul(h, w)
-        h = h.to(device) * 0.1
         w = w.to(device) * 0.1
+        h = h.to(device) * 0.1
 
-        print('!!!')
-        print(h.shape)
-
-        #print(offsets_bigger)
-
-        #print()
-        #print(torch.mul(offsets[:, 0], h))
-        #print(torch.mul(offsets[:, 3], w))
-        #print()
-
-        prompt_boxes[:, 0] += torch.mul(offsets[:, 0], h)
-        prompt_boxes[:, 1] += torch.mul(offsets[:, 1], w)
-        prompt_boxes[:, 2] += torch.mul(offsets[:, 2], h)
-        prompt_boxes[:, 3] += torch.mul(offsets[:, 3], w)
+        w_o = torch.normal(mean=torch.ones(prompt_boxes.shape[0]), std=w)
+        h_o = torch.normal(mean=torch.ones(prompt_boxes.shape[0]), std=h)
+        print(w_o)
+        print(h_o)
+        prompt_boxes[:, 0] += w_o
+        prompt_boxes[:, 1] += h_o
+        w_o = torch.normal(mean=torch.ones(prompt_boxes.shape[0]), std=w)
+        h_o = torch.normal(mean=torch.ones(prompt_boxes.shape[0]), std=h)
+        prompt_boxes[:, 2] += w_o
+        prompt_boxes[:, 3] += h_o
 
         prompt_labels = prompt_labels.to(device)
 

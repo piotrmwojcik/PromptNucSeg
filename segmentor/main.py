@@ -253,10 +253,13 @@ def train_on_epoch(
     wandb_log_info = {}
     model.train()
 
-    for data_iter_step, (images, true_masks, prompt_points, prompt_boxes, prompt_labels, all_points, all_points_types, cell_nums) in (
+    for data_iter_step, (images, true_masks, prompt_points, prompt_boxes, prompt_points, all_points, all_points_types, cell_nums) in (
             enumerate(metric_logger.log_every(train_dataloader, args.print_freq, header))):
         images = images.to(device)
         true_masks = true_masks.to(device)
+
+        print('!!!')
+        print(prompt_points.shape)
 
         prompt_boxes = prompt_boxes.to(device).squeeze()
         #prompt_points = prompt_points.to(device)

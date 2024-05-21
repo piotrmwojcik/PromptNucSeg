@@ -440,6 +440,7 @@ def evaluate(
                     from PIL import Image
                     print('!!!')
                     print(type_maps[0, :, :, 4].shape)
+                    print(type_maps[0, :, :, 4])
                     gt_mask = Image.fromarray(type_maps[0, :, :, 4] * 255)
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)

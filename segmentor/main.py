@@ -443,8 +443,7 @@ def evaluate(
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     pr = outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3]
                     for i in range(len(pr)):
-                        ii = pr[i].detach().cpu().numpy()
-                        print(ii)
+                        ii = pr[i].detach().cpu().numpy() > 0.0
                         p_mask = Image.fromarray((ii * 255).astype(np.uint8))
                         p_mask.save(f'/data/pwojcik/seg_dump/p_{file_ind}_{i}.png')
                     print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)

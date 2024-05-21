@@ -440,9 +440,9 @@ def evaluate(
                 if (prompt_cell_types == 3).sum() > 0:
                     from PIL import Image
                     gt_mask = (type_maps[0, :, :, 4] * 255).astype(np.uint8)
+                    from torchvision.utils import draw_bounding_boxes
                     drawn_boxes = draw_bounding_boxes(gt_mask, prompt_boxes[prompt_cell_types == 3], colors="white")
                     gt_mask = Image.fromarray(gt_mask)
-                    from torchvision.utils import draw_bounding_boxes
                     print(prompt_boxes.shape)
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     pr = outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3]

@@ -440,7 +440,8 @@ def evaluate(
                 print(inst_maps.shape)
                 print(type_maps.shape)
                 print(cell_nums.sum().item())
-                print(prompt_cell_types == 4)
+                print(prompt_cell_types)
+                print(prompt_cell_types == 3)
                 print()
 
                 c_inst_map = np.zeros((num_classes, *inst_maps.shape[-2:]))

@@ -2,6 +2,7 @@ import sys
 import wandb
 import math
 import random
+import numpy as np
 import torch
 import pandas as pd
 import torch.nn.functional as F
@@ -441,7 +442,7 @@ def evaluate(
                     print('!!!')
                     print(type_maps[0, :, :, 4].shape)
                     print(type_maps[0, :, :, 4])
-                    gt_mask = Image.fromarray((type_maps[0, :, :, 4] * 255).int())
+                    gt_mask = Image.fromarray((type_maps[0, :, :, 4] * 255).astype(np.uint8))
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
                     print(inst_maps.shape)

@@ -438,7 +438,7 @@ def evaluate(
             for batch_ind, file_ind in enumerate(file_inds):
                 if (prompt_cell_types == 3).sum() > 0:
                     from PIL import Image
-                    gt_mask = Image.fromarray(type_maps[:, :, :, 4] * 255)
+                    gt_mask = Image.fromarray(type_maps[0, :, :, 4] * 255)
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
                     print(inst_maps.shape)

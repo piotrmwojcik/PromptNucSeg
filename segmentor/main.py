@@ -431,7 +431,7 @@ def evaluate(
                     prompt_boxes=prompt_boxes,
                     prompt_points=None,
                 )
-            print(outputs["pred_masks"].shape)
+            print(outputs["pred_masks"][batch_inds == batch_ind].shape)
             print(inst_maps.shape)
             print(type_maps.shape)
 

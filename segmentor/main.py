@@ -440,10 +440,12 @@ def evaluate(
                 if (prompt_cell_types == 3).sum() > 0:
                     from PIL import Image
                     print('!!!')
-                    print(type_maps[0, :, :, 4].shape)
-                    print(type_maps[0, :, :, 4])
                     gt_mask = Image.fromarray((type_maps[0, :, :, 4] * 255).astype(np.uint8))
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
+                    pr = outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3]
+                    for i in range(len(pr)):
+                        print('!!!!!!')
+                        print(pr[i].shape)
                     print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
                     print(inst_maps.shape)
                     #print(torch.unique(torch.tensor(type_maps)))

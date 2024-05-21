@@ -441,7 +441,7 @@ def evaluate(
                     from PIL import Image
                     gt_mask = (type_maps[0, :, :, 4] * 255).astype(np.uint8)
                     from torchvision.utils import draw_bounding_boxes
-                    drawn_boxes = draw_bounding_boxes(gt_mask, torch.tensor(prompt_boxes[prompt_cell_types == 3]), colors="white")
+                    drawn_boxes = draw_bounding_boxes(torch.tensor(gt_mask), torch.tensor(prompt_boxes[prompt_cell_types == 3]), colors="white")
                     gt_mask = Image.fromarray(gt_mask)
                     print(prompt_boxes.shape)
                     import torchvision.transforms.functional as TF

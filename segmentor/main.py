@@ -440,6 +440,7 @@ def evaluate(
                 print(inst_maps.shape)
                 print(type_maps.shape)
 
+                print(cell_nums.sum().item())
 
                 c_inst_map = np.zeros((num_classes, *inst_maps.shape[-2:]))
                 b_inst_map = np.zeros_like(inst_maps[0])

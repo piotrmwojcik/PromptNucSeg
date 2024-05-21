@@ -426,11 +426,15 @@ def evaluate(
 
                 outputs = model(
                     images=images,
-                    prompt_labels=prompt_labels.to(device),
+                    prompt_labels=None,
                     cell_nums=cell_nums.to(device),
                     prompt_boxes=prompt_boxes,
                     prompt_points=None,
                 )
+            print(outputs["pred_masks"].shape)
+            print(inst_maps.shape)
+            print(type_maps.shape)
+
             model_time = time.time() - model_time
             metric_logger.update(model_time=model_time)
 

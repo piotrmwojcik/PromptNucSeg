@@ -202,11 +202,11 @@ def add_k_nearest_neg_prompt(
         dis = dis.fill_diagonal_(np.inf)
 
         available_num = min(k, len(prompt_points) - 1)
-        neg_prompt_boxes = all_points[
+        neg_prompt_points = all_points[
                             torch.topk(dis[global_indices], available_num, dim=1, largest=False).indices, :
                            ]
         prompt_points = torch.cat(
-            [prompt_points, neg_prompt_boxes, torch.zeros(len(prompt_points), k - available_num, 2)],
+            [prompt_points, neg_prompt_points, torch.zeros(len(prompt_points), k - available_num, 2)],
             dim=1
         )
 

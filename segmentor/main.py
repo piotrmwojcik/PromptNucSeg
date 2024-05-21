@@ -439,8 +439,9 @@ def evaluate(
                 print(outputs["pred_masks"][batch_inds == batch_ind].shape)
                 print(inst_maps.shape)
                 print(type_maps.shape)
-
                 print(cell_nums.sum().item())
+                print(prompt_cell_types)
+                print()
 
                 c_inst_map = np.zeros((num_classes, *inst_maps.shape[-2:]))
                 b_inst_map = np.zeros_like(inst_maps[0])

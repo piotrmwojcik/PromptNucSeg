@@ -431,14 +431,15 @@ def evaluate(
                     prompt_boxes=prompt_boxes,
                     prompt_points=None,
                 )
-            print(outputs["pred_masks"][batch_inds == batch_ind].shape)
-            print(inst_maps.shape)
-            print(type_maps.shape)
 
             model_time = time.time() - model_time
             metric_logger.update(model_time=model_time)
 
             for batch_ind, file_ind in enumerate(file_inds):
+                print(outputs["pred_masks"][batch_inds == batch_ind].shape)
+                print(inst_maps.shape)
+                print(type_maps.shape)
+
 
                 c_inst_map = np.zeros((num_classes, *inst_maps.shape[-2:]))
                 b_inst_map = np.zeros_like(inst_maps[0])

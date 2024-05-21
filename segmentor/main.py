@@ -436,7 +436,7 @@ def evaluate(
             metric_logger.update(model_time=model_time)
 
             for batch_ind, file_ind in enumerate(file_inds):
-                print(torch.unique(torch.tensor(type_maps)))
+                print(torch.unique(torch.tensor(type_maps[:, 4])))
                 if (prompt_cell_types == 3).sum() > 0:
                     print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
                     print(inst_maps.shape)

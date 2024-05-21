@@ -436,13 +436,12 @@ def evaluate(
             metric_logger.update(model_time=model_time)
 
             for batch_ind, file_ind in enumerate(file_inds):
-                print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
-                print(inst_maps.shape)
-                print(type_maps.shape)
-                print(cell_nums.sum().item())
-                print(prompt_cell_types)
-                print(prompt_cell_types == 3)
-                print()
+                if (prompt_cell_types == 3).sum() > 0:
+                    print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
+                    print(inst_maps.shape)
+                    print(type_maps.shape)
+                    print(prompt_cell_types)
+                    print()
 
                 c_inst_map = np.zeros((num_classes, *inst_maps.shape[-2:]))
                 b_inst_map = np.zeros_like(inst_maps[0])

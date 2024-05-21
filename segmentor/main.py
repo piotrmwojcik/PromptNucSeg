@@ -442,7 +442,7 @@ def evaluate(
                     gt_mask = Image.fromarray((type_maps[0, :, :, 4] * 255).astype(np.uint8))
                     from torchvision.utils import draw_bounding_boxes
                     print(prompt_boxes.shape)
-                    #drawn_boxes = draw_bounding_boxes(gt_mask, boxes[scores], colors="red")
+                    drawn_boxes = draw_bounding_boxes(gt_mask, prompt_boxes[prompt_cell_types == 3], colors="white")
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     pr = outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3]
                     for i in range(len(pr)):

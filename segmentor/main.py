@@ -443,10 +443,10 @@ def evaluate(
                     from torchvision.utils import draw_bounding_boxes
                     bb = torch.tensor(prompt_boxes[prompt_cell_types == 3])[:, 0, :]
                     drawn_boxes = draw_bounding_boxes(torch.tensor(gt_mask).repeat(3, 1, 1), bb, colors="white")
-                    gt_mask = Image.fromarray(gt_mask)
+                    #gt_mask = Image.fromarray(gt_mask)
                     print(prompt_boxes.shape)
                     import torchvision.transforms.functional as TF
-                    gt_mask = TF.to_pil_image(gt_mask)
+                    gt_mask = TF.to_pil_image(drawn_boxes)
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     pr = outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3]
                     for i in range(len(pr)):

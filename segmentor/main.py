@@ -439,7 +439,8 @@ def evaluate(
             for batch_ind, file_ind in enumerate(file_inds):
                 if (prompt_cell_types == 3).sum() > 0:
                     from PIL import Image
-                    gt_mask = Image.fromarray((type_maps[0, :, :, 4] * 255).astype(np.uint8))
+                    gt_mask = (type_maps[0, :, :, 4] * 255).astype(np.uint8)
+                    gt_mask = Image.fromarray(gt_mask)
                     from torchvision.utils import draw_bounding_boxes
                     print(prompt_boxes.shape)
                     drawn_boxes = draw_bounding_boxes(gt_mask, prompt_boxes[prompt_cell_types == 3], colors="white")

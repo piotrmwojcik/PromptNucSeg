@@ -444,7 +444,8 @@ def evaluate(
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
                     pr = outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3]
                     for i in range(len(pr)):
-                        p_mask = Image.fromarray((pr[i] * 255).astype(np.uint8))
+                        ii = pr[i].detach().cpu().numpy()
+                        p_mask = Image.fromarray((ii * 255).astype(np.uint8))
                         p_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}_{i}.png')
                     print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
                     print(inst_maps.shape)

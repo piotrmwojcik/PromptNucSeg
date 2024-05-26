@@ -365,6 +365,8 @@ def evaluate(
             "Epoch=%d: Test (%d / %d Steps) " % (epoch, data_iter_step, len(test_loader)))
 
         images = images.to(device)
+        print(images.shape)
+        print()
 
         pd_points, pd_scores, pd_classes, pd_masks = predict(
             model,

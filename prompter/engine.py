@@ -5,7 +5,7 @@ from pathlib import Path
 
 import prettytable as pt
 
-from prompter.evaluator import CPU_Unpickler, box_cxcywh_to_xyxy, clip_bbox, SCORE_THRESHOLD
+#from prompter.evaluator import CPU_Unpickler, box_cxcywh_to_xyxy, clip_bbox, SCORE_THRESHOLD
 from utils import *
 from tqdm import tqdm
 from eval_map import eval_map

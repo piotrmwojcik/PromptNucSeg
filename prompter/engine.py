@@ -379,6 +379,7 @@ def evaluate(
         print(pd_points.shape)
         print(pd_scores.shape)
         print(labels.shape)
+        print(gt_points.shape)
 
         if visualise:
             visualise_prompts(img_path[0], gt_points[0], labels[0], pd_points, pd_classes, vis_path, i)

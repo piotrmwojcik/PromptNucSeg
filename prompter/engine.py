@@ -1,8 +1,11 @@
 import sys
 import math
 import itertools
+from pathlib import Path
+
 import prettytable as pt
 
+from prompter.evaluator import CPU_Unpickler, box_cxcywh_to_xyxy, clip_bbox, SCORE_THRESHOLD
 from utils import *
 from tqdm import tqdm
 from eval_map import eval_map
@@ -152,6 +155,175 @@ def visualise_prompts(img_path, gt_pt, gt_cl, pt, cl, path, limit):
         plt.savefig(f'{path}/{os.path.basename(img_path)}')
         plt.clf()
 
+def load_from_pickle(path):
+    with open(os.path.join(Path(path), 'results.pkl'), 'rb') as file:
+        result = CPU_Unpickler(file).load()
+    with open(os.path.join(Path(path), 'target.pkl'), 'rb') as file:
+        target = CPU_Unpickler(file).load()
+
+    scores, boxes, labels = result[k]
+    gt_boxes, gt_labels = target[k]
+
+    gt_boxes = box_cxcywh_to_xyxy(gt_boxes)
+
+    gt_labels = gt_labels - 1
+    labels = labels - 1
+
+    # topk_values, topk_indexes = torch.topk(scores, 100)
+    # boxes = boxes[topk_indexes]
+    # labels = labels[topk_indexes]
+    # scores = scores[topk_indexes]
+
+    boxes = boxes[scores >= SCORE_THRESHOLD]
+    labels = labels[scores >= SCORE_THRESHOLD]
+    scores = scores[scores >= SCORE_THRESHOLD]
+    boxes = clip_bbox(boxes)
+
+    centroid_x = (boxes[:, 0] + boxes[:, 2]) / 2
+    centroid_y = (boxes[:, 1] + boxes[:, 3]) / 2
+    cnt = torch.stack((centroid_x, centroid_y), dim=1)
+
+    gt_centroid_x = (gt_boxes[:, 0] + gt_boxes[:, 2]) / 2
+    gt_centroid_y = (gt_boxes[:, 1] + gt_boxes[:, 3]) / 2
+    cnt_gt = torch.stack((gt_centroid_x, gt_centroid_y), dim=1)
+
+    return cnt, labels, scores, cnt_gt, gt_labels
+
+
+# def evaluate_from_ds(
+#         cfg,
+#         test_loader,
+#         device,
+#         epoch=0,
+#         calc_map=False,
+#         visualise=False,
+#         vis_path='',
+# ):
+#         class_names = test_loader.dataset.classes
+#         num_classes = len(class_names)
+#
+#         cls_predictions = []
+#         cls_annotations = []
+#
+#         cls_pn, cls_tn = list(torch.zeros(num_classes).to(device) for _ in range(2))
+#         cls_rn = torch.zeros(num_classes).to(device)
+#
+#         det_pn, det_tn = list(torch.zeros(1).to(device) for _ in range(2))
+#         det_rn = torch.zeros(1).to(device)
+#
+#         iou_scores = []
+#
+#         epoch_iterator = tqdm(test_loader, file=sys.stdout, desc="Test (X / X Steps)",
+#                               dynamic_ncols=True, disable=not is_main_process())
+#
+#         i = 0
+#         batch_size = 16
+#         cnt, labels, scores, cnt_gt, gt_labels = load_from_pickle('/Users/piotrwojcik/Downloads/baseline4/detr_dump4/')
+#         cnt = torch.split(cnt, batch_size)
+#         labels = torch.split(labels, batch_size)
+#         scores = torch.split(scores, batch_size)
+#         cnt_gt = torch.split(cnt_gt, batch_size)
+#         gt_labels = torch.split(gt_labels, batch_size)
+#         for data_iter_step  in range(len(cnt)):
+#             if data_iter_step % get_world_size() != get_rank():  # To avoid duplicate evaluation for some test samples
+#                 continue
+#
+#             epoch_iterator.set_description(
+#                 "Epoch=%d: Test (%d / %d Steps) " % (epoch, data_iter_step, len(test_loader)))
+#
+#             gt_points = cnt_gt[i]
+#             pd_masks = None
+#
+#             if pd_masks is not None:
+#                 masks = masks[0].numpy()
+#                 intersection = (pd_masks * masks).sum()
+#                 union = (pd_masks.sum() + masks.sum() + 1e-7) - intersection
+#                 iou_scores.append(intersection / (union + 1e-7))
+#
+#             gt_points = gt_points[0].reshape(-1, 2).numpy()
+#             labels = labels[0].numpy()
+#
+#             cls_annotations.append({'points': gt_points, 'labels': labels})
+#
+#             cls_pred_sample = []
+#             for c in range(cfg.data.num_classes):
+#                 ind = (pd_classes == c)
+#                 category_pd_points = pd_points[ind]
+#                 category_pd_scores = pd_scores[ind]
+#                 category_gt_points = gt_points[labels == c]
+#
+#                 cls_pred_sample.append(np.concatenate([category_pd_points, category_pd_scores[:, None]], axis=-1))
+#
+#                 pred_num, gd_num = len(category_pd_points), len(category_gt_points)
+#                 cls_pn[c] += pred_num
+#                 cls_tn[c] += gd_num
+#
+#                 if pred_num and gd_num:
+#                     cls_right_nums = get_tp(category_pd_points, category_pd_scores, category_gt_points, thr=cfg.test.match_dis)
+#                     cls_rn[c] += torch.tensor(cls_right_nums, device=cls_rn.device)
+#
+#             cls_predictions.append(cls_pred_sample)
+#
+#             det_pn += len(pd_points)
+#             det_tn += len(gt_points)
+#
+#             if len(pd_points) and len(gt_points):
+#                 det_right_nums = get_tp(pd_points, pd_scores, gt_points, thr=cfg.test.match_dis)
+#                 det_rn += torch.tensor(det_right_nums, device=det_rn.device)
+#
+#         if get_world_size() > 1:
+#             dist.all_reduce(det_rn, op=dist.ReduceOp.SUM)
+#             dist.all_reduce(det_tn, op=dist.ReduceOp.SUM)
+#             dist.all_reduce(det_pn, op=dist.ReduceOp.SUM)
+#
+#             dist.all_reduce(cls_pn, op=dist.ReduceOp.SUM)
+#             dist.all_reduce(cls_tn, op=dist.ReduceOp.SUM)
+#             dist.all_reduce(cls_rn, op=dist.ReduceOp.SUM)
+#
+#             cls_predictions = list(itertools.chain.from_iterable(all_gather(cls_predictions)))
+#             cls_annotations = list(itertools.chain.from_iterable(all_gather(cls_annotations)))
+#
+#             iou_scores = np.concatenate(all_gather(iou_scores))
+#
+#         eps = 1e-7
+#         det_r = det_rn / (det_tn + eps)
+#         det_p = det_rn / (det_pn + eps)
+#         det_f1 = (2 * det_r * det_p) / (det_p + det_r + eps)
+#
+#         det_r = det_r.cpu().numpy() * 100
+#         det_p = det_p.cpu().numpy() * 100
+#         det_f1 = det_f1.cpu().numpy() * 100
+#
+#         cls_r = cls_rn / (cls_tn + eps)
+#         cls_p = cls_rn / (cls_pn + eps)
+#         cls_f1 = (2 * cls_r * cls_p) / (cls_r + cls_p + eps)
+#
+#         cls_r = cls_r.cpu().numpy() * 100
+#         cls_p = cls_p.cpu().numpy() * 100
+#         cls_f1 = cls_f1.cpu().numpy() * 100
+#
+#         table = pt.PrettyTable()
+#         table.add_column('CLASS', class_names)
+#
+#         table.add_column('Precision', cls_p.round(2))
+#         table.add_column('Recall', cls_r.round(2))
+#         table.add_column('F1', cls_f1.round(2))
+#
+#         table.add_row(['---'] * 4)
+#
+#         det_p, det_r, det_f1 = det_p.round(2)[0], det_r.round(2)[0], det_f1.round(2)[0]
+#         cls_p, cls_r, cls_f1 = cls_p.mean().round(2), cls_r.mean().round(2), cls_f1.mean().round(2)
+#
+#         table.add_row(['Det', det_p, det_r, det_f1])
+#         table.add_row(['Cls', cls_p, cls_r, cls_f1])
+#         print(table)
+#         if calc_map:
+#             mAP = eval_map(cls_predictions, cls_annotations, cfg.test.match_dis)[0]
+#             print(f'mAP: {round(mAP * 100, 2)}')
+#
+#         metrics = {'Det': [det_p, det_r, det_f1], 'Cls': [cls_p, cls_r, cls_f1],
+#                    'IoU': (np.mean(iou_scores) * 100).round(2)}
+#         return metrics, table.get_string()
 
 @torch.inference_mode()
 def evaluate(
@@ -203,6 +375,9 @@ def evaluate(
             nms_thr=cfg.test.nms_thr,
             visualise=visualise
         )
+        print('!!!')
+        print(pd_points.shape)
+        print(pd_scores.shape)
 
         if visualise:
             visualise_prompts(img_path[0], gt_points[0], labels[0], pd_points, pd_classes, vis_path, i)

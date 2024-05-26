@@ -125,7 +125,7 @@ def main():
     if args.eval:
         # checkpoint = torch.load(f'./checkpoint/{args.resume}/best.pth', map_location="cpu")
         ckpt = torch.load(args.resume, map_location="cpu")
-        model.load_state_dict(ckpt.get('model_ema', ckpt['model']), strict=False)
+        #model.load_state_dict(ckpt.get('model_ema', ckpt['model']), strict=False)
         evaluate(
             cfg,
             model,

@@ -438,14 +438,12 @@ def evaluate(
 
             for batch_ind, file_ind in enumerate(file_inds):
                 if (prompt_cell_types == 3).sum() > 0:
-                    print('!!! ', type_maps[0, :, :, 4].sum().item())
                     from PIL import Image
                     gt_mask = (type_maps[0, :, :, 4] * 255).astype(np.uint8)
                     from torchvision.utils import draw_bounding_boxes
                     bb = torch.tensor(prompt_boxes)[:, 0, :]
                     drawn_boxes = draw_bounding_boxes(torch.tensor(gt_mask).repeat(3, 1, 1), bb, colors="red")
                     #gt_mask = Image.fromarray(gt_mask)
-                    print(prompt_boxes.shape)
                     import torchvision.transforms.functional as TF
                     gt_mask = TF.to_pil_image(drawn_boxes)
                     gt_mask.save(f'/data/pwojcik/seg_dump/gt_{file_ind}.png')
@@ -454,11 +452,7 @@ def evaluate(
                         ii = (pr[i].detach().cpu().numpy() > 0.0).astype(np.uint8)
                         p_mask = Image.fromarray((ii * 255))
                         p_mask.save(f'/data/pwojcik/seg_dump/p_{file_ind}_{i}.png')
-                    print(outputs["pred_masks"][batch_inds == batch_ind][prompt_cell_types == 3].shape)
-                    print(inst_maps.shape)
                     #print(torch.unique(torch.tensor(type_maps)))
-                    print(prompt_cell_types)
-                    print()
 
                 c_inst_map = np.zeros((num_classes, *inst_maps.shape[-2:]))
                 b_inst_map = np.zeros_like(inst_maps[0])

@@ -15,7 +15,7 @@ class CPU_Unpickler(pickle.Unpickler):
             return super().find_class(module, name)
 
 
-SCORE_THRESHOLD = 0.35
+SCORE_THRESHOLD = 0.33
 DISTANCE = 12
 
 def box_cxcywh_to_xyxy(x):
@@ -46,12 +46,13 @@ def main():
     det_pn, det_tn = list(torch.zeros(1) for _ in range(2))
     det_rn = torch.zeros(1)
 
-    with open('/Users/piotrwojcik/Downloads/baseline4/detr_dump/results.pkl', 'rb') as file:
+    with open('/Users/piotrwojcik/Downloads/baseline4/detr_dump4/results.pkl', 'rb') as file:
         result = CPU_Unpickler(file).load()
-    with open('/Users/piotrwojcik/Downloads/baseline4/detr_dump/target.pkl', 'rb') as file:
+    with open('/Users/piotrwojcik/Downloads/baseline4/detr_dump4/target.pkl', 'rb') as file:
         target = CPU_Unpickler(file).load()
 
     for k in result.keys():
+
         scores, boxes, labels = result[k]
         gt_boxes, gt_labels = target[k]
 
@@ -59,6 +60,11 @@ def main():
 
         gt_labels = gt_labels - 1
         labels = labels - 1
+
+        #topk_values, topk_indexes = torch.topk(scores, 100)
+        #boxes = boxes[topk_indexes]
+        #labels = labels[topk_indexes]
+        #scores = scores[topk_indexes]
 
         boxes = boxes[scores >= SCORE_THRESHOLD]
         labels = labels[scores >= SCORE_THRESHOLD]
@@ -68,6 +74,7 @@ def main():
         centroid_x = (boxes[:, 0] + boxes[:, 2]) / 2
         centroid_y = (boxes[:, 1] + boxes[:, 3]) / 2
         cnt = torch.stack((centroid_x, centroid_y), dim=1)
+
 
         gt_centroid_x = (gt_boxes[:, 0] + gt_boxes[:, 2]) / 2
         gt_centroid_y = (gt_boxes[:, 1] + gt_boxes[:, 3]) / 2

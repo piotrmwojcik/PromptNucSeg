@@ -413,6 +413,10 @@ def predict(
     scores = scores[valid_flag].max(1)
     classes = classes[valid_flag]
 
+    print(points.shape)
+    print(scores.shape)
+    print(classes.shape)
+
     mask = outputs['pred_masks'][0, 0].cpu().numpy() > 0
 
     if filtering:

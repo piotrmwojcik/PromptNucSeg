@@ -6,7 +6,7 @@ from mmengine.config import Config
 from dataset import DataFolder
 from criterion import build_criterion
 from models.dpa_p2pnet import build_model
-from engine import train_one_epoch, evaluate, evaluate_from_ds
+from engine import train_one_epoch, evaluate#, evaluate_from_ds
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from timm.scheduler import create_scheduler

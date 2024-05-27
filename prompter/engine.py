@@ -284,7 +284,7 @@ def evaluate_from_ds(
                 iou_scores.append(intersection / (union + 1e-7))
 
             gt_points = gt_points[0].reshape(-1, 2).numpy()
-            pd_classes = labels[0].numpy()
+            labels = labels[0].numpy()
 
             cls_annotations.append({'points': gt_points, 'labels': labels})
 

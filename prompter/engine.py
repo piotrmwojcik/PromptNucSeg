@@ -274,8 +274,8 @@ def evaluate_from_ds(
 
             pd_masks = None
 
-            gt_points = gt_points.unsqueeze()
-            labels = labels.unsqueeze()
+            gt_points = gt_points.unsqueeze(dim=0)
+            labels = labels.unsqueeze(dim=0)
 
             if pd_masks is not None:
                 masks = masks[0].numpy()

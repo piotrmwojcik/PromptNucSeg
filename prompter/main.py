@@ -125,7 +125,6 @@ def main():
     if args.eval_from_ds:
        evaluate_from_ds(
            cfg,
-           model,
            test_dataloader,
            device,
            calc_map=True,

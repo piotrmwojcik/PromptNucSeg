@@ -6,7 +6,7 @@ from mmengine.config import Config
 from dataset import DataFolder
 from criterion import build_criterion
 from models.dpa_p2pnet import build_model
-from engine import train_one_epoch, evaluate#, evaluate_from_ds
+from engine import train_one_epoch, evaluate, evaluate_from_ds  # , evaluate_from_ds
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from timm.scheduler import create_scheduler
@@ -122,17 +122,17 @@ def main():
         shuffle=False,
         drop_last=False
     )
-    #if args.eval_from_ds:
-    #    evaluate_from_ds(
-    #        cfg,
-    #        model,
-    #        test_dataloader,
-    #        device,
-    #        calc_map=True,
-    #        visualise=args.vis,
-    #        vis_path=cfg.vis_path
-    #    )
-    #    return
+    if args.eval_from_ds:
+       evaluate_from_ds(
+           cfg,
+           model,
+           test_dataloader,
+           device,
+           calc_map=True,
+           visualise=args.vis,
+           vis_path=cfg.vis_path
+       )
+       return
 
     if args.eval:
         # checkpoint = torch.load(f'./checkpoint/{args.resume}/best.pth', map_location="cpu")

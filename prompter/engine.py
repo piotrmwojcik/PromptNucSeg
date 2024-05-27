@@ -293,7 +293,7 @@ def evaluate_from_ds(
                 ind = (pd_classes == c)
                 category_pd_points = pd_points[ind]
                 category_pd_scores = pd_scores[ind]
-                category_gt_points = gt_points[pd_classes == c]
+                category_gt_points = gt_points[labels == c]
 
                 cls_pred_sample.append(np.concatenate([category_pd_points, category_pd_scores[:, None]], axis=-1))
 

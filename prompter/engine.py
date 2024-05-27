@@ -242,9 +242,9 @@ def evaluate_from_ds(
                               dynamic_ncols=True, disable=not is_main_process())
 
         i = 0
-        with open('/Users/piotrwojcik/Downloads/baseline4/detr_dump4/results.pkl', 'rb') as file:
+        with open('/data/pwojcik/baseline4/detr_dump4/results.pkl', 'rb') as file:
             result = CPU_Unpickler(file).load()
-        with open('/Users/piotrwojcik/Downloads/baseline4/detr_dump4/target.pkl', 'rb') as file:
+        with open('/data/pwojcik/baseline4/detr_dump4/target.pkl', 'rb') as file:
             target = CPU_Unpickler(file).load()
 
         for data_iter_step, k in enumerate(result.keys()):

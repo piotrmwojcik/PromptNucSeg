@@ -94,6 +94,7 @@ for i in range(1, 4):
             continue
 
         anno = np.load(f'Masks/{file}', allow_pickle=True)[()]
+        print(f'Loading mask Masks/{file}')
 
         inst_map = anno['inst_map']
         type_map = anno['type_map']

@@ -26,7 +26,7 @@ data = dict(
         dict(type='ColorJitter', brightness=0.25, contrast=0.25, saturation=0.1, hue=0.05, p=0.2),
         dict(type='RandomRotate90', p=0.5),
         dict(type='Downscale', scale_max=0.5, scale_min=0.5, p=0.15),
-        dict(type='Blur', blur_limit=10, p=0.2),
+        dict(type='Blur', blur_limit=9, p=0.2),
         dict(type='GaussNoise', var_limit=50, p=0.25),
         dict(type='ZoomBlur', p=0.1, max_factor=1.05),
         dict(type='HorizontalFlip', p=0.5),

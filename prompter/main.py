@@ -97,7 +97,7 @@ def main():
     )
 
     try:
-        val_dataset = DataFolder(cfg, 'val')
+        val_dataset = DataFolder(cfg, 'test')
         val_dataloader = DataLoader(
             val_dataset,
             batch_size=1,
@@ -208,7 +208,6 @@ def main():
             )
 
         try:
-            print('!!! ', epoch, args.start_eval)
             if epoch >= args.start_eval:
                 metrics, metrics_string = evaluate(
                     cfg,
@@ -222,7 +221,6 @@ def main():
                 log_info.update(dict(zip(["Cls Pre", "Cls Rec", "Cls F1"], metrics['Cls'])))
                 log_info.update(dict(IoU=metrics['IoU']))
 
-                print('!!! updated')
 
                 cls_f1 = metrics['Cls'][-1]
                 if max_cls_f1 < cls_f1:

@@ -53,7 +53,7 @@ class DataFolder(Dataset):
 
         img_path = self.img_paths[index]
 
-        values = ([io.imread(f'../segmentor/{img_path}')[..., :3]] +
+        values = ([io.imread(f'datasets/{self.dataset}{img_path}')[..., :3]] +
                   [np.array(point).reshape(-1, 2) for point in self.data[img_path]])
 
         if self.dataset == 'kumar':

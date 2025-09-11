@@ -97,7 +97,7 @@ def main():
     )
 
     try:
-        val_dataset = DataFolder(cfg, 'test')
+        val_dataset = DataFolder(cfg, 'val')
         val_dataloader = DataLoader(
             val_dataset,
             batch_size=1,
@@ -212,7 +212,7 @@ def main():
                 metrics, metrics_string = evaluate(
                     cfg,
                     model_ema or model,
-                    val_dataloader,
+                    test_dataloader,
                     device,
                     epoch,
                 )

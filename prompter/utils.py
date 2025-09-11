@@ -427,4 +427,5 @@ def collate_fn(batch):
         points.append(x[1])
         labels.append(x[2])
         masks.append(x[3])
+        print('!!! ', images.shape, points.shape, labels.shape, masks.shape)
     return torch.stack(images), torch.stack(masks), points, labels

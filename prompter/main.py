@@ -208,6 +208,7 @@ def main():
             )
 
         try:
+            print('!!! ', epoch, args.start_eval)
             if epoch >= args.start_eval:
                 metrics, metrics_string = evaluate(
                     cfg,

@@ -221,6 +221,8 @@ def main():
                 log_info.update(dict(zip(["Cls Pre", "Cls Rec", "Cls F1"], metrics['Cls'])))
                 log_info.update(dict(IoU=metrics['IoU']))
 
+                print('!!! updated')
+
                 cls_f1 = metrics['Cls'][-1]
                 if max_cls_f1 < cls_f1:
                     max_cls_f1 = cls_f1

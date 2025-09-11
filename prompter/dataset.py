@@ -68,6 +68,9 @@ class DataFolder(Dataset):
             mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}_instances.npy', allow_pickle=True)
         mask = (mask > 0).astype(float)
 
+
+        print('!!!! ', values[0].shape, values[1].shape, mask.shape)
+
         values.append(mask)
 
         ori_shape = values[0].shape[:2]

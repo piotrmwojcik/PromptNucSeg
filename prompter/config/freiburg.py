@@ -6,7 +6,7 @@ prompter = dict(
         global_pool=''
     ),
     neck=dict(
-        in_channels=[128, 256, 512, 1024],
+        in_channels=[96, 192, 384, 768],
         out_channels=256,
         num_outs=3,
         add_extra_convs='on_input',

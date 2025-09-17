@@ -18,7 +18,7 @@ prompter = dict(
 
 data = dict(
     name='freiburg',
-    num_classes=6,
+    num_classes=5,
     batch_size_per_gpu=16,
     num_workers=8,
     train=dict(transform=[

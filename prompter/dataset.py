@@ -69,7 +69,6 @@ class DataFolder(Dataset):
             mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)
         mask = (mask > 0).astype(float)
 
-        print('!!!! ', values[0].shape, values[1].shape, mask.shape)
 
         values.append(mask)
 
@@ -84,4 +83,5 @@ class DataFolder(Dataset):
             res[i] = torch.tensor(res[i])
             labels.append(torch.full((len(res[i]),), i - 1))
         mask = res[-1]
+        print('!!!! ', res.shape, labels.shape, mask.shape)
         return img, torch.cat(res[1:-1]), torch.cat(labels), mask, torch.as_tensor(ori_shape)

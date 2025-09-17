@@ -57,7 +57,7 @@ class DataFolder(Dataset):
         values = ([io.imread(f'datasets/{self.dataset}/{img_path}')[..., :3]] +
                   [np.array(point).reshape(-1, 2) for point in self.data[img_path]])
 
-        print('!!!', values[1].shape)
+        #print('!!!', values[1].shape)
 
         if self.dataset == 'kumar':
             mask_path = f'{img_path[:-4].replace("images", "labels")}.npy'
@@ -67,7 +67,7 @@ class DataFolder(Dataset):
             mask = np.load(f'../segmentor/{mask_path}')
         elif self.dataset == 'cpm17':
             mask = scipy.io.loadmat(f'../segmentor/{img_path[:-4].replace("Images", "Labels")}.mat')['inst_map']
-        else:
+        elif self.dataset == 'freiburg':
             mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)
         mask = (mask > 0).astype(float)
 

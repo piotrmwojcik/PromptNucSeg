@@ -67,9 +67,8 @@ class DataFolder(Dataset):
             mask = scipy.io.loadmat(f'../segmentor/{img_path[:-4].replace("Images", "Labels")}.mat')['inst_map']
         else:
             mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)
-            print('!!!! ', mask.shape)
+            print('!!!! ', mask.shape, values[0].shape[:2])
         mask = (mask > 0).astype(float)
-
 
         values.append(mask)
 

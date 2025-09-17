@@ -47,6 +47,7 @@ class DataFolder(Dataset):
         return len(self.data)
 
     def __getitem__(self, index: int):
+        assert index < 0
         assert index <= len(self), 'index range error'
 
         index = index % len(self.data)

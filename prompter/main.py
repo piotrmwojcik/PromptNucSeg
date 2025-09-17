@@ -72,7 +72,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    init_distributed_mode(args)
+    #init_distributed_mode(args)
     set_seed(args)
 
     args.distributed = False

@@ -67,7 +67,6 @@ class DataFolder(Dataset):
             mask = scipy.io.loadmat(f'../segmentor/{img_path[:-4].replace("Images", "Labels")}.mat')['inst_map']
         else:
             mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)
-            print('!!!! ', mask.shape, values[0].shape[:2])
         mask = (mask > 0).astype(float)
 
         values.append(mask)
@@ -81,7 +80,7 @@ class DataFolder(Dataset):
         labels = []
         for i in range(1, len(res) - 1):
             res[i] = torch.tensor(res[i])
+            print('!!!! ', res[i].shape)
             labels.append(torch.full((len(res[i]),), i - 1))
         mask = res[-1]
-        print('!!!! ', res[0].shape, labels[0].shape, mask.shape)
         return img, torch.cat(res[1:-1]), torch.cat(labels), mask, torch.as_tensor(ori_shape)

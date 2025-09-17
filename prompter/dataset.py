@@ -57,6 +57,8 @@ class DataFolder(Dataset):
         values = ([io.imread(f'datasets/{self.dataset}/{img_path}')[..., :3]] +
                   [np.array(point).reshape(-1, 2) for point in self.data[img_path]])
 
+        print('!!!', values[0].shape)
+
         if self.dataset == 'kumar':
             mask_path = f'{img_path[:-4].replace("images", "labels")}.npy'
             sub_paths = mask_path.split('/')
@@ -80,7 +82,6 @@ class DataFolder(Dataset):
         labels = []
         for i in range(1, len(res) - 1):
             res[i] = torch.tensor(res[i])
-            print(f'!!!! {img_path[:-4]}', res[i].shape)
             labels.append(torch.full((len(res[i]),), i - 1))
         mask = res[-1]
         return img, torch.cat(res[1:-1]), torch.cat(labels), mask, torch.as_tensor(ori_shape)

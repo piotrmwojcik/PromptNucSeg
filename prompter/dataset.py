@@ -57,7 +57,7 @@ class DataFolder(Dataset):
         values = ([io.imread(f'datasets/{self.dataset}/{img_path}')[..., :3]] +
                   [np.array(point).reshape(-1, 2) for point in self.data[img_path]])
 
-        print('!!!', values[0].shape)
+        print('!!!', values[1].shape)
 
         if self.dataset == 'kumar':
             mask_path = f'{img_path[:-4].replace("images", "labels")}.npy'

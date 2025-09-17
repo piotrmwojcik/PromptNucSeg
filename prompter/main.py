@@ -75,6 +75,8 @@ def main():
     init_distributed_mode(args)
     set_seed(args)
 
+    args.distributed = False
+
     cfg = Config.fromfile(f'config/{args.config}')
     if args.output_dir:
         mkdir(f'checkpoint/{args.output_dir}')

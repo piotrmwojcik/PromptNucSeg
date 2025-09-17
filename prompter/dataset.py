@@ -65,7 +65,7 @@ class DataFolder(Dataset):
         elif self.dataset == 'cpm17':
             mask = scipy.io.loadmat(f'../segmentor/{img_path[:-4].replace("Images", "Labels")}.mat')['inst_map']
         else:
-            mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)
+            mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True).item()
         mask = (mask > 0).astype(float)
 
         #print('!!!! ', values[0].shape, values[1].shape, mask.shape)

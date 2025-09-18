@@ -41,7 +41,7 @@ def train_one_epoch(
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
 
-        print('!!! ', images, targets['gt_masks'].shape, len(targets['gt_points']))
+        print('!!! ', images.shape, targets['gt_masks'].shape, len(targets['gt_points']))
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)

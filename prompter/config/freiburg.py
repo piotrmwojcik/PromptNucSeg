@@ -7,13 +7,13 @@ prompter = dict(
     ),
     neck=dict(
         in_channels=[96, 192, 384, 768],
-        out_channels=512,
+        out_channels=256,
         num_outs=3,
         add_extra_convs='on_input',
     ),
     dropout=0.1,
-    space=8,
-    hidden_dim=512
+    space=16,
+    hidden_dim=256
 )
 
 data = dict(

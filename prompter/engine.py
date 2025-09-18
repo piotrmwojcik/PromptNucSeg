@@ -135,7 +135,7 @@ def train_one_epoch(
 
         print('!!! ', images.shape, targets['gt_masks'].shape)
         #print(len(targets['gt_masks']), len(targets['gt_masks'][0]), targets['gt_points'][0].shape, torch.unique(targets['gt_points'][0]))
-        save_random_overlays(images, targets['gt_masks'], out_dir="overlays",
+        save_random_overlays(images, targets['gt_masks'], targets['gt_points'], out_dir="overlays",
                              mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):

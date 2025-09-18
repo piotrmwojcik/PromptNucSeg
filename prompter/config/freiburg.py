@@ -12,7 +12,7 @@ prompter = dict(
         add_extra_convs='on_input',
     ),
     dropout=0.1,
-    space=16,
+    space=8,
     hidden_dim=256
 )
 
@@ -53,7 +53,7 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=1e-4,
+    lr=1.5e-4,
     weight_decay=1e-4
 )
 

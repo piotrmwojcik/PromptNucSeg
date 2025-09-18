@@ -53,23 +53,18 @@ def save_random_overlays(
     dot_col = torch.tensor(point_color, dtype=imgs.dtype).view(3,1,1)
     a = float(alpha)
 
-    def draw_dot(img: torch.Tensor, y: int, x: int, color=(1.0, 0.0, 0.0)):
-        """
-        Paint a single pixel at (y, x) on an image tensor.
-        img: [1,3,H,W] or [3,H,W], values in [0,1] (or whatever your range is)
-        color: (R, G, B) tuple
-        """
-        H, W = img.shape[-2], img.shape[-1]
-        if not (0 <= y < H and 0 <= x < W):
+    # Helper to draw a filled circle at (y,x)
+    def draw_dot(overlay: torch.Tensor, y: int, x: int, radius: int):
+        y0 = max(0, y - radius); y1 = min(H, y + radius + 1)
+        x0 = max(0, x - radius); x1 = min(W, x + radius + 1)
+        if y0 >= y1 or x0 >= x1:
             return
-        col = torch.tensor(color, dtype=img.dtype, device=img.device)
-
-        if img.ndim == 4:  # [1,3,H,W]
-            img[0, :3, y, x] = col[:3]
-        elif img.ndim == 3:  # [3,H,W]
-            img[:3, y, x] = col[:3]
-        else:
-            raise ValueError(f"Unsupported image shape: {tuple(img.shape)}")
+        yy = torch.arange(y0, y1)
+        xx = torch.arange(x0, x1)
+        Y, X = torch.meshgrid(yy, xx, indexing="ij")
+        mask = ((Y - y)**2 + (X - x)**2) <= radius**2
+        patch = overlay[0, :, y0:y1, x0:x1]
+        overlay[0, :, y0:y1, x0:x1] = torch.where(mask.unsqueeze(0), dot_col, patch)
 
     # Iterator over points for image i
     def iter_points_for(i: int):
@@ -100,7 +95,7 @@ def save_random_overlays(
 
         # Draw points
         for y, x in iter_points_for(i):
-            draw_dot(overlay, y, x, dot_radius)
+            draw_dot(overlay, x, y, dot_radius)
 
         # Save outputs
         save_image(im,       out / f"img_{i:03d}.png")

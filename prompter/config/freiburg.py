@@ -19,7 +19,7 @@ prompter = dict(
 data = dict(
     name='freiburg',
     num_classes=5,
-    batch_size_per_gpu=32,
+    batch_size_per_gpu=16,
     num_workers=8,
     train=dict(transform=[
         dict(type='RandomGridShuffle', grid=(4, 4), p=0.0),

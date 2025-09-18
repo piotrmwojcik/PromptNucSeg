@@ -1,12 +1,12 @@
 prompter = dict(
     backbone=dict(
-        model_name='convnext_small',
+        model_name='convnext_base',
         pretrained=True,
         num_classes=0,
         global_pool=''
     ),
     neck=dict(
-        in_channels=[96, 192, 384, 768],
+        in_channels=[128, 256, 512, 1024],
         out_channels=256,
         num_outs=3,
         add_extra_convs='on_input',
@@ -19,7 +19,7 @@ prompter = dict(
 data = dict(
     name='freiburg',
     num_classes=5,
-    batch_size_per_gpu=16,
+    batch_size_per_gpu=8,
     num_workers=8,
     train=dict(transform=[
         dict(type='RandomGridShuffle', grid=(64, 64), p=0.5),

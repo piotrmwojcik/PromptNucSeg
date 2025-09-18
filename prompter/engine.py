@@ -130,7 +130,7 @@ def train_one_epoch(
         targets = {
             'gt_masks': masks,
             'gt_nums': [len(points) for points in points_list],
-            'gt_points': [pts.view(-1, 2)[:, [1, 0]].to(device).float() for pts in points_list],
+            'gt_points': [points.view(-1, 2).to(device).float() for points in points_list],
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
 
@@ -232,8 +232,8 @@ def evaluate(
             union = (pd_masks.sum() + masks.sum() + 1e-7) - intersection
             iou_scores.append(intersection / (union + 1e-7))
 
-        #gt_points = gt_points[0].reshape(-1, 2).numpy()
-        gt_points = gt_points[0].reshape(-1, 2)[:, [1, 0]].numpy()
+        gt_points = gt_points[0].reshape(-1, 2).numpy()
+        #gt_points = gt_points[0].reshape(-1, 2)[:, [1, 0]].numpy()
         labels = labels[0].numpy()
 
         cls_annotations.append({'points': gt_points, 'labels': labels})

@@ -130,15 +130,15 @@ def train_one_epoch(
         targets = {
             'gt_masks': masks,
             'gt_nums': [len(points) for points in points_list],
-            'gt_points': [points.view(-1, 2).to(device).float() for points in points_list],
+            'gt_points': [pts.view(-1, 2)[:, [1, 0]].to(device).float() for pts in points_list],
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
 
         #print('!!! ', images.shape, targets['gt_masks'].shape)
-        print('!!! ', targets['gt_points'][0].shape)
-        if epoch == 0 and data_iter_step == 2:
-            save_random_overlays(images, targets['gt_masks'], targets['gt_points'], out_dir="overlays",
-                                mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        #print('!!! ', targets['gt_points'][0].shape)
+        #if epoch == 0 and data_iter_step == 2:
+        #    save_random_overlays(images, targets['gt_masks'], targets['gt_points'], out_dir="overlays",
+        #                        mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)

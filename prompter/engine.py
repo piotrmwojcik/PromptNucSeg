@@ -90,7 +90,8 @@ def train_one_epoch(
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
 
-        #print('!!! ', images.shape, targets['gt_masks'].shape)
+        print('!!! ', images.shape, targets['gt_masks'].shape)
+        print(len(targets['gt_masks']), len(targets['gt_masks'][0]))
         #save_random_overlays(images, targets['gt_masks'], out_dir="overlays",
         #                     mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 

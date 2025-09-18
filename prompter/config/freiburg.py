@@ -12,7 +12,7 @@ prompter = dict(
         add_extra_convs='on_input',
     ),
     dropout=0.1,
-    space=16,
+    space=8,
     hidden_dim=256
 )
 
@@ -22,7 +22,7 @@ data = dict(
     batch_size_per_gpu=32,
     num_workers=8,
     train=dict(transform=[
-        dict(type='RandomGridShuffle', grid=(8, 8), p=0.5),
+        dict(type='RandomGridShuffle', grid=(16, 16), p=0.5),
         dict(type='ColorJitter', brightness=0.25, contrast=0.25, saturation=0.1, hue=0.05, p=0.2),
         dict(type='RandomRotate90', p=0.5),
         dict(type='Downscale', scale_max=0.5, scale_min=0.5, p=0.15),
@@ -53,7 +53,7 @@ data = dict(
 
 optimizer = dict(
     type='Adam',
-    lr=1.5e-4,
+    lr=1e-4,
     weight_decay=1e-4
 )
 

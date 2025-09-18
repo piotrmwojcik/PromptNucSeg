@@ -232,7 +232,8 @@ def evaluate(
             union = (pd_masks.sum() + masks.sum() + 1e-7) - intersection
             iou_scores.append(intersection / (union + 1e-7))
 
-        gt_points = gt_points[0].reshape(-1, 2).numpy()
+        #gt_points = gt_points[0].reshape(-1, 2).numpy()
+        gt_points = gt_points[0].reshape(-1, 2)[:, [1, 0]].numpy()
         labels = labels[0].numpy()
 
         cls_annotations.append({'points': gt_points, 'labels': labels})

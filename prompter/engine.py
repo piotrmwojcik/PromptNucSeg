@@ -9,51 +9,94 @@ import prettytable as pt
 from utils import *
 from tqdm import tqdm
 from eval_map import eval_map
+from typing import Sequence, Tuple, Dict, Optional, Union
 from collections import OrderedDict
 
 
+Point = Tuple[int, int]
+PointsPerImage = Sequence[Point]
+
+
 def save_random_overlays(
-    images: torch.Tensor,           # [B, 3, H, W], values in [0,1] (or normalized; see denorm)
-    masks: torch.Tensor,            # [B, H, W] or [B, 1, H, W], binary/float
+    images: torch.Tensor,            # [B, 3, H, W], values in [0,1] (or normalized; see denorm)
+    masks: torch.Tensor,             # [B, H, W] or [B, 1, H, W], binary/float
+    points: Optional[Union[Sequence[PointsPerImage], Dict[int, PointsPerImage]]] = None,
     out_dir: str = "debug_overlays",
     k: int = 8,
     alpha: float = 0.5,
-    color=(1.0, 0.0, 0.0),          # overlay color (R,G,B) in [0,1]
-    mean=None, std=None             # optional: denorm (e.g., mean/std for ImageNet)
+    color=(1.0, 0.0, 0.0),           # mask overlay color (R,G,B) in [0,1]
+    dot_radius: int = 3,
+    point_color=(1.0, 0.0, 0.0),     # dot color (R,G,B) in [0,1]
+    point_format: str = "yx",        # "yx" (row,col) or "xy"
+    mean=None, std=None              # optional: denorm (e.g., ImageNet)
 ):
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
     B, C, H, W = images.shape
     assert C == 3, "Expected 3-channel images"
 
-    # Optional de-normalization
+    # De-normalize (optional)
     imgs = images.detach().float().cpu()
     if mean is not None and std is not None:
         mean_t = torch.tensor(mean, dtype=imgs.dtype).view(1,3,1,1)
         std_t  = torch.tensor(std,  dtype=imgs.dtype).view(1,3,1,1)
         imgs = imgs * std_t + mean_t
 
-    # Prep masks
-    if masks.ndim == 3:
-        m = masks.unsqueeze(1)  # [B,1,H,W]
-    else:
-        m = masks
-    m = (m.detach().float().cpu() > 0.5).float()  # binarize to {0,1}
+    # Prep region masks
+    m = masks
+    if m.ndim == 3:
+        m = m.unsqueeze(1)  # [B,1,H,W]
+    m = (m.detach().float().cpu() > 0.5).float()
 
-    # Color + alpha
+    # Colors / alpha
     color_t = torch.tensor(color, dtype=imgs.dtype).view(1,3,1,1)
+    dot_col = torch.tensor(point_color, dtype=imgs.dtype).view(3,1,1)
     a = float(alpha)
+
+    # Helper to draw a filled circle at (y,x)
+    def draw_dot(overlay: torch.Tensor, y: int, x: int, radius: int):
+        y0 = max(0, y - radius); y1 = min(H, y + radius + 1)
+        x0 = max(0, x - radius); x1 = min(W, x + radius + 1)
+        if y0 >= y1 or x0 >= x1:
+            return
+        yy = torch.arange(y0, y1)
+        xx = torch.arange(x0, x1)
+        Y, X = torch.meshgrid(yy, xx, indexing="ij")
+        mask = ((Y - y)**2 + (X - x)**2) <= radius**2
+        patch = overlay[0, :, y0:y1, x0:x1]
+        overlay[0, :, y0:y1, x0:x1] = torch.where(mask.unsqueeze(0), dot_col, patch)
+
+    # Iterator over points for image i
+    def iter_points_for(i: int):
+        if points is None:
+            return []
+        if isinstance(points, dict):
+            pts = points.get(i, [])
+        else:
+            # expect sequence of length B -> per-image lists
+            pts = points[i] if len(points) == B else []
+        # convert to (y,x)
+        for p in pts:
+            if p is None or len(p) != 2:
+                continue
+            y, x = (p[1], p[0]) if point_format.lower() == "xy" else (p[0], p[1])
+            if 0 <= y < H and 0 <= x < W:
+                yield int(y), int(x)
 
     # Pick random indices
     k = min(k, B)
     idx = torch.randperm(B)[:k]
 
     for i in idx.tolist():
-        im = imgs[i:i+1]                             # [1,3,H,W]
-        ms = m[i:i+1]                                # [1,1,H,W]
+        im = imgs[i:i+1]           # [1,3,H,W]
+        ms = m[i:i+1]              # [1,1,H,W]
         overlay = (im * (1 - a*ms)) + (color_t * a * ms)
         overlay = overlay.clamp(0, 1)
 
-        # Save original, mask, and overlay
+        # Draw points
+        for y, x in iter_points_for(i):
+            draw_dot(overlay, y, x, dot_radius)
+
+        # Save outputs
         save_image(im,       out / f"img_{i:03d}.png")
         save_image(ms,       out / f"mask_{i:03d}.png")
         save_image(overlay,  out / f"overlay_{i:03d}.png")
@@ -91,9 +134,9 @@ def train_one_epoch(
         }
 
         print('!!! ', images.shape, targets['gt_masks'].shape)
-        print(len(targets['gt_masks']), len(targets['gt_masks'][0]), targets['gt_points'][0].shape, torch.unique(targets['gt_points'][0]))
-        #save_random_overlays(images, targets['gt_masks'], out_dir="overlays",
-        #                     mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        #print(len(targets['gt_masks']), len(targets['gt_masks'][0]), targets['gt_points'][0].shape, torch.unique(targets['gt_points'][0]))
+        save_random_overlays(images, targets['gt_masks'], out_dir="overlays",
+                             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)

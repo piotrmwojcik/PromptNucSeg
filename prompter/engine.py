@@ -24,7 +24,7 @@ def save_random_overlays(
     out_dir: str = "debug_overlays",
     k: int = 8,
     alpha: float = 0.5,
-    color=(1.0, 0.0, 0.0),           # mask overlay color (R,G,B) in [0,1]
+    color=(0.0, 0.0, 1.0),           # mask overlay color (R,G,B) in [0,1]
     dot_radius: int = 3,
     point_color=(1.0, 0.0, 0.0),     # dot color (R,G,B) in [0,1]
     point_format: str = "yx",        # "yx" (row,col) or "xy"

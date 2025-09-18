@@ -1,6 +1,9 @@
 import sys
 import math
 import itertools
+import torch
+from pathlib import Path
+from torchvision.utils import save_image
 import prettytable as pt
 
 from utils import *
@@ -8,6 +11,52 @@ from tqdm import tqdm
 from eval_map import eval_map
 from collections import OrderedDict
 
+
+def save_random_overlays(
+    images: torch.Tensor,           # [B, 3, H, W], values in [0,1] (or normalized; see denorm)
+    masks: torch.Tensor,            # [B, H, W] or [B, 1, H, W], binary/float
+    out_dir: str = "debug_overlays",
+    k: int = 8,
+    alpha: float = 0.5,
+    color=(1.0, 0.0, 0.0),          # overlay color (R,G,B) in [0,1]
+    mean=None, std=None             # optional: denorm (e.g., mean/std for ImageNet)
+):
+    out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
+    B, C, H, W = images.shape
+    assert C == 3, "Expected 3-channel images"
+
+    # Optional de-normalization
+    imgs = images.detach().float().cpu()
+    if mean is not None and std is not None:
+        mean_t = torch.tensor(mean, dtype=imgs.dtype).view(1,3,1,1)
+        std_t  = torch.tensor(std,  dtype=imgs.dtype).view(1,3,1,1)
+        imgs = imgs * std_t + mean_t
+
+    # Prep masks
+    if masks.ndim == 3:
+        m = masks.unsqueeze(1)  # [B,1,H,W]
+    else:
+        m = masks
+    m = (m.detach().float().cpu() > 0.5).float()  # binarize to {0,1}
+
+    # Color + alpha
+    color_t = torch.tensor(color, dtype=imgs.dtype).view(1,3,1,1)
+    a = float(alpha)
+
+    # Pick random indices
+    k = min(k, B)
+    idx = torch.randperm(B)[:k]
+
+    for i in idx.tolist():
+        im = imgs[i:i+1]                             # [1,3,H,W]
+        ms = m[i:i+1]                                # [1,1,H,W]
+        overlay = (im * (1 - a*ms)) + (color_t * a * ms)
+        overlay = overlay.clamp(0, 1)
+
+        # Save original, mask, and overlay
+        save_image(im,       out / f"img_{i:03d}.png")
+        save_image(ms,       out / f"mask_{i:03d}.png")
+        save_image(overlay,  out / f"overlay_{i:03d}.png")
 
 def train_one_epoch(
         args,
@@ -41,7 +90,9 @@ def train_one_epoch(
             'gt_labels': [labels.to(device).long() for labels in labels_list],
         }
 
-        print('!!! ', images.shape, targets['gt_masks'].shape, len(targets['gt_points']))
+        print('!!! ', images.shape, targets['gt_masks'].shape)
+        save_random_overlays(images, targets['gt_masks'].shape, out_dir="overlays",
+                             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             outputs = model(images)

@@ -19,7 +19,7 @@ prompter = dict(
 data = dict(
     name='freiburg',
     num_classes=5,
-    batch_size_per_gpu=16,
+    batch_size_per_gpu=32,
     num_workers=8,
     train=dict(transform=[
         dict(type='RandomGridShuffle', grid=(4, 4), p=0.0),
@@ -34,19 +34,19 @@ data = dict(
         dict(type='ShiftScaleRotate', shift_limit=0.3, scale_limit=0.1, rotate_limit=0, border_mode=0, value=0, p=0.5),
         dict(type='PadIfNeeded', min_height=None, min_width=None, pad_height_divisor=prompter["space"],
              pad_width_divisor=prompter["space"], position="top_left", p=1),
-        dict(type='Resize', height=256, width=256, p=1),
+        dict(type='Resize', height=512, width=512, p=1),
         dict(type='Normalize'),
     ]),
     val=dict(transform=[
         #dict(type='PadIfNeeded', min_height=None, min_width=None, pad_height_divisor=prompter["space"],
         #     pad_width_divisor=prompter["space"], position="top_left", p=1),
-        dict(type='Resize', height=256, width=256, p=1),
+        dict(type='Resize', height=512, width=512, p=1),
         dict(type='Normalize'),
     ]),
     test=dict(transform=[
         #dict(type='PadIfNeeded', min_height=None, min_width=None, pad_height_divisor=prompter["space"],
         #     pad_width_divisor=prompter["space"], position="top_left", p=1),
-        dict(type='Resize', height=256, width=256, p=1),
+        dict(type='Resize', height=512, width=512, p=1),
         dict(type='Normalize'),
     ]),
 )

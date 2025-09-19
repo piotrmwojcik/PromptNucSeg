@@ -148,6 +148,12 @@ def main():
         weight_decay=cfg.optimizer.weight_decay
     )
 
+    scheduler = getattr(torch.optim.lr_scheduler, cfg.scheduler.type)(
+        optimizer,
+        milestones=cfg.scheduler.milestones,
+        gamma=cfg.scheduler.gamma,
+    )
+
     scaler = torch.cuda.amp.Gradcaler() if args.amp else None
 
     if args.use_wandb and is_main_process():
@@ -165,6 +171,7 @@ def main():
         checkpoint = torch.load(args.resume, map_location="cpu")
         model_without_ddp.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
+        scheduler.load_state_dict(checkpoint["scheduler"])
         args.start_epoch = checkpoint["epoch"] + 1
         max_cls_f1 = checkpoint.get("f1", 0)
         if model_ema:
@@ -189,9 +196,12 @@ def main():
             scaler
         )
 
+        scheduler.step()
+
         if args.output_dir:
             checkpoint = {
                 "model": model_without_ddp.state_dict(),
+                "scheduler": scheduler.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "f1": max_cls_f1,
                 "epoch": epoch,

@@ -12,7 +12,7 @@ prompter = dict(
         add_extra_convs='on_input',
     ),
     dropout=0.1,
-    space=8,
+    space=16,
     hidden_dim=256
 )
 
@@ -66,9 +66,9 @@ scheduler = dict(
 criterion = dict(
     matcher=dict(type='HungarianMatcher', dis_type='l2', set_cost_point=0.1, set_cost_class=1),
     eos_coef=0.4,
-    reg_loss_coef=1e-4,
+    reg_loss_coef=5e-3,
     cls_loss_coef=1.0,
-    mask_loss_coef=0.5
+    mask_loss_coef=1.0
 )
 
 test = dict(nms_thr=12, match_dis=12, filtering=False)

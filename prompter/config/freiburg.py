@@ -12,7 +12,7 @@ prompter = dict(
         add_extra_convs='on_input',
     ),
     dropout=0.1,
-    space=16,
+    space=24,
     hidden_dim=256
 )
 

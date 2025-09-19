@@ -13,7 +13,7 @@ prompter = dict(
     ),
     dropout=0.1,
     space=16,
-    hidden_dim=512
+    hidden_dim=256
 )
 
 data = dict(
@@ -71,4 +71,4 @@ criterion = dict(
     mask_loss_coef=1.0
 )
 
-test = dict(nms_thr=12, match_dis=12, filtering=False)
+test = dict(nms_thr=12, match_dis=8, filtering=False)

@@ -71,4 +71,4 @@ criterion = dict(
     mask_loss_coef=1.0
 )
 
-test = dict(nms_thr=12, match_dis=12, filtering=False)
+test = dict(nms_thr=12, match_dis=12, filtering=True)

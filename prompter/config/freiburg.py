@@ -12,7 +12,7 @@ prompter = dict(
         add_extra_convs='on_input',
     ),
     dropout=0.1,
-    space=8,
+    space=16,
     hidden_dim=256
 )
 
@@ -34,7 +34,7 @@ data = dict(
         dict(type='ShiftScaleRotate', shift_limit=0.3, scale_limit=0.1, rotate_limit=0, border_mode=0, value=0, p=0.5),
         dict(type='PadIfNeeded', min_height=None, min_width=None, pad_height_divisor=prompter["space"],
              pad_width_divisor=prompter["space"], position="top_left", p=1),
-        dict(type='Resize', height=256, width=256, p=1),
+        dict(type='Resize', height=512, width=512, p=1),
         dict(type='Normalize'),
     ]),
     val=dict(transform=[
@@ -59,7 +59,7 @@ optimizer = dict(
 
 scheduler = dict(
     type='MultiStepLR',
-    milestones=[25, 50],
+    milestones=[50, 80],
     gamma=0.1
 )
 

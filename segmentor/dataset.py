@@ -96,6 +96,7 @@ class DataFolder(Dataset):
         unique_pids = np.unique(inst_map)[1:]  # remove zero
 
         print('!!! ', unique_pids)
+        print(np.unique(type_map))
 
         cell_num = len(unique_pids)
 

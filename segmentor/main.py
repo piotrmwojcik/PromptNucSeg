@@ -199,7 +199,7 @@ def main():
                 metric_dict = evaluate(
                     args,
                     model,
-                    val_dataloader,
+                    test_dataloader,
                     cfg.data.num_classes,
                     cfg.data.post.iou_threshold,
                     args.tta,

@@ -23,6 +23,7 @@ class DataFolder(Dataset):
         dataset = cfg.data.name
 
         self.files = np.load(f'datasets/{dataset}_{mode}_files.npy', allow_pickle=True)
+        print('!!!! ', self.files[100])
 
         self.dataset = dataset
 

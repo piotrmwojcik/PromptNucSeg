@@ -10,7 +10,7 @@ data = dict(
     name='freiburg',
     num_classes=5,
     num_mask_per_img=20,
-    batch_size_per_gpu=16,
+    batch_size_per_gpu=8,
     num_workers=0,
     num_neg_prompt=0,
     train=dict(transform=[

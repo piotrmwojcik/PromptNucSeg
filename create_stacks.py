@@ -11,40 +11,36 @@ def read_from_json(path):
 
 def to_rgb(img):
     # img: HxW, HxWx3, or HxWx4
-    if img.ndim == 2:  # gray -> RGB
+    if img.ndim == 2:                     # gray -> RGB
         img = np.stack([img, img, img], axis=-1)
-    elif img.ndim == 3 and img.shape[2] == 4:  # RGBA -> RGB (drop alpha)
+    elif img.ndim == 3 and img.shape[2] == 4:  # RGBA -> RGB
         img = img[..., :3]
     return img
 
 def pad_to_size(img, H, W):
-    # pad with zeros (black) to target HxW
-    h, w = img.shape[:2]
     out = np.zeros((H, W, 3), dtype=img.dtype)
+    h, w = img.shape[:2]
     out[:h, :w] = img
     return out
 
-def stack_images_from_json(cfg, mode: str = "train",
-                           images_root_candidates=("images", ".")):
+def stack_images_from_json_file(json_path: str, images_root_candidates=("images", ".")):
     """
-    Reads datasets/{cfg.data.name}/{mode}.json, loads all images listed as keys,
-    pads them to a common size, and saves a stacked .npy array:
-
-      datasets/{name}/{mode}_images.npy  (shape: [N, H, W, 3], dtype=uint8)
+    Load images listed as keys in the JSON, pad to the max H/W, and save a single .npy stack
+    next to the JSON: <json_stem>_images.npy  with shape [N, H, W, 3] (uint8).
     """
-    json_path = Path(f"datasets/{cfg.data.name}/{mode}.json")
+    json_path = Path(json_path)
     data_root = json_path.parent
 
     anno_json = read_from_json(json_path)
-    _ = anno_json.pop("classes", None)  # not used
+    _ = anno_json.pop("classes", None)  # not needed for stacking
     img_keys = list(anno_json.keys())
 
-    # resolve image path for each key
-    resolved_paths = []
+    # Resolve each key to an actual file path
+    resolved = []
     for k in img_keys:
         p = Path(k)
         if p.is_absolute() and p.exists():
-            resolved_paths.append(p)
+            resolved.append(p)
             continue
         found = None
         for sub in images_root_candidates:
@@ -61,13 +57,11 @@ def stack_images_from_json(cfg, mode: str = "train",
                 f"Could not find image for key '{k}' under {data_root} "
                 f"(tried {images_root_candidates} and '.')"
             )
-        resolved_paths.append(found)
+        resolved.append(found)
 
-    # load & collect sizes
-    imgs = []
-    maxH = maxW = 0
-    print(f"[INFO] Loading {len(resolved_paths)} images…")
-    for p in tqdm(resolved_paths, desc=f"read {mode}"):
+    # Load and track max size
+    imgs, maxH, maxW = [], 0, 0
+    for p in tqdm(resolved, desc=f"read {json_path.stem}"):
         img = io.imread(str(p))
         img = to_rgb(img).astype(np.uint8)
         h, w = img.shape[:2]
@@ -75,20 +69,14 @@ def stack_images_from_json(cfg, mode: str = "train",
         imgs.append(img)
 
     if not imgs:
-        raise RuntimeError("No images loaded; nothing to stack.")
+        raise RuntimeError(f"No images loaded from {json_path}")
 
-    # pad to common size & stack
-    print(f"[INFO] Padding to common size H={maxH}, W={maxW} and stacking…")
-    stacked = np.stack([pad_to_size(im, maxH, maxW) for im in imgs], axis=0)  # [N,H,W,3], uint8
+    # Pad and stack
+    stacked = np.stack([pad_to_size(im, maxH, maxW) for im in imgs], axis=0)  # [N,H,W,3]
+    out_file = data_root / f"{json_path.stem}_images.npy"
+    np.save(out_file, stacked)
+    print(f"[OK] {json_path.stem}: saved {stacked.shape} to {out_file}")
 
-    out_images = data_root / f"{mode}_images.npy"
-    np.save(out_images, stacked)
-
-    print(f"[OK] Saved images to: {out_images}  (shape={stacked.shape}, dtype={stacked.dtype})")
-
-# ---------- usage ----------
-from mmengine.config import Config
-cfg = Config.fromfile('/home/pwojcik/PromptNucSeg/prompter/datasets/freiburg/')  # adjust to your config path
-stack_images_from_json(cfg, mode="train")
-# stack_images_from_json(cfg, mode="val")
-stack_images_from_json(cfg, mode="test")
+# ---- Run for the two specific files ----
+stack_images_from_json_file("/home/pwojcik/PromptNucSeg/prompter/datasets/freiburg/train.json")
+stack_images_from_json_file("/home/pwojcik/PromptNucSeg/prompter/datasets/freiburg/test.json")

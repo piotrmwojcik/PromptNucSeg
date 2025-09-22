@@ -115,9 +115,8 @@ class DataFolder(Dataset):
                 print('!!!! ', n)
 
                 #print(mask_single_cell)
-                print(random.choice(
-                    torch.argwhere(mask_single_cell)
-                ))
+                print(
+                    torch.argwhere(mask_single_cell))
 
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)

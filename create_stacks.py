@@ -88,7 +88,7 @@ def stack_images_from_json(cfg, mode: str = "train",
 
 # ---------- usage ----------
 from mmengine.config import Config
-cfg = Config.fromfile('config/freiburg')  # adjust to your config path
+cfg = Config.fromfile('config/freiburg.py')  # adjust to your config path
 stack_images_from_json(cfg, mode="train")
 # stack_images_from_json(cfg, mode="val")
 stack_images_from_json(cfg, mode="test")

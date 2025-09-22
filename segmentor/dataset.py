@@ -66,6 +66,7 @@ class DataFolder(Dataset):
             img_name = Path(img_path).name
             inst_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_types.npy', allow_pickle=True)
             type_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_instances.npy', allow_pickle=True)
+            mask = np.stack([inst_map, type_map], axis=-1)
             #mask = (mask > 0).astype(float)
         else:
             mask_path = f'{img_path[:-4].replace("Images", "Masks")}.npy'
@@ -76,7 +77,7 @@ class DataFolder(Dataset):
             res = self.transform(image=img)
 
             img, mask = res['image'], torch.as_tensor(mask)
-            #inst_map, type_map = mask[..., 0], mask[..., 1]
+            inst_map, type_map = mask[..., 0], mask[..., 1]
             ori_size = inst_map.shape
 
             img_name = img_path.split('/')[-1]
@@ -90,7 +91,7 @@ class DataFolder(Dataset):
         res = self.transform(image=img, mask=mask)
         img, mask = list(res.values())
 
-        #inst_map, type_map = mask[..., 0], mask[..., 1]
+        inst_map, type_map = mask[..., 0], mask[..., 1]
         unique_pids = np.unique(inst_map)[1:]  # remove zero
 
         cell_num = len(unique_pids)

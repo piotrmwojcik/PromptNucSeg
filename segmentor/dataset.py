@@ -124,6 +124,7 @@ class DataFolder(Dataset):
                 )[None, [1, 0]]
 
                 print('!!!!!! ', type_map[pt[0, 1], pt[0, 0]])
+                print('!!!!!! ', type_map[pt[0, 0], pt[0, 1]])
 
                 all_points.append(pt)
 

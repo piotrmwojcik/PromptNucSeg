@@ -62,8 +62,10 @@ class DataFolder(Dataset):
             #print('!!! ', f'{img_path[:-4]}')
 
             img = io.imread(img_path)[..., :3]
-            inst_map = np.load(f'datasets/{self.dataset}/{img_path[:-4]}_types.npy', allow_pickle=True)
-            type_map = np.load(f'datasets/{self.dataset}/{img_path[:-4]}_instances.npy', allow_pickle=True)
+            from pathlib import Path
+            img_name = Path(img_path).name
+            inst_map = np.load(f'datasets/{self.dataset}/{img_name}_types.npy', allow_pickle=True)
+            type_map = np.load(f'datasets/{self.dataset}/{img_name}_instances.npy', allow_pickle=True)
             #mask = (mask > 0).astype(float)
         else:
             mask_path = f'{img_path[:-4].replace("Images", "Masks")}.npy'

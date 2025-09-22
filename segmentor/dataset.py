@@ -97,10 +97,8 @@ class DataFolder(Dataset):
         unique_pids = np.unique(inst_map)[1:]  # remove zero
 
         all_equal = torch.equal(inst_map > 0, type_map >0 )  # requires same dtype/shape AND exact values
-        all_equal_elwise = torch.all(all_equal).item()
 
-
-        print('!!! ', unique_pids, all_equal_elwise)
+        print('!!! ', unique_pids, all_equal)
         print(np.unique(type_map))
 
         cell_num = len(unique_pids)

@@ -64,8 +64,8 @@ class DataFolder(Dataset):
             img = io.imread(img_path)[..., :3]
             from pathlib import Path
             img_name = Path(img_path).name
-            inst_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_types.npy', allow_pickle=True)
-            type_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_instances.npy', allow_pickle=True)
+            inst_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_instances.npy', allow_pickle=True)
+            type_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_types.npy', allow_pickle=True)
             mask = np.stack([inst_map, type_map], axis=-1)
             #mask = (mask > 0).astype(float)
         else:

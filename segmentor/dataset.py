@@ -111,7 +111,7 @@ class DataFolder(Dataset):
 
                 n = torch.count_nonzero(mask_single_cell).item()
                 # or:
-                n = mask_single_cell.long().sum().item()
+                #n = mask_single_cell.long().sum().item()
                 print('!!!! ', n)
 
                 pt = random.choice(

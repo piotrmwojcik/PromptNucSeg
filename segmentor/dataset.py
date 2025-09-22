@@ -57,6 +57,8 @@ class DataFolder(Dataset):
         elif self.dataset == 'cpm17':
             mask_path = f'{img_path[:-4].replace("Images", "Labels")}.mat'
         elif self.dataset == 'freiburg':
+            print('!!! ', f'datasets/{self.dataset}/{img_path[:-4]}')
+
             mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)
             mask = (mask > 0).astype(float)
         else:

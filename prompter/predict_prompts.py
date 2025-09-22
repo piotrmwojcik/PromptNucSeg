@@ -52,10 +52,10 @@ def process_files(files):
 
         save_content = np.concatenate([points, classes[:, None]], axis=-1)
 
-        np.save(
-            f'../segmentor/prompts/{dataset}/{file.split("/")[-1][:-4]}',
-            save_content
-        )
+        from pathlib import Path
+        out_path = Path(f'../segmentor/prompts/{dataset}') / (Path(file).stem + '.npy')
+        np.save(out_path, save_content)
+        print(f"Saved: {out_path}")
 
 
 mkdir(f'../segmentor/prompts/{dataset}')

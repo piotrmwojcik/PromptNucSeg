@@ -117,7 +117,7 @@ class DataFolder(Dataset):
                 print(mask_single_cell)
                 print(random.choice(
                     torch.argwhere(mask_single_cell)
-                )[None].shape)
+                )[None])
 
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)

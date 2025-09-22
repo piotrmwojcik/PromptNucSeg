@@ -119,7 +119,7 @@ class DataFolder(Dataset):
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]
 
-                print('!!!!!! ', type_map[pt[0, 1], pt[0, 0]])
+                all_points.append(pt)
 
                 assert type_map[pt[0, 1], pt[0, 0]] > 0
                 cell_types.append(type_map[pt[0, 1], pt[0, 0]] - 1)

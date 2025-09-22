@@ -114,6 +114,8 @@ class DataFolder(Dataset):
                 #n = mask_single_cell.long().sum().item()
                 print('!!!! ', n)
 
+                print(mask_single_cell)
+
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]

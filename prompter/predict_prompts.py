@@ -61,11 +61,11 @@ def process_files(files):
 mkdir(f'../segmentor/prompts/{dataset}')
 
 
-test_files = np.load(f'../prompter/datasets/{dataset}_test_files.npy')
+test_files = np.load(f'../segmentor/datasets/{dataset}_test_files.npy')
 process_files(test_files)
 
 try:
-    val_files = np.load(f'../prompter/datasets/{dataset}_val_files.npy')
+    val_files = np.load(f'../segmentor/datasets/{dataset}_val_files.npy')
     process_files(val_files)
 
 except FileNotFoundError:

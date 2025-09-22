@@ -23,7 +23,6 @@ class DataFolder(Dataset):
         dataset = cfg.data.name
 
         self.files = np.load(f'datasets/{dataset}_{mode}_files.npy', allow_pickle=True)
-        print(self.files)
 
         self.dataset = dataset
 
@@ -49,6 +48,8 @@ class DataFolder(Dataset):
 
     def __getitem__(self, idx):
         img_path = self.files[idx]
+
+        print('!!!! ', img_path)
 
         if self.dataset == 'kumar':
             mask_path = f'{img_path[:-4].replace("images", "labels")}.npy'

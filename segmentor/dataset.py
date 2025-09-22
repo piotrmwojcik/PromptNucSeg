@@ -61,13 +61,14 @@ class DataFolder(Dataset):
         elif self.dataset == 'freiburg':
             print('!!! ', f'{img_path[:-4]}')
 
-            mask = None
+            img = io.imread(img_path)[..., :3]
+            print('!!! img ', img.shape)
             #mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)
             #mask = (mask > 0).astype(float)
         else:
             mask_path = f'{img_path[:-4].replace("Images", "Masks")}.npy'
 
-        img, mask = io.imread(img_path)[..., :3], load_maskfile(mask_path)
+        #img, mask = io.imread(img_path)[..., :3], load_maskfile(mask_path)
 
         if self.mode != 'train':
             res = self.transform(image=img)

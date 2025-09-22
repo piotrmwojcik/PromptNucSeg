@@ -22,7 +22,7 @@ class DataFolder(Dataset):
         self.mode = mode
         dataset = cfg.data.name
 
-        self.files = np.load(f'datasets/{dataset}_{mode}_files.npy')
+        self.files = np.load(f'datasets/{dataset}_{mode}_files.npy', allow_pickle=True)
 
         self.dataset = dataset
 

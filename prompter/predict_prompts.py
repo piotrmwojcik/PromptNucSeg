@@ -38,6 +38,7 @@ transform = A.Compose([
 
 def process_files(files):
     for file in tqdm(files):
+        print(file)
         img = io.imread(file)[..., :3]
 
         image = transform(image=img)['image'].unsqueeze(0).to(device)

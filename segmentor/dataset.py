@@ -68,7 +68,7 @@ class DataFolder(Dataset):
             type_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_types.npy', allow_pickle=True).astype(np.int32)
             print(np.unique(type_map))
             print(img_name[:-4])
-            all_equal = torch.equal(inst_map > 0, type_map > 0)
+            all_equal = torch.equal(torch.tensor(inst_map) > 0, torch.tensor(type_map) > 0)
             print('all_equal ', all_equal)
             mask = np.concatenate([inst_map[..., None], type_map[..., None]], axis=-1)
             #mask = (mask > 0).astype(float)

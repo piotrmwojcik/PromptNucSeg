@@ -66,7 +66,7 @@ class DataFolder(Dataset):
             img_name = Path(img_path).name
             inst_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_instances.npy', allow_pickle=True).astype(np.int32)
             type_map = np.load(f'datasets/{self.dataset}/{img_name[:-4]}_types.npy', allow_pickle=True).astype(np.int32)
-            print(type_map)
+            print('!!! ', type_map.shape)
             mask = np.concatenate([inst_map[..., None], type_map[..., None]], axis=-1)
             #mask = (mask > 0).astype(float)
         else:

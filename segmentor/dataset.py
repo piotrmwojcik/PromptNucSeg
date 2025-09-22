@@ -115,50 +115,11 @@ class DataFolder(Dataset):
                     pid
                 )
 
-                n = torch.count_nonzero(mask_single_cell).item()
-                # or:
-                #n = mask_single_cell.long().sum().item()
-                print('!!!! ', n)
-
-                #print(mask_single_cell)
-                points =  torch.argwhere(mask_single_cell)
-                for p in points:
-                    print(p, type_map[p[1], p[0]])
-                print('!---!')
-
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)
                 )[None, [1, 0]]
 
                 print('!!!!!! ', type_map[pt[0, 1], pt[0, 0]])
-
-                all_points.append(pt)
-
-                y = int(pt[0, 1])
-                x = int(pt[0, 0])
-
-                # pick a radius (e.g., 3 -> 7x7 window)
-                r = 3
-
-                # get H, W and a numpy view of the type_map
-                if torch.is_tensor(type_map):
-                    H, W = type_map.shape[-2], type_map.shape[-1]
-                    tm = type_map.detach().cpu().numpy()
-                else:
-                    H, W = type_map.shape[-2], type_map.shape[-1]
-                    tm = type_map
-
-                # bounds
-                y0, y1 = max(0, y - r), min(H, y + r + 1)
-                x0, x1 = max(0, x - r), min(W, x + r + 1)
-
-                # assert and print
-                assert tm[y, x] > 0, f"Center type is 0 at (y={y}, x={x})"
-
-                window = tm[y0:y1, x0:x1]
-                print(f"Center (y={y}, x={x}) type:", tm[y, x])
-                print(f"Window y[{y0}:{y1}) x[{x0}:{x1}):")
-                print(window)
 
                 assert type_map[pt[0, 1], pt[0, 0]] > 0
                 cell_types.append(type_map[pt[0, 1], pt[0, 0]] - 1)

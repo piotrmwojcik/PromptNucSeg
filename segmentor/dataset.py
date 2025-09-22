@@ -114,7 +114,7 @@ class DataFolder(Dataset):
                 #n = mask_single_cell.long().sum().item()
                 print('!!!! ', n, )
 
-                print(mask_single_cell)
+                #print(mask_single_cell)
                 print(random.choice(
                     torch.argwhere(mask_single_cell)
                 )[None])
@@ -124,7 +124,6 @@ class DataFolder(Dataset):
                 )[None, [1, 0]]
 
                 print('!!!!!! ', type_map[pt[0, 1], pt[0, 0]])
-                print('!!!!!! ', type_map[pt[0, 0], pt[0, 1]])
 
                 all_points.append(pt)
 

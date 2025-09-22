@@ -117,7 +117,7 @@ class DataFolder(Dataset):
                 #print(mask_single_cell)
                 points =  torch.argwhere(mask_single_cell)
                 for p in points:
-                    print(type_map[p])
+                    print(p, type_map[p])
                 print('!---!')
 
                 pt = random.choice(

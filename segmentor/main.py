@@ -143,7 +143,7 @@ def main():
         if "optimizer" in checkpoint:
             optimizer.load_state_dict(checkpoint["optimizer"])
         if "scheduler" in checkpoint:
-            scheduler.load_state_dict(checkpoint["optimizer"])
+            scheduler.load_state_dict(checkpoint["scheduler"])
         if "epoch" in checkpoint:
             args.start_epoch = checkpoint["epoch"] + 1
         if "metrics" in checkpoint:

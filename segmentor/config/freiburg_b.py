@@ -33,9 +33,11 @@ data = dict(
         dict(type='Normalize'),
     ]),
     val=dict(transform=[
+        dict(type='Resize', height=512, width=512, p=1),
         dict(type='Normalize'),
     ]),
     test=dict(transform=[
+        dict(type='Resize', height=512, width=512, p=1),
         dict(type='Normalize'),
     ]),
     post=dict(iou_threshold=0.5)

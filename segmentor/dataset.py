@@ -23,7 +23,6 @@ class DataFolder(Dataset):
         dataset = cfg.data.name
 
         self.files = np.load(f'datasets/{dataset}_{mode}_files.npy', allow_pickle=True)
-        print('!--!!! ', self.files[100])
 
         self.dataset = dataset
 
@@ -60,7 +59,7 @@ class DataFolder(Dataset):
         elif self.dataset == 'cpm17':
             mask_path = f'{img_path[:-4].replace("Images", "Labels")}.mat'
         elif self.dataset == 'freiburg':
-            print('!!! ', f'datasets/{self.dataset}/{img_path[:-4]}')
+            print('!!! ', f'{img_path[:-4]}')
 
             mask = None
             #mask = np.load(f'datasets/{self.dataset}/{img_path[:-4]}__type-mask_instances.npy', allow_pickle=True)

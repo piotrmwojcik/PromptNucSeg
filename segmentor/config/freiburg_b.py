@@ -1,5 +1,5 @@
 segmentor = dict(
-    # type='PromptNucSeg-B',
+    type='PromptNucSeg-B',
     img_size=512,
     patch_size=16,
     multimask=False

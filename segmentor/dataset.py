@@ -94,6 +94,8 @@ class DataFolder(Dataset):
         inst_map, type_map = mask[..., 0], mask[..., 1]
         unique_pids = np.unique(inst_map)[1:]  # remove zero
 
+        print('!!! ', unique_pids)
+
         cell_num = len(unique_pids)
 
         if cell_num:

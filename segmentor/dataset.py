@@ -117,11 +117,11 @@ class DataFolder(Dataset):
                 #print(mask_single_cell)
                 print(random.choice(
                     torch.argwhere(mask_single_cell)
-                )[None])
+                ))
 
                 pt = random.choice(
                     torch.argwhere(mask_single_cell)
-                )[None, [0, 1]]
+                )[None, [1, 0]]
 
                 print('!!!!!! ', type_map[pt[0, 1], pt[0, 0]])
 

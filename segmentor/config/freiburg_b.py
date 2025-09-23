@@ -10,9 +10,9 @@ data = dict(
     name='freiburg',
     num_classes=5,
     num_mask_per_img=20,
-    batch_size_per_gpu=8,
+    batch_size_per_gpu=16,
     num_workers=0,
-    num_neg_prompt=0,
+    num_neg_prompt=1,
     train=dict(transform=[
         dict(type='Resize', height=256, width=256, p=1),
         #dict(type='RandomCrop', height=512, width=512, p=1),

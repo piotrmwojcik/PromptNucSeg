@@ -153,9 +153,9 @@ class DataFolder(Dataset):
             prompt_points = torch.empty(0, (self.num_neg_prompt + 1), 2)
             prompt_labels = torch.empty(0, (self.num_neg_prompt + 1))
             all_points = torch.empty(0, 2)
-            inst_map = torch.empty(0, 256, 256)
+            inst_map = torch.empty(0, 512, 512)
             cell_types = torch.empty(0)
-        print(img.shape, inst_map.shape, prompt_points.shape)
+        #print(img.shape, inst_map.shape, prompt_points.shape)
         return img, inst_map.long(), prompt_points, prompt_labels, cell_types, all_points
 
 

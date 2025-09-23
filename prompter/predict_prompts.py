@@ -31,7 +31,7 @@ from albumentations.pytorch import ToTensorV2
 transform = A.Compose([
     #A.PadIfNeeded(min_height=None, min_width=None, pad_height_divisor=cfg.prompter.space,
     #              pad_width_divisor=cfg.prompter.space, position="top_left", p=1),
-    A.Resize(512, 512),
+    A.Resize(256, 256),
     A.Normalize(),
     ToTensorV2()
 ], p=1)

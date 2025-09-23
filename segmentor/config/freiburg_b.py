@@ -1,6 +1,6 @@
 segmentor = dict(
     type='PromptNucSeg-B',
-    img_size=512,
+    img_size=256,
     patch_size=16,
     multimask=False
 )
@@ -14,7 +14,7 @@ data = dict(
     num_workers=0,
     num_neg_prompt=0,
     train=dict(transform=[
-        dict(type='Resize', height=512, width=512, p=1),
+        dict(type='Resize', height=256, width=256, p=1),
         #dict(type='RandomCrop', height=512, width=512, p=1),
         dict(type='RandomRotate90', p=0.5),
         dict(type='HorizontalFlip', p=0.5),

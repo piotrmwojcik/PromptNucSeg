@@ -76,8 +76,9 @@ class DataFolder(Dataset):
         if self.mode != 'train':
             ori_size = mask[..., 0].shape
             res = self.transform(image=img, mask=mask)
+            img, mask = list(res.values())
 
-            img, mask = res['image'], torch.as_tensor(mask)
+            #img, mask = res['image'], torch.as_tensor(mask)
             inst_map, type_map = mask[..., 0], mask[..., 1]
 
             img_name = img_path.split('/')[-1]

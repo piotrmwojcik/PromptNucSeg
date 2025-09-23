@@ -92,7 +92,6 @@ class DataFolder(Dataset):
         img, mask = list(res.values())
 
         inst_map, type_map = mask[..., 0], mask[..., 1]
-        print(inst_map.shape, type_map.shape)
         unique_pids = np.unique(inst_map)[1:]  # remove zero
 
         cell_num = len(unique_pids)
@@ -156,7 +155,7 @@ class DataFolder(Dataset):
             all_points = torch.empty(0, 2)
             inst_map = torch.empty(0, 256, 256)
             cell_types = torch.empty(0)
-
+        print(img.shape, inst_map.shape, prompt_points.shape)
         return img, inst_map.long(), prompt_points, prompt_labels, cell_types, all_points
 
 

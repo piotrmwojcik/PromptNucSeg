@@ -74,7 +74,6 @@ class DataFolder(Dataset):
         #img, mask = io.imread(img_path)[..., :3], load_maskfile(mask_path)
 
         if self.mode != 'train':
-            print('dupa')
             res = self.transform(image=img)
 
             img, mask = res['image'], torch.as_tensor(mask)
@@ -93,6 +92,7 @@ class DataFolder(Dataset):
         img, mask = list(res.values())
 
         inst_map, type_map = mask[..., 0], mask[..., 1]
+        print(inst_map.shape, type_map.shape)
         unique_pids = np.unique(inst_map)[1:]  # remove zero
 
         cell_num = len(unique_pids)

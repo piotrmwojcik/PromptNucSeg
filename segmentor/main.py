@@ -313,41 +313,17 @@ def evaluate(
 ):
     model.eval()
 
-    tissue_types = {
-        'Adrenal_gland': 0,
-        'Bile-duct': 1,
-        'Bladder': 2,
-        'Breast': 3,
-        'Cervix': 4,
-        'Colon': 5,
-        'Esophagus': 6,
-        'HeadNeck': 7,
-        'Kidney': 8,
-        'Liver': 9,
-        'Lung': 10,
-        'Ovarian': 11,
-        'Pancreatic': 12,
-        'Prostate': 13,
-        'Skin': 14,
-        'Stomach': 15,
-        'Testis': 16,
-        'Thyroid': 17,
-        'Uterus': 18
-    }
 
     nuclei_types = {
-        'Neoplastic': 1,
-        'Inflammatory': 2,
-        'Connective': 3,
-        'Dead': 4,
-        'Epithelial': 5,
+        "_empty": 1,
+        "opal_480": 2,
+        "opal_520": 3,
+        "opal_570": 4,
+        "opal_620": 5,
     }
 
     nuclei_pq_scores = []  # image_id, category_id
-    tissue_nuclei_pq_scores = [[] for _ in tissue_types]  # tissue_id, category_id
-
     binary_pq_scores = []  # image_id
-    tissue_binary_pq_scores = [[] for _ in tissue_types]  # tissue_id, score
 
     binary_dq_scores = []
     binary_sq_scores = []
@@ -381,7 +357,7 @@ def evaluate(
         model_time = time.time()
 
         batch_inds = torch.repeat_interleave(torch.arange(images.shape[0]), cell_nums)
-        if 'pannuke' in test_dataloader.dataset.dataset:
+        if 'freiburg' in test_dataloader.dataset.dataset:
             if cell_nums.sum() > 0:
                 outputs = model(
                     images,
@@ -440,7 +416,6 @@ def evaluate(
                     )
 
                 binary_pq_scores.append(bpq_tmp)
-                tissue_binary_pq_scores[tissue_types[test_dataloader.dataset.types[file_ind]]].append(bpq_tmp)
 
                 nuclei_type_pq = []
                 nuclei_type_dq = []
@@ -467,7 +442,6 @@ def evaluate(
                     nuclei_type_sq.append(msq_tmp)
 
                 nuclei_pq_scores.append(nuclei_type_pq)
-                tissue_nuclei_pq_scores[tissue_types[test_dataloader.dataset.types[file_ind]]].append(nuclei_type_pq)
 
                 excel_info.append(
                     (test_dataloader.dataset.files[file_ind].split("/")[-1], bpq_tmp, np.nanmean(nuclei_pq_scores[-1]),
@@ -611,42 +585,17 @@ def evaluate(
                  cell_nums[batch_inds[0]].item())
             )
 
-    if 'pannuke' in test_dataloader.dataset.dataset:  # PanNuke
+    if 'freiburg' in test_dataloader.dataset.dataset:  # PanNuke
+        nuclei_pq_scores = np.concatenate(all_gather(nuclei_pq_scores))  # shape [N_images, num_classes]
+        binary_pq_scores = np.concatenate(all_gather(binary_pq_scores))  # shape [N_images]
 
-        tissue_mpq_scores = []
-        for tid, tissue_type in enumerate(tissue_types):
-            tmp = [np.asarray(_).reshape(-1, num_classes) for _ in all_gather(tissue_nuclei_pq_scores[tid])]
-            tissue_mpq_scores.append(
-                np.nanmean(
-                    np.nanmean(np.concatenate(tmp), axis=1)
-                ))
-
-        tissue_mPQ = np.nanmean(tissue_mpq_scores)
-
-        tissue_bpq_scores = []
-        for tid, tissue_type in enumerate(tissue_types):
-            tissue_bpq_scores.append(
-                np.nanmean(np.concatenate(all_gather(tissue_binary_pq_scores[tid])))
-            )
-
-        tissue_bPQ = np.nanmean(tissue_bpq_scores)
-
-        nuclei_pq_scores = np.concatenate(all_gather(nuclei_pq_scores))
-        binary_pq_scores = np.concatenate(all_gather(binary_pq_scores))
-
-        nuclei_pq_scores = np.asarray(nuclei_pq_scores)
-        print(np.nanmean(nuclei_pq_scores, axis=0))
-
-        # global_mPQ = np.nanmean(np.nanmean(nuclei_pq_scores, axis=1))
-        #
-        # binary_pq_scores = np.asarray(binary_pq_scores)
-        # global_bPQ = np.nanmean(binary_pq_scores)
+        # mean PQ across classes per image, then mean across images
+        mPQ = np.nanmean(np.nanmean(nuclei_pq_scores, axis=1))
+        bPQ = np.nanmean(binary_pq_scores)
 
         metrics = {
-            'mPQ': tissue_mPQ,  # <---
-            'bPQ': tissue_bPQ,
-            # 'global_bPQ': global_mPQ,
-            # 'global_mPQ': global_bPQ,
+            'mPQ': mPQ,
+            'bPQ': bPQ,
         }
 
     else:  # CPM-17 and Kumar

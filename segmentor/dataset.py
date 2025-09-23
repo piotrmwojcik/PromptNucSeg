@@ -74,11 +74,11 @@ class DataFolder(Dataset):
         #img, mask = io.imread(img_path)[..., :3], load_maskfile(mask_path)
 
         if self.mode != 'train':
-            res = self.transform(image=img)
+            ori_size = mask[..., 0].shape
+            res = self.transform(image=img, mask=mask)
 
             img, mask = res['image'], torch.as_tensor(mask)
             inst_map, type_map = mask[..., 0], mask[..., 1]
-            ori_size = inst_map.shape
 
             img_name = img_path.split('/')[-1]
             prompt_points = np.load(f'prompts/{self.dataset}/{img_name[:-4]}.npy')

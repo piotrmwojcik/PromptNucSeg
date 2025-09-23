@@ -344,6 +344,10 @@ def evaluate(
         images = images.to(device)
         inst_maps = inst_maps.numpy()
 
+        print('!!! ')
+        print(images.shape)
+        print(inst_maps.shape)
+
         type_maps = F.one_hot(
             type_maps.type(torch.int64),
             num_classes + 1
